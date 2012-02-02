@@ -1,41 +1,17 @@
 class CacheGrailsPlugin {
-    // the plugin version
     def version = "0.5.BUILD-SNAPSHOT"
-    // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.0 > *"
-    // the other plugins this plugin depends on
-    def dependsOn = [:]
-    // resources that are excluded from plugin packaging
-    def pluginExcludes = [
-        "grails-app/views/error.gsp"
-    ]
 
-    // TODO Fill in these fields
-    def title = "Cache Plugin" // Headline display name of the plugin
+    def title = "Cache Plugin"
     def author = "Jeff Brown"
     def authorEmail = "jbrown@vmware.com"
-    def description = '''\
-Grails Cache Plugin
-'''
-
-    // URL to the plugin's documentation
+    def description = 'Grails Cache Plugin'
     def documentation = "http://grails.org/plugin/cache"
 
-    // Extra (optional) plugin metadata
-
-    // License: one of 'APACHE', 'GPL2', 'GPL3'
     def license = "APACHE"
-
-    // Details of company behind the plugin (if there is one)
     def organization = [ name: "SpringSource", url: "http://www.springsource.org/" ]
-
-    // Any additional developers beyond the author specified above.
     def developers = [ [ name: "Burt Beckwith", email: "beckwithb@vmware.com" ]]
-
-    // Location of the plugin's issue tracker.
     def issueManagement = [ system: "JIRA", url: "http://jira.grails.org/browse/GPCACHE" ]
-
-    // Online location of the plugin's browseable source code.
     def scm = [ url: "https://github.com/grails-plugins/grails-cache" ]
 
     def doWithWebDescriptor = { xml ->
