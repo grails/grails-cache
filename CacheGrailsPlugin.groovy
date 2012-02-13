@@ -18,14 +18,25 @@ class CacheGrailsPlugin {
         xmlns cache: 'http://www.springframework.org/schema/cache'
         cache.'annotation-driven'()
         
+        
         // obviously this is temporary...
         
-        basicCache(org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean) {
-            name = 'basic'
-        }
-        
-        cacheManager(org.springframework.cache.support.SimpleCacheManager) {
-            caches = [basicCache]
-        }
+        def configuredCaches = []
+        def cacheConfig = application.config.grails?.cache
+        if(cacheConfig) {
+            def configBuilder = new org.grails.plugin.cache.ConfigBuilder()
+            def configs = configBuilder.evaluate(cacheConfig)
+            if(configs) {
+                for(config in configs) {
+                    def cacheName = config.name
+                    def cacheType = config.type
+                    "${cacheName}"(cacheType)
+                    configuredCaches << ref(cacheName)
+                }
+                cacheManager(org.springframework.cache.support.SimpleCacheManager) {
+                   caches = configuredCaches
+                }
+            }
+        }               
     }
 }
