@@ -9,4 +9,14 @@ grails.project.dependency.resolution = {
 	repositories {
 		grailsCentral()
 	}
+	
+	plugins {
+	    build(":tomcat:$grailsVersion") {
+            export = false
+        }
+        if(Environment.current != Environment.TEST) {
+            build ":release:1.0.1"
+        }
+	    test ':functional-test:1.2.7'
+	}
 }
