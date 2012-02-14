@@ -14,6 +14,12 @@ class CacheGrailsPlugin {
     def issueManagement = [ system: "JIRA", url: "http://jira.grails.org/browse/GPCACHE" ]
     def scm = [ url: "https://github.com/grails-plugins/grails-cache" ]
 
+    def pluginExcludes = [
+        '**/com/demo/**',
+        'grails-app/i18n/**',
+        'web-app/**'
+    ]
+
     def doWithSpring = {
         xmlns cache: 'http://www.springframework.org/schema/cache'
         cache.'annotation-driven'()
