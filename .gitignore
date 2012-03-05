@@ -2,4 +2,5 @@ plugin.xml
 grails-cache*.zip
 stacktrace.log
 target
-
+web-app
+.settings
