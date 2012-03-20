@@ -4,3 +4,11 @@ stacktrace.log
 target
 web-app
 .settings
+
+grails-app/conf/ApplicationResources.groovy
+grails-app/conf/BootStrap.groovy
+grails-app/conf/spring/
+grails-app/i18n/
+grails-app/views/error.gsp
+grails-app/views/index.gsp
+grails-app/views/layouts/

@@ -50,7 +50,8 @@ class CacheGrailsPlugin {
 	def pluginExcludes = [
 		'**/com/demo/**',
 		'grails-app/i18n/**',
-		'web-app/**'
+		'web-app/**',
+		'grails-app/views/**'
 	]
 
 	def getWebXmlFilterOrder() {
@@ -124,6 +125,9 @@ class CacheGrailsPlugin {
 				}
 			}
 		}
+		tags(org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean)
+		configuredCaches << ref('tags')
+		configuredCacheNames << 'tags'
 
 		// make the names available to extension plugins
 		cacheConfig.configuredCacheNames = configuredCacheNames
