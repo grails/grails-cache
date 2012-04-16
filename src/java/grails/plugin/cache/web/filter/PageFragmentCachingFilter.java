@@ -14,6 +14,7 @@
  */
 package grails.plugin.cache.web.filter;
 
+import grails.plugin.cache.SerializableByteArrayOutputStream;
 import grails.plugin.cache.Timer;
 import grails.plugin.cache.web.ContentCacheParameters;
 import grails.plugin.cache.web.GenericResponseWrapper;
@@ -21,7 +22,6 @@ import grails.plugin.cache.web.Header;
 import grails.plugin.cache.web.PageInfo;
 import grails.plugin.cache.web.SerializableCookie;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -313,7 +313,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 
 	private PageInfo buildPage(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 		// Invoke the next entity in the chain
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		SerializableByteArrayOutputStream out = new SerializableByteArrayOutputStream();
 		GenericResponseWrapper wrapper = new GenericResponseWrapper(response, out);
 		Map<String, Serializable> cacheableRequestAttributes = new HashMap<String, Serializable>();
 
@@ -786,8 +786,8 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 		final boolean updateRequired;
 		final ValueWrapper valueWrapper;
 
-		CacheStatus(Map<CacheOperationContext, Object> cUpdates, boolean updateRequired, ValueWrapper valueWrapper) {
-			this.updates = cUpdates;
+		CacheStatus(Map<CacheOperationContext, Object> updates, boolean updateRequired, ValueWrapper valueWrapper) {
+			this.updates = updates;
 			this.updateRequired = updateRequired;
 			this.valueWrapper = valueWrapper;
 		}

@@ -34,11 +34,17 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.cglib.proxy.Callback;
+
+import org.codehaus.groovy.grails.plugins.web.api.ControllersApi;
+import org.codehaus.groovy.grails.web.servlet.GrailsFlashScope;
 import org.codehaus.groovy.grails.web.servlet.HttpHeaders;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.PointcutAdvisor;
+import org.springframework.aop.TargetSource;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import org.springframework.web.servlet.FlashMap;
 
 /**
  * A Serializable representation of a {@link HttpServletResponse}.
@@ -59,12 +65,10 @@ public class PageInfo implements Serializable {
 	protected static final int GZIP_MAGIC_NUMBER_BYTE_2 = -117;
 	protected static final long ONE_YEAR_IN_SECONDS = 60 * 60 * 24 * 365;
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
-
 	private final HttpDateFormatter httpDateFormatter = new HttpDateFormatter();
 	private final List<Header<? extends Serializable>> responseHeaders = new ArrayList<Header<? extends Serializable>>();
 	private final List<SerializableCookie> serializableCookies = new ArrayList<SerializableCookie>();
-	private Map<String, ? extends Serializable> requestAttributes;
+	private Map<String, Serializable> requestAttributes;
 	private String contentType;
 	private byte[] gzippedBody;
 	private byte[] ungzippedBody;
@@ -90,7 +94,7 @@ public class PageInfo implements Serializable {
 	public PageInfo(final int statusCode, final String contentType, final byte[] body,
 	        boolean storeGzipped, long timeToLiveSeconds, final Collection<Header<? extends Serializable>> headers,
 	        @SuppressWarnings("unused") final Collection<Cookie> cookies,
-	        Map<String, ? extends Serializable> requestAttributes) throws AlreadyGzippedException {
+	        Map<String, Serializable> requestAttributes) throws AlreadyGzippedException {
 
 		if (headers != null) {
 			responseHeaders.addAll(headers);
@@ -101,7 +105,8 @@ public class PageInfo implements Serializable {
 		this.contentType = contentType;
 		this.storeGzipped = storeGzipped;
 		this.statusCode = statusCode;
-		this.requestAttributes = requestAttributes;
+		setCacheableRequestAttributes(requestAttributes);
+
 		// bug 2630970
 		// extractCookies(cookies);
 
@@ -122,7 +127,7 @@ public class PageInfo implements Serializable {
 			}
 		}
 		catch (IOException e) {
-			log.error("Error ungzipping gzipped body", e);
+			LoggerFactory.getLogger(getClass()).error("Error ungzipping gzipped body", e);
 		}
 	}
 
@@ -306,7 +311,7 @@ public class PageInfo implements Serializable {
 		return timeToLiveSeconds;
 	}
 
-	public Map<String, ? extends Serializable> getRequestAttributes() {
+	public Map<String, Serializable> getRequestAttributes() {
 		return Collections.unmodifiableMap(requestAttributes);
 	}
 
@@ -387,5 +392,37 @@ public class PageInfo implements Serializable {
 			}
 		}
 		return directives;
+	}
+
+	private void setCacheableRequestAttributes(Map<String, Serializable> attributes) {
+		requestAttributes = new HashMap<String, Serializable>();
+
+		for (Map.Entry<String, Serializable> entry : attributes.entrySet()) {
+			Serializable value = entry.getValue();
+
+			if (value instanceof GrailsFlashScope) {
+				continue;
+			}
+			if (value instanceof FlashMap) {
+				continue;
+			}
+			if (value instanceof HttpServletResponse) {
+				continue;
+			}
+			if (value instanceof ControllersApi) {
+				continue;
+			}
+			if (value instanceof PointcutAdvisor || value instanceof PointcutAdvisor[]) {
+				continue;
+			}
+			if (value instanceof Callback || value instanceof Callback[]) {
+				continue;
+			}
+			if (value instanceof TargetSource) {
+				continue;
+			}
+
+			requestAttributes.put(entry.getKey(), value);
+		}
 	}
 }

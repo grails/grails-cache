@@ -14,13 +14,13 @@
  */
 package grails.plugin.cache.web;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -52,9 +52,9 @@ import org.slf4j.LoggerFactory;
  * @author Greg Luck
  * @author Burt Beckwith
  */
-public class HttpDateFormatter {
+public class HttpDateFormatter implements Serializable {
 
-	protected final Logger log = LoggerFactory.getLogger(getClass());
+	private static final long serialVersionUID = 1;
 
 	protected final SimpleDateFormat httpDateFormat;
 
@@ -92,7 +92,8 @@ public class HttpDateFormatter {
 			return httpDateFormat.parse(date);
 		}
 		catch (ParseException e) {
-			log.debug("ParseException on date {}. 1/1/1970 will be returned", date);
+			LoggerFactory.getLogger(getClass()).debug(
+					"ParseException on date {}. 1/1/1970 will be returned", date);
 			return new Date(0);
 		}
 	}

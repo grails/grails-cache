@@ -14,11 +14,11 @@
  */
 package grails.plugin.cache.web;
 
+import grails.plugin.cache.SerializableOutputStream;
 import grails.plugin.cache.web.Header.Type;
 import grails.plugin.cache.web.filter.FilterServletOutputStream;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Serializable;
@@ -34,7 +34,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -54,8 +53,6 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper implement
 
 	private static final long serialVersionUID = 1;
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
-
 	private int statusCode = SC_OK;
 	private int contentLength;
 	private String contentType;
@@ -63,13 +60,13 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper implement
 			String.CASE_INSENSITIVE_ORDER);
 	private final List<Cookie> cookies = new ArrayList<Cookie>();
 	private ServletOutputStream out;
-	private PrintWriter writer;
+	private transient PrintWriter writer;
 	private boolean disableFlushBuffer = true;
 
 	/**
 	 * Creates a GenericResponseWrapper
 	 */
-	public GenericResponseWrapper(final HttpServletResponse response, final OutputStream outputStream) {
+	public GenericResponseWrapper(final HttpServletResponse response, final SerializableOutputStream outputStream) {
 		super(response);
 		out = new FilterServletOutputStream(outputStream);
 	}
@@ -128,7 +125,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper implement
 	@Override
 	public void setStatus(final int code, final String msg) {
 		statusCode = code;
-		log.warn("Discarding message because this method is deprecated.");
+		LoggerFactory.getLogger(getClass()).warn("Discarding message because this method is deprecated.");
 		super.setStatus(code);
 	}
 

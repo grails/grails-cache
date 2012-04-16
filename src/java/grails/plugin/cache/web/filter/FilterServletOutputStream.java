@@ -14,8 +14,10 @@
  */
 package grails.plugin.cache.web.filter;
 
+import grails.plugin.cache.SerializableOutputStream;
+
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.Serializable;
 
 import javax.servlet.ServletOutputStream;
 
@@ -27,11 +29,13 @@ import javax.servlet.ServletOutputStream;
  * @author Greg Luck
  * @author Burt Beckwith
  */
-public class FilterServletOutputStream extends ServletOutputStream {
+public class FilterServletOutputStream extends ServletOutputStream implements Serializable {
 
-	protected OutputStream stream;
+	private static final long serialVersionUID = 1;
 
-	public FilterServletOutputStream(final OutputStream stream) {
+	protected SerializableOutputStream stream;
+
+	public FilterServletOutputStream(final SerializableOutputStream stream) {
 		this.stream = stream;
 	}
 
