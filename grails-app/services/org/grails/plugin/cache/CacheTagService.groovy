@@ -7,7 +7,7 @@ class CacheTagService {
     static transactional = false
     static scope = 'singleton'
     
-    @Cacheable(value='blocks', key='#key')
+    @Cacheable(value='grailsBlocksCache', key='#key')
     def getContent(key, body) {
         body()
     }

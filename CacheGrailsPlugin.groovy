@@ -125,9 +125,9 @@ class CacheGrailsPlugin {
 				}
 			}
 		}
-		blocks(org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean)
-		configuredCaches << ref('blocks')
-		configuredCacheNames << 'blocks'
+		grailsBlocksCache(org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean)
+		configuredCaches << ref('grailsBlocksCache')
+		configuredCacheNames << 'grailsBlocksCache'
 
 		// make the names available to extension plugins
 		cacheConfig.configuredCacheNames = configuredCacheNames
