@@ -37,7 +37,7 @@ public class ProxyAwareMixedGrailsControllerHelper extends MixedGrailsController
 
 	@Override
 	protected Object retrieveAction(GroovyObject controller, String actionName, HttpServletResponse response) {
-		
+
 		Method method = ReflectionUtils.findMethod(AopProxyUtils.ultimateTargetClass(controller),
 				actionName, MethodGrailsControllerHelper.NOARGS);
 

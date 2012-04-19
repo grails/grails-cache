@@ -6,13 +6,14 @@ class CacheTagService {
 
     static transactional = false
     static scope = 'singleton'
+
     def groovyPagesTemplateRenderer
-    
+
     @Cacheable(value='grailsBlocksCache', key='#key')
     def getContent(key, body) {
         body()
     }
-    
+
     @Cacheable(value="grailsTemplatesCache", key="#key")
     def getRenderedTemplate(key, webRequest, pageScope, attrs) {
         def body = null

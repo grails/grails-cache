@@ -370,7 +370,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 	 * Writes the response from a PageInfo object.
 	 * <p/>
 	 * Headers are set last so that there is an opportunity to override
-	 * 
+	 *
 	 * 1 - only set status, contentType, cookies, etc. if this is the "main"
 	 * request and not an include. 2 - send a status code 304 if appropriate.
 	 *

@@ -11,11 +11,11 @@ class DemoController {
     def basicCachingService() {
         render "Value From Service Is \"${basicCachingService.data}\""
     }
-    
+
     def cacheTagBasics(int counter) {
         [counter: counter]
     }
-    
+
     def mapAsKey(int counter) {
         [counter: counter]
     }

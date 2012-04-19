@@ -97,7 +97,7 @@ public class SerializableByteArrayOutputStream extends SerializableOutputStream 
 	public synchronized String toString() {
 		return new String(buf, 0, count);
 	}
-    
+
 	public synchronized String toString(String charsetName) throws UnsupportedEncodingException {
 		return new String(buf, 0, count, charsetName);
 	}
