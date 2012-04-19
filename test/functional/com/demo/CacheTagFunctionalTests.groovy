@@ -2,7 +2,7 @@ package com.demo
 
 class CacheTagFunctionalTests extends functionaltestplugin.FunctionalTestCase {
 
-    void testCacheTag() {
+    void testBlockTag() {
         get '/demo/cacheTagBasics?counter=5'
         assertStatus 200
         assertContentContains 'First block counter 6'
@@ -24,7 +24,7 @@ class CacheTagFunctionalTests extends functionaltestplugin.FunctionalTestCase {
         assertContentDoesNotContain 'Fifth'
     }
 
-    void testCacheTagWithMapsAsKeys() {
+    void testBlockTagWithMapsAsKeys() {
         get '/demo/mapAsKey?counter=18'
         assertStatus 200
         assertContentContains 'First block counter 19'
@@ -44,5 +44,16 @@ class CacheTagFunctionalTests extends functionaltestplugin.FunctionalTestCase {
         assertContentDoesNotContain 'Second'
         assertContentDoesNotContain 'Fourth'
         assertContentDoesNotContain 'Fifth'
+    }
+    
+    void testRenderTag() {
+        get '/demo/renderTag'
+        assertStatus 200
+        
+        assertContentContains 'First invocation: Counter value: 1'
+        assertContentContains 'Second invocation: Counter value: 1'
+        assertContentContains 'Third invocation: Counter value: 3'
+        assertContentContains 'Fourth invocation: Counter value: 3'
+        assertContentContains 'Fifth invocation: Counter value: 1'
     }
 }

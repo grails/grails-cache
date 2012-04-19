@@ -19,4 +19,8 @@ class DemoController {
     def mapAsKey(int counter) {
         [counter: counter]
     }
+    
+    def renderTag() {
+        [:]
+    }
 }
