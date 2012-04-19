@@ -12,6 +12,6 @@ class CacheTagLib {
         def key = attrs.key
         def template = attrs.template
         def model = attrs.model
-        out << cacheTagService.getRenderedTemplate(key, template, model)
+        out << cacheTagService.getRenderedTemplate(key, webRequest, pageScope, attrs)
     }
 }
