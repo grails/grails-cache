@@ -5,7 +5,6 @@ import org.springframework.cache.annotation.Cacheable
 class CacheTagService {
 
     static transactional = false
-    static scope = 'singleton'
 
     def groovyPagesTemplateRenderer
 
