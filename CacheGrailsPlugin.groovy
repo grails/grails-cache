@@ -12,6 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import grails.plugin.cache.ConfigBuilder
+import grails.plugin.cache.GrailsConcurrentMapCacheManager
 import grails.plugin.cache.web.ProxyAwareMixedGrailsControllerHelper
 import grails.plugin.cache.web.filter.DefaultWebKeyGenerator
 import grails.plugin.cache.web.filter.NoOpFilter
@@ -19,10 +21,9 @@ import grails.plugin.cache.web.filter.ExpressionEvaluator
 import grails.plugin.cache.web.filter.simple.MemoryPageFragmentCachingFilter
 
 import org.codehaus.groovy.grails.commons.GrailsApplication
-import org.grails.plugin.cache.ConfigBuilder
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.cache.concurrent.ConcurrentMapCacheManager
+import org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean
 import org.springframework.core.Ordered
 import org.springframework.web.filter.DelegatingFilterProxy
 
@@ -50,8 +51,8 @@ class CacheGrailsPlugin {
 	def pluginExcludes = [
 		'**/com/demo/**',
 		'grails-app/i18n/**',
-		'web-app/**',
-		'grails-app/views/**'
+		'grails-app/views/**',
+		'web-app/**'
 	]
 
 	def getWebXmlFilterOrder() {
@@ -77,7 +78,7 @@ class CacheGrailsPlugin {
 			}
 		}
 
-		def filterMappings = xml."filter-mapping"
+		def filterMappings = xml.'filter-mapping'
 		def lastMapping = filterMappings[filterMappings.size() - 1]
 		lastMapping + {
 			'filter-mapping' {
@@ -109,37 +110,17 @@ class CacheGrailsPlugin {
 		                          mode: 'proxy', order: order,
 		                          'proxy-target-class': proxyTargetClass)
 
-		// obviously this is temporary...
-
-		def configuredCaches = []
-		def configuredCacheNames = []
+		// TODO how do extension plugins configure these?
+		def configuredCacheNames = ['grailsBlocksCache', 'grailsTemplatesCache']
 		if (cacheConfig) {
-			def configs = new ConfigBuilder().evaluate(cacheConfig)
-			if (configs) {
-				for (config in configs) {
-					String cacheName = config.name
-					def cacheType = config.type
-					"$cacheName"(cacheType)
-					configuredCaches << ref(cacheName)
-					configuredCacheNames << cacheName
-				}
-			}
+			ConfigBuilder builder = new ConfigBuilder()
+			builder.parse cacheConfig.config
+			configuredCacheNames.addAll builder.cacheNames
 		}
-        grailsBlocksCache(org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean)
-        configuredCaches << ref('grailsBlocksCache')
-        configuredCacheNames << 'grailsBlocksCache'
 
-        grailsTemplatesCache(org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean)
-        configuredCaches << ref('grailsTemplatesCache')
-        configuredCacheNames << 'grailsTemplatesCache'
-
-		// make the names available to extension plugins
-		cacheConfig.configuredCacheNames = configuredCacheNames
-
-//		cacheManager(SimpleCacheManager) {
-//			caches = configuredCaches
-//		}
-		cacheManager(ConcurrentMapCacheManager) {
+		cacheManager(GrailsConcurrentMapCacheManager) {
+			// TODO this locks the manager and doesn't allow new caches;
+			// could call getCache() for each name in doWithApplicationContext instead
 			cacheNames = configuredCacheNames
 		}
 
@@ -166,7 +147,15 @@ class CacheGrailsPlugin {
 			return
 		}
 
-		if (event.source && event.application.isControllerClass(event.source)) {
+		if (!event.source) {
+			return
+		}
+
+		if (event.application.isControllerClass(event.source)) {
+			// TODO reload CacheOperation config based on updated annotations
+		}
+
+		if (event.application.isServiceClass(event.source)) {
 			// TODO reload CacheOperation config based on updated annotations
 		}
 	}
