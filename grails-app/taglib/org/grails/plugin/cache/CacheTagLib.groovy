@@ -5,15 +5,22 @@ class CacheTagLib {
     static namespace = 'cache'
 
     def cacheTagService
+    def cacheManager
 
     def block = { attrs, body ->
         out << cacheTagService.getContent(attrs.key, body)
     }
-    
+
     def render =  { attrs ->
         def key = attrs.key
-        def template = attrs.template
-        def model = attrs.model
-        out << cacheTagService.getRenderedTemplate(key, webRequest, pageScope, attrs)
+        def cache = cacheManager.getCache('grailsTemplatesCache')
+        def content = cache.get(key)
+        if(content == null) {
+            content = g.render(attrs)
+            cache.put(key, content)
+        } else {
+            content = content.get()
+        }
+        out << content
     }
 }
