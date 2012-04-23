@@ -3,7 +3,13 @@ package com.demo
 class DemoController {
 
     def basicCachingService
+    def grailsCacheAdminService
 
+    def clearBlocksCache() {
+        grailsCacheAdminService.clearBlocksCache()
+        render "cleared blocks cache"
+    }
+    
     def basicCachingServiceInvocationCount() {
         render "Basic Caching Service Invocation Count Is ${basicCachingService.invocationCounter}."
     }
@@ -12,7 +18,7 @@ class DemoController {
         render "Value From Service Is \"${basicCachingService.data}\""
     }
 
-    def cacheTagBasics(int counter) {
+    def blockCache(int counter) {
         [counter: counter]
     }
     
