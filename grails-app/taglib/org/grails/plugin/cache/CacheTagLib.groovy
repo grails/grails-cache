@@ -4,11 +4,21 @@ class CacheTagLib {
 
     static namespace = 'cache'
 
-    def cacheTagService
     def cacheManager
 
     def block = { attrs, body ->
-        out << cacheTagService.getContent(attrs.key, body)
+        def cache = cacheManager.getCache('grailsBlocksCache')
+        def bodyClosure = body.@bodyClosure
+        def closureClass = bodyClosure.getClass()
+        def key = closureClass.getName()
+        def content = cache.get(key)
+        if(content == null) {
+            content = body()
+            cache.put(key, content)
+        } else {
+            content = content.get()
+        }
+        out << content
     }
 
     def render =  { attrs ->

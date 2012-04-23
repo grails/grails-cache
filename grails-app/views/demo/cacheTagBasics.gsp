@@ -1,27 +1,15 @@
 <html>
 <body>
-    <cache:block key="one">
+    <cache:block>
         First block counter ${++counter}
     </cache:block>
     <br/>
-    <cache:block key="one">
+    <cache:block>
         Second block counter ${++counter}
     </cache:block>
     <br/>
-    <cache:block key="two">
+    <cache:block>
         Third block counter ${++counter}
-    </cache:block>
-    <br/>
-    <cache:block key="one">
-        Fourth block counter ${++counter}
-    </cache:block>
-    <br/>
-    <cache:block key="two">
-        Fifth block counter ${++counter}
-    </cache:block>
-    <br/>
-    <cache:block key="three">
-        Sixth block counter ${++counter}
     </cache:block>
 </body>
 </html>

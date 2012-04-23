@@ -15,10 +15,6 @@ class DemoController {
     def cacheTagBasics(int counter) {
         [counter: counter]
     }
-
-    def mapAsKey(int counter) {
-        [counter: counter]
-    }
     
     def renderTag() {
         [:]
