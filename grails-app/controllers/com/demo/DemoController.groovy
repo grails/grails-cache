@@ -10,6 +10,11 @@ class DemoController {
         render "cleared blocks cache"
     }
     
+    def clearTemplatesCache() {
+        grailsCacheAdminService.clearTemplatesCache()
+        render "cleared templates cache"
+    }
+    
     def basicCachingServiceInvocationCount() {
         render "Basic Caching Service Invocation Count Is ${basicCachingService.invocationCounter}."
     }
@@ -22,7 +27,7 @@ class DemoController {
         [counter: counter]
     }
     
-    def renderTag() {
-        [:]
+    def renderTag(int counter) {
+        [counter: counter]
     }
 }

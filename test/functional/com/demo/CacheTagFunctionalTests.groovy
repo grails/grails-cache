@@ -51,7 +51,11 @@ class CacheTagFunctionalTests extends functionaltestplugin.FunctionalTestCase {
     }
     
     void testRenderTag() {
-        get '/demo/renderTag'
+        get '/demo/clearTemplatesCache'
+        assertStatus 200
+        assertContentContains 'cleared templates cache'
+        
+        get '/demo/renderTag?counter=1'
         assertStatus 200
         
         assertContentContains 'First invocation: Counter value: 1'
@@ -59,5 +63,36 @@ class CacheTagFunctionalTests extends functionaltestplugin.FunctionalTestCase {
         assertContentContains 'Third invocation: Counter value: 3'
         assertContentContains 'Fourth invocation: Counter value: 3'
         assertContentContains 'Fifth invocation: Counter value: 1'
+
+        get '/demo/renderTag?counter=5'
+        assertStatus 200
+        
+        assertContentContains 'First invocation: Counter value: 1'
+        assertContentContains 'Second invocation: Counter value: 1'
+        assertContentContains 'Third invocation: Counter value: 3'
+        assertContentContains 'Fourth invocation: Counter value: 3'
+        assertContentContains 'Fifth invocation: Counter value: 1'
+
+        get '/demo/clearTemplatesCache'
+        assertStatus 200
+        assertContentContains 'cleared templates cache'
+        
+        get '/demo/renderTag?counter=5'
+        assertStatus 200
+        
+        assertContentContains 'First invocation: Counter value: 5'
+        assertContentContains 'Second invocation: Counter value: 5'
+        assertContentContains 'Third invocation: Counter value: 7'
+        assertContentContains 'Fourth invocation: Counter value: 7'
+        assertContentContains 'Fifth invocation: Counter value: 5'
+
+        get '/demo/renderTag?counter=1'
+        assertStatus 200
+        
+        assertContentContains 'First invocation: Counter value: 5'
+        assertContentContains 'Second invocation: Counter value: 5'
+        assertContentContains 'Third invocation: Counter value: 7'
+        assertContentContains 'Fourth invocation: Counter value: 7'
+        assertContentContains 'Fifth invocation: Counter value: 5'
     }
 }
