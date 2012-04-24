@@ -111,7 +111,7 @@ class CacheGrailsPlugin {
 
 		// TODO how do extension plugins configure these?
 		def configuredCacheNames = ['grailsBlocksCache', 'grailsTemplatesCache']
-		if (cacheConfig) {
+		if (cacheConfig.config instanceof Closure) {
 			ConfigBuilder builder = new ConfigBuilder()
 			builder.parse cacheConfig.config
 			configuredCacheNames.addAll builder.cacheNames
