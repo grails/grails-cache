@@ -99,14 +99,13 @@ class CacheGrailsPlugin {
 		}
 
 		def cacheConfig = application.config.grails.cache
-		String cacheManagerBeanName = cacheConfig.cacheManagerBeanName ?: 'cacheManager'
 		def proxyTargetClass = cacheConfig.proxyTargetClass
 		if (!(proxyTargetClass instanceof Boolean)) proxyTargetClass = false
 		def order = cacheConfig.aopOrder
 		if (!(order instanceof Number)) order = Ordered.LOWEST_PRECEDENCE
 
 		xmlns cache: 'http://www.springframework.org/schema/cache'
-		cache.'annotation-driven'('cache-manager': cacheManagerBeanName,
+		cache.'annotation-driven'('cache-manager': 'grailsCacheManager',
 		                          mode: 'proxy', order: order,
 		                          'proxy-target-class': proxyTargetClass)
 
@@ -118,7 +117,7 @@ class CacheGrailsPlugin {
 			configuredCacheNames.addAll builder.cacheNames
 		}
 
-		cacheManager(GrailsConcurrentMapCacheManager) {
+		grailsCacheManager(GrailsConcurrentMapCacheManager) {
 			// TODO this locks the manager and doesn't allow new caches;
 			// could call getCache() for each name in doWithApplicationContext instead
 			cacheNames = configuredCacheNames
@@ -129,7 +128,7 @@ class CacheGrailsPlugin {
 		webExpressionEvaluator(ExpressionEvaluator)
 
 		grailsCacheFilter(MemoryPageFragmentCachingFilter) {
-			cacheManager = ref('cacheManager')
+			cacheManager = ref('grailsCacheManager')
 			// TODO this name might be brittle - perhaps do by type?
 			cacheOperationSource = ref('org.springframework.cache.annotation.AnnotationCacheOperationSource#0')
 			keyGenerator = ref('webCacheKeyGenerator')
