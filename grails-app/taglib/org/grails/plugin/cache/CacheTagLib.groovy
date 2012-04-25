@@ -11,6 +11,9 @@ class CacheTagLib {
         def bodyClosure = body.@bodyClosure
         def closureClass = bodyClosure.getClass()
         def key = closureClass.getName()
+        if(attrs.key) {
+            key = key + ':' + attrs.key
+        }
         def content = cache.get(key)
         if (content == null) {
             content = body()
@@ -22,7 +25,12 @@ class CacheTagLib {
     }
 
     def render =  { attrs ->
-        def key = attrs.key
+        // TODO using attrs.template is not adequate here, we need the full path to the template
+        def key = attrs.template
+        
+        if(attrs.key) {
+            key = key + ':' + attrs.key
+        }
         def cache = grailsCacheManager.getCache('grailsTemplatesCache')
         def content = cache.get(key)
         if (content == null) {
