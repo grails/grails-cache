@@ -1,4 +1,4 @@
-docs
+/docs
 plugin.xml
 grails-cache*.zip
 stacktrace.log
