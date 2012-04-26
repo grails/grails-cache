@@ -20,4 +20,13 @@ h2. Examples
 
 h3. Attributes
 
+* @template@ (required) - The name of the template to apply
 * @key@ (optional) - An optional key that may be provided to allow for different instances of the rendered template to be held in the cache, presumably with different content.
+* @contextPath@ (optional) - the context path to use (relative to the application context path). Defaults to "" or path to the plugin for a plugin view or template.
+* @bean@ (optional) - The bean to apply the template against
+* @model@ (optional) - The model to apply the template against as a @java.util.Map@
+* @collection@ (optional) - A collection of model objects to apply the template to
+* @var@ (optional) - The variable name of the bean to be referenced in the template
+* @plugin@ (optional) - The plugin to look for the template in
+
+See the documentation for the core @g.render@ tag for details on each of the optional attributes.
