@@ -36,6 +36,12 @@ class CacheTagLib {
      * 
      * @attr template REQUIRED The name of the template to apply
      * @attr key An optional cache key allowing the same template to be cached with different content
+     * @attr contextPath the context path to use (relative to the application context path). Defaults to "" or path to the plugin for a plugin view or template.
+     * @attr bean The bean to apply the template against
+     * @attr model The model to apply the template against as a java.util.Map
+     * @attr collection A collection of model objects to apply the template to
+     * @attr var The variable name of the bean to be referenced in the template
+     * @attr plugin The plugin to look for the template in
      */
     def render =  { attrs ->
         // TODO using attrs.template is not adequate here, we need the full path to the template
