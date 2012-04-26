@@ -1,3 +1,7 @@
 introduction:
   title: Introduction To The Cache Plugin
   changeLog: Change log
+cachingServices:
+  title: Caching Services
+cacheTags:
+  title: GSP Cache Tags
