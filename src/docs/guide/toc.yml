@@ -1,6 +1,9 @@
 introduction:
   title: Introduction To The Cache Plugin
   changeLog: Change log
+grailsCacheAdminService:
+    title: Grails Cache Admin Service
+    clearingCaches: Clearing Caches
 cachingServices:
   title: Caching Services
 cacheTags:
