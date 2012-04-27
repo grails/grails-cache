@@ -1,0 +1,8 @@
+There are a few configuration options for the plugin; these are specified in @Config.groovy@.
+
+{table}
+*Property* | *Default* | *Description*
+grails.cache.config | none | A Closure containing cache configuration using the cache DSL
+grails.cache.proxyTargetClass | @false@ | From the Spring Javadoc: "By default, all proxies are created as JDK proxies. This may cause some problems if you are injecting objects as concrete classes rather than interfaces. To overcome this restriction you can set the @proxy-target-class@ attribute to @true@ which will result in class-based proxies being created."
+grails.cache.aopOrder | Ordered.LOWEST_PRECEDENCE | From the Spring docs: "Defines the order of the cache advice that is applied to beans annotated with \@Cacheable or \@CacheEvict. No specified ordering means that the AOP subsystem determines the order of the advice."
+{table}

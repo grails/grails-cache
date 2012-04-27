@@ -8,3 +8,8 @@ cachingServices:
   title: Caching Services
 cacheTags:
   title: GSP Cache Tags
+usage:
+  title: Usage
+  dsl: Cache DSL
+  configuration: Configuration
+  annotations: Annotations

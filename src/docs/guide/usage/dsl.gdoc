@@ -1,0 +1,34 @@
+The cache implementation used by this plugin is very simple, so there aren't many configuration options (compared to the Ehcache implementation for example, where you have fine-grained control over features like overflowing to disk, time-to-live settings, maximum size of caches, etc.) So there aren't many supported options in the cache configuration DSL, although each plugin's DSL parser is lenient and just logs warnings if you specify options that aren't understood. This lets you share configurations between applications that use different plugins.
+
+You specify the cache configuration in @Config.groovy@ under the @grails.cache.config@ key, for example
+
+{code}
+grails.cache.config = {
+   cache {
+      name 'messages'
+   }
+   cache {
+      name 'maps'
+   }
+}
+{code}
+
+This creates two caches, one with name "messages" and one with name "maps". You can also use attributes from other DSLs and they will be ignored, for example:
+
+{code}
+grails.cache.config = {
+   cache {
+      name 'messages'
+      eternal false
+      overflowToDisk true
+      maxElementsInMemory 10000
+      maxElementsOnDisk 10000000
+   }
+   cache {
+      name 'maps'
+   }
+}
+{code}
+
+This configuration results in the same caches as the simpler one.
+
