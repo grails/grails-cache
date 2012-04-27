@@ -1,13 +1,13 @@
 introduction:
   title: Introduction To The Cache Plugin
   changeLog: Change log
-grailsCacheAdminService:
-    title: Grails Cache Admin Service
-    clearingCaches: Clearing Caches
-cacheTags:
-  title: GSP Cache Tags
 usage:
   title: Usage
   dsl: Cache DSL
   configuration: Configuration
   annotations: Annotations
+cacheTags:
+  title: GSP Cache Tags
+grailsCacheAdminService:
+  title: Grails Cache Admin Service
+  clearingCaches: Clearing Caches
