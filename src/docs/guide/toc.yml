@@ -4,8 +4,6 @@ introduction:
 grailsCacheAdminService:
     title: Grails Cache Admin Service
     clearingCaches: Clearing Caches
-cachingServices:
-  title: Caching Services
 cacheTags:
   title: GSP Cache Tags
 usage:
