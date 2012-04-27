@@ -1,6 +1,6 @@
 package com.demo
 
-import org.springframework.cache.annotation.Cacheable
+import grails.plugin.cache.Cacheable
 
 class BasicCachingService {
 
