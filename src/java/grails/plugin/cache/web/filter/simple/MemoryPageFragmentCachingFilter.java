@@ -22,7 +22,7 @@ import org.springframework.cache.Cache.ValueWrapper;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 
 /**
- * Ehcache-based implementation of PageFragmentCachingFilter.
+ * In-memory-based implementation of PageFragmentCachingFilter.
  *
  * @author Burt Beckwith
  */

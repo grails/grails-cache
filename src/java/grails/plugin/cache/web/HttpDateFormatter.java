@@ -56,7 +56,8 @@ public class HttpDateFormatter implements Serializable {
 
 	private static final long serialVersionUID = 1;
 
-	protected final SimpleDateFormat httpDateFormat;
+	protected final SimpleDateFormat httpDateFormat = new SimpleDateFormat(
+			"EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
 
 	/**
 	 * Constructs a new formatter.
@@ -66,7 +67,6 @@ public class HttpDateFormatter implements Serializable {
 	 * this class.
 	 */
 	public HttpDateFormatter() {
-		httpDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
 		httpDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 	}
 

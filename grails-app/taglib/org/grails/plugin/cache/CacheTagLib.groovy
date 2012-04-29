@@ -23,7 +23,7 @@ class CacheTagLib {
     /**
      * Renders a block of markup and caches the result so the next time the same block
      * is rendered, it does not need to be evaluated again.
-     * 
+     *
      * @attr key An optional cache key allowing the same block to be cached with different content
      */
     def block = { attrs, body ->
@@ -45,9 +45,9 @@ class CacheTagLib {
     }
 
     /**
-     * Renders a GSP template and caches the result so the next time the same template 
+     * Renders a GSP template and caches the result so the next time the same template
      * is rendered, it does not need to be evaluated again.
-     * 
+     *
      * @attr template REQUIRED The name of the template to apply
      * @attr key An optional cache key allowing the same template to be cached with different content
      * @attr contextPath the context path to use (relative to the application context path). Defaults to "" or path to the plugin for a plugin view or template.
@@ -60,7 +60,7 @@ class CacheTagLib {
     def render =  { attrs ->
         // TODO using attrs.template is not adequate here, we need the full path to the template
         def key = attrs.template
-        
+
         if(attrs.key) {
             key = key + ':' + attrs.key
         }

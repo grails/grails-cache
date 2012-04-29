@@ -4,14 +4,14 @@ There are methods in GrailsCacheAdminService for clearing the caches used by the
 class ReportingController {
 
     def grailsCacheAdminService
-    
+
     def report() {
         // clear the cache used by the blocks tag...
         grailsCacheAdminService.clearBlocksCache()
-        
+
         // clear the cache used by the render tag...
         grailsCacheAdminService.clearTemplatesCache()
-        
+
         ...
     }
 }
