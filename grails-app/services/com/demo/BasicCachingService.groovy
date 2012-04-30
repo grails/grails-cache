@@ -1,5 +1,6 @@
 package com.demo
 
+import grails.plugin.cache.CachePut
 import grails.plugin.cache.Cacheable
 
 class BasicCachingService {
@@ -17,4 +18,13 @@ class BasicCachingService {
         ++invocationCounter
         'Hello World!'
     }
+	
+	@Cacheable(value='basic', key='#key')
+	def getData(String key) {
+	}
+	
+	@CachePut(value='basic', key='#key')
+	def getData(String key, String value) {
+		"** ${value} **"
+	}
 }

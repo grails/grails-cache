@@ -4,7 +4,7 @@ class DemoController {
 
     def basicCachingService
     def grailsCacheAdminService
-
+	
     def clearBlocksCache() {
         grailsCacheAdminService.clearBlocksCache()
         render "cleared blocks cache"
@@ -22,6 +22,16 @@ class DemoController {
     def basicCachingService() {
         render "Value From Service Is \"${basicCachingService.data}\""
     }
+	
+	def cachePut(String key, String value) {
+		def result = basicCachingService.getData(key, value)
+		render "Result: ${result}"
+	}
+
+	def cacheGet(String key) {
+		def result = basicCachingService.getData(key)
+		render "Result: ${result}"
+	}
 
     def blockCache(int counter) {
         [counter: counter]
