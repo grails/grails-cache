@@ -1,4 +1,4 @@
-cacheConfig = {
+config = {
 	cache {
 		name 'basic'
 		eternal false

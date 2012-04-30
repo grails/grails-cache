@@ -41,9 +41,8 @@ class ConfigLoader {
 		for (ListIterator<ConfigObject> iter = configs.listIterator(configs.size()); iter.hasPrevious(); ) {
 			ConfigObject co = iter.previous()
 			ConfigBuilder builder = new ConfigBuilder()
-			def config = co.cacheConfig ?: co.config
-			if (config instanceof Closure) {
-				builder.parse config
+			if (co.config instanceof Closure) {
+				builder.parse co.config
 			}
 			configuredCacheNames.addAll builder.cacheNames
 		}
@@ -68,7 +67,7 @@ class ConfigLoader {
 		def cacheConfig
 		for (configClass in application.cacheConfigClasses) {
 		   def config = slurper.parse(configClass.clazz)
-		   cacheConfig = config.cacheConfig
+		   cacheConfig = config.config
 		   if ((cacheConfig instanceof Closure) && processConfig(config, configClass)) {
 				configs << config
 		   }
@@ -85,24 +84,12 @@ class ConfigLoader {
 	}
 
 	protected boolean processConfig(ConfigObject config, CacheConfigGrailsClass configClass) {
-		def cacheConfig
-		String sourceClassName
-
-		if (configClass == null) {
-			cacheConfig = config.config
-			sourceClassName = 'Config'
-		}
-		else {
-			cacheConfig = config.cacheConfig
-			sourceClassName = configClass.clazz.name
-		}
-
-		if (cacheConfig instanceof Closure) {
+		if (config.config instanceof Closure) {
 			def order = config.order
 			if (!(order instanceof Number)) {
 				config.order = DEFAULT_ORDER
 			}
-			config._sourceClassName = sourceClassName
+			config._sourceClassName = configClass == null ? 'Config' : configClass.clazz.name
 			return true
 		}
 
