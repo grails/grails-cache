@@ -16,6 +16,9 @@ log4j = {
 // for tests
 grails.cache.config = {
 	cache {
-		name 'fromConfigGroovy'
+		name 'fromConfigGroovy1'
+	}
+	cache {
+		name 'fromConfigGroovy2'
 	}
 }

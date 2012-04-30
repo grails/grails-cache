@@ -232,7 +232,7 @@ class ConfigBuilderTests extends GrailsUnitTestCase {
 		assertTrue cacheConfig instanceof Closure
 
 		parse cacheConfig
-		assertEquals(['fromConfigGroovy'], cacheNames)
+		assertEquals(['fromConfigGroovy1', 'fromConfigGroovy2'], cacheNames.sort())
 	}
 
 	void testLenient() {

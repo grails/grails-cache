@@ -38,7 +38,25 @@ class ConfigLoaderTests extends GroovyTestCase {
 
 		grailsCacheConfigLoader.reload grailsApplication.mainContext
 
-		assertEquals(['basic', 'fromConfigGroovy', 'grailsBlocksCache', 'grailsTemplatesCache'],
+		assertEquals(['basic', 'fromConfigGroovy1', 'fromConfigGroovy2',
+		              'grailsBlocksCache', 'grailsTemplatesCache'],
 		             grailsCacheManager.cacheNames.sort())
+
+		// simulate editing Config.groovy
+		grailsApplication.config.grails.cache.config = {
+			cache {
+				name 'fromConfigGroovy1'
+			}
+			cache {
+				name 'fromConfigGroovy_new'
+			}
+		}
+
+		grailsCacheConfigLoader.reload grailsApplication.mainContext
+
+		assertEquals(['basic', 'fromConfigGroovy1', 'fromConfigGroovy_new',
+		              'grailsBlocksCache', 'grailsTemplatesCache'],
+		             grailsCacheManager.cacheNames.sort())
+
 	}
 }
