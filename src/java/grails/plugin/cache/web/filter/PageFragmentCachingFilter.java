@@ -343,7 +343,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 		}
 		wrapper.flush();
 
-		long timeToLiveSeconds = 0; // TODO cacheManager.getEhcache(context.cacheName).cacheConfiguration.timeToLiveSeconds;
+		long timeToLiveSeconds = Integer.MAX_VALUE; // TODO cacheManager.getEhcache(context.cacheName).cacheConfiguration.timeToLiveSeconds;
 
 		String contentType = wrapper.getContentType();
 		if (!StringUtils.hasLength(contentType)) {

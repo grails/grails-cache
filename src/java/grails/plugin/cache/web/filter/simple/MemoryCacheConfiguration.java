@@ -24,7 +24,7 @@ import grails.plugin.cache.CacheConfiguration;
 public class MemoryCacheConfiguration implements CacheConfiguration {
 
 	public long getTimeToLiveSeconds() {
-		return 0; // TODO
+		return Integer.MAX_VALUE;
 	}
 
 	public boolean isEternal() {

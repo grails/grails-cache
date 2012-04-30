@@ -46,7 +46,7 @@ public class MemoryPageFragmentCachingFilter extends PageFragmentCachingFilter {
 	@Override
 	protected int getTimeToLive(ValueWrapper wrapper) {
 		// not applicable
-		return 0;
+		return Integer.MAX_VALUE;
 	}
 
 	@Override
