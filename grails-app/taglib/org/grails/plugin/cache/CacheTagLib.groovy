@@ -14,11 +14,16 @@
  */
 package org.grails.plugin.cache
 
+import org.codehaus.groovy.grails.web.pages.GroovyPageTemplate
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
+import org.springframework.web.context.request.RequestContextHolder
+
 class CacheTagLib {
 
     static namespace = 'cache'
 
     def grailsCacheManager
+    def groovyPagesTemplateRenderer
 
     /**
      * Renders a block of markup and caches the result so the next time the same block
@@ -58,10 +63,9 @@ class CacheTagLib {
      * @attr plugin The plugin to look for the template in
      */
     def render =  { attrs ->
-        // TODO using attrs.template is not adequate here, we need the full path to the template
-        def key = attrs.template
+        def key = calculateFullKey(attrs.template, attrs.contextPath, attrs.plugin)
 
-        if(attrs.key) {
+        if (attrs.key) {
             key = key + ':' + attrs.key
         }
         def cache = grailsCacheManager.getCache('grailsTemplatesCache')
@@ -73,5 +77,18 @@ class CacheTagLib {
             content = content.get()
         }
         out << content
+    }
+
+    protected String calculateFullKey(String templateName, String contextPath, String pluginName) {
+        GrailsWebRequest webRequest = RequestContextHolder.currentRequestAttributes()
+        String uri = webRequest.attributes.getTemplateUri(templateName, webRequest.request)
+
+        GroovyPageTemplate t = groovyPagesTemplateRenderer.findAndCacheTemplate(
+             webRequest, pageScope, templateName, contextPath, pluginName, uri)
+        if (!t) {
+            throwTagError("Template not found for name [$templateName] and path [$uri]")
+        }
+
+        t.metaInfo.pageClass.name
     }
 }
