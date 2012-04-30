@@ -14,7 +14,6 @@
  */
 package grails.plugin.cache.compiler;
 
-import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,10 +31,10 @@ import org.codehaus.groovy.transform.GroovyASTTransformation;
 public class CacheTransformation implements ASTTransformation {
 
 	@SuppressWarnings("serial")
-	private static final Map<ClassNode, Class<? extends Annotation>> GRAILS_ANNOTATION_CLASS_NODE_TO_SPRING_ANNOTATION = new HashMap<ClassNode, Class<? extends Annotation>>(){{
-		put(new ClassNode(grails.plugin.cache.Cacheable.class), org.springframework.cache.annotation.Cacheable.class);
-		put(new ClassNode(grails.plugin.cache.CachePut.class), org.springframework.cache.annotation.CachePut.class);
-		put(new ClassNode(grails.plugin.cache.CacheEvict.class), org.springframework.cache.annotation.CacheEvict.class);
+	private static final Map<ClassNode, ClassNode> GRAILS_ANNOTATION_CLASS_NODE_TO_SPRING_ANNOTATION_CLASS_NODE = new HashMap<ClassNode, ClassNode>(){{
+		put(new ClassNode(grails.plugin.cache.Cacheable.class), new ClassNode(org.springframework.cache.annotation.Cacheable.class));
+		put(new ClassNode(grails.plugin.cache.CachePut.class), new ClassNode(org.springframework.cache.annotation.CachePut.class));
+		put(new ClassNode(grails.plugin.cache.CacheEvict.class), new ClassNode(org.springframework.cache.annotation.CacheEvict.class));
 	}};
 
     public void visit(final ASTNode[] astNodes, final SourceUnit sourceUnit) {
@@ -54,8 +53,8 @@ public class CacheTransformation implements ASTTransformation {
 	protected AnnotationNode getCorrespondingSpringAnnotation(final AnnotationNode grailsCacheAnnotationNode) {
 		final Map<String, Expression> grailsAnnotationMembers = grailsCacheAnnotationNode.getMembers();
         
-		final Class<? extends Annotation> springAnnotationClass = GRAILS_ANNOTATION_CLASS_NODE_TO_SPRING_ANNOTATION.get(grailsCacheAnnotationNode.getClassNode());
-		final AnnotationNode springCacheableAnnotationNode = new AnnotationNode(new ClassNode(springAnnotationClass));
+		final ClassNode springCacheAnnotationNode = GRAILS_ANNOTATION_CLASS_NODE_TO_SPRING_ANNOTATION_CLASS_NODE.get(grailsCacheAnnotationNode.getClassNode());
+		final AnnotationNode springCacheableAnnotationNode = new AnnotationNode(springCacheAnnotationNode);
         for(Map.Entry<String, Expression> entry : grailsAnnotationMembers.entrySet()) {
             springCacheableAnnotationNode.addMember(entry.getKey(), entry.getValue());
         }
