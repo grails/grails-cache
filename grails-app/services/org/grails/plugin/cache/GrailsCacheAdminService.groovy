@@ -1,7 +1,6 @@
 package org.grails.plugin.cache
 
-import org.springframework.cache.annotation.CacheEvict
-
+import grails.plugin.cache.CacheEvict
 
 class GrailsCacheAdminService {
 
