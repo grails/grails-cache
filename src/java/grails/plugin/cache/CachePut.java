@@ -21,7 +21,7 @@ import org.springframework.cache.Cache;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-@GroovyASTTransformationClass("grails.plugin.cache.compiler.CachePutTransformation")
+@GroovyASTTransformationClass("grails.plugin.cache.compiler.CacheTransformation")
 public @interface CachePut {
 
 	/**

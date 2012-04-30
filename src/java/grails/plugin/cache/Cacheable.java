@@ -20,7 +20,7 @@ import org.codehaus.groovy.transform.GroovyASTTransformationClass;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-@GroovyASTTransformationClass("grails.plugin.cache.compiler.CacheableTransformation")
+@GroovyASTTransformationClass("grails.plugin.cache.compiler.CacheTransformation")
 public @interface Cacheable {
 
     /**
