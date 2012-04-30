@@ -15,7 +15,6 @@ import org.codehaus.groovy.transform.GroovyASTTransformation;
 @GroovyASTTransformation(phase = CompilePhase.CANONICALIZATION)
 public class CacheableTransformation implements ASTTransformation{
 
-    @Override
     public void visit(final ASTNode[] astNodes, final SourceUnit sourceUnit) {
         
         final ASTNode firstNode = astNodes[0];
