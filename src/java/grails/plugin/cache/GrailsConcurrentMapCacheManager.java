@@ -14,24 +14,51 @@
  */
 package grails.plugin.cache;
 
-import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
+import org.springframework.cache.Cache;
 
 /**
- * Extends the default implementation to return GrailsConcurrentMapCache instances.
+ * Based on org.springframework.cache.concurrent.ConcurrentMapCacheManager.
  *
+ * @author Juergen Hoeller
  * @author Burt Beckwith
  */
-public class GrailsConcurrentMapCacheManager extends ConcurrentMapCacheManager {
+public class GrailsConcurrentMapCacheManager implements GrailsCacheManager {
 
-	public GrailsConcurrentMapCacheManager() {
-		super();
+	protected final ConcurrentMap<String, Cache> cacheMap = new ConcurrentHashMap<String, Cache>();
+
+	public Collection<String> getCacheNames() {
+		return Collections.unmodifiableSet(cacheMap.keySet());
 	}
 
-	public GrailsConcurrentMapCacheManager(String... cacheNames) {
-		super(cacheNames);
+	public Cache getCache(String name) {
+		Cache cache = cacheMap.get(name);
+		if (cache == null) {
+			synchronized (cacheMap) {
+				cache = cacheMap.get(name);
+				if (cache == null) {
+					cache = createConcurrentMapCache(name);
+					cacheMap.put(name, cache);
+				}
+			}
+		}
+		return cache;
 	}
 
-	@Override
+	public boolean cacheExists(String name) {
+		return getCacheNames().contains(name);
+	}
+
+	public boolean destroyCache(String name) {
+		synchronized (cacheMap) {
+			return cacheMap.remove(name) != null;
+		}
+	}
+
 	protected GrailsConcurrentMapCache createConcurrentMapCache(String name) {
 		return new GrailsConcurrentMapCache(name);
 	}

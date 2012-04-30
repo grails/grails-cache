@@ -12,7 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import grails.plugin.cache.ConfigBuilder
+import grails.plugin.cache.CacheConfigArtefactHandler
+import grails.plugin.cache.ConfigLoader
 import grails.plugin.cache.GrailsConcurrentMapCacheManager
 import grails.plugin.cache.web.ProxyAwareMixedGrailsControllerHelper
 import grails.plugin.cache.web.filter.DefaultWebKeyGenerator
@@ -24,6 +25,7 @@ import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean
+import org.springframework.context.ApplicationContext
 import org.springframework.core.Ordered
 import org.springframework.web.filter.DelegatingFilterProxy
 
@@ -35,6 +37,11 @@ class CacheGrailsPlugin {
 	def grailsVersion = '2.0 > *'
 	def observe = ['controllers']
 	def loadAfter = ['controllers']
+	def artefacts = [CacheConfigArtefactHandler]
+	def watchedResources = [
+		'file:./grails-app/conf/**/*CacheConfig.groovy',
+		'file:./plugins/*/grails-app/conf/**/*CacheConfig.groovy'
+	]
 
 	def title = 'Cache Plugin'
 	def author = 'Jeff Brown'
@@ -50,7 +57,7 @@ class CacheGrailsPlugin {
 
 	def pluginExcludes = [
 		'**/com/demo/**',
-		'grails-app/i18n/**',
+		'grails-app/conf/TestCacheConfig.groovy',
 		'grails-app/views/**',
 		'web-app/**'
 	]
@@ -109,19 +116,9 @@ class CacheGrailsPlugin {
 		                          mode: 'proxy', order: order,
 		                          'proxy-target-class': proxyTargetClass)
 
-		// TODO how do extension plugins configure these?
-		def configuredCacheNames = ['grailsBlocksCache', 'grailsTemplatesCache']
-		if (cacheConfig.config instanceof Closure) {
-			ConfigBuilder builder = new ConfigBuilder()
-			builder.parse cacheConfig.config
-			configuredCacheNames.addAll builder.cacheNames
-		}
+		grailsCacheManager(GrailsConcurrentMapCacheManager)
 
-		grailsCacheManager(GrailsConcurrentMapCacheManager) {
-			// TODO this locks the manager and doesn't allow new caches;
-			// could call getCache() for each name in doWithApplicationContext instead
-			cacheNames = configuredCacheNames
-		}
+		grailsCacheConfigLoader(ConfigLoader)
 
 		webCacheKeyGenerator(DefaultWebKeyGenerator)
 
@@ -138,6 +135,10 @@ class CacheGrailsPlugin {
 		grailsControllerHelper(ProxyAwareMixedGrailsControllerHelper) {
 			grailsApplication = ref('grailsApplication')
 		}
+	}
+
+	def doWithApplicationContext = { ctx ->
+		reloadCaches ctx
 	}
 
 	def onChange = { event ->
@@ -157,6 +158,18 @@ class CacheGrailsPlugin {
 		if (event.application.isServiceClass(event.source)) {
 			// TODO reload CacheOperation config based on updated annotations
 		}
+
+		if (event.application.isCacheConfigClass(event.source)) {
+			reloadCaches event.ctx
+		}
+	}
+
+	def onConfigChange = { event ->
+		reloadCaches event.ctx
+	}
+
+	private void reloadCaches(ctx) {
+		ctx.grailsCacheConfigLoader.reload ctx
 	}
 
 	private boolean isEnabled(GrailsApplication application) {

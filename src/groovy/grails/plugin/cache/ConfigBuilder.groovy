@@ -47,6 +47,11 @@ class ConfigBuilder extends BuilderSupport {
 		resolveCaches()
 	}
 
+	void parse(o) {
+		// if there's no explicit method, the missing method logic kicks in and fails poorly
+		throw new IllegalArgumentException('parse must be called with a Closure argument')
+	}
+
 	@Override
 	protected createNode(name) {
 		if (_unrecognizedElementDepth) {
