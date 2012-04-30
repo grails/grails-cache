@@ -45,19 +45,19 @@ public class CacheTransformation implements ASTTransformation {
         }
 
         final AnnotationNode grailsCacheAnnotationNode = (AnnotationNode) firstNode;
-        final AnnotatedNode parent = (AnnotatedNode) secondNode;
-        final AnnotationNode springCacheableAnnotationNode = getCorrespondingSpringAnnotation(grailsCacheAnnotationNode);
-        parent.addAnnotation(springCacheableAnnotationNode);
+        final AnnotatedNode annotatedNode = (AnnotatedNode) secondNode;
+        final AnnotationNode springCacheAnnotationNode = getCorrespondingSpringAnnotation(grailsCacheAnnotationNode);
+        annotatedNode.addAnnotation(springCacheAnnotationNode);
     }
 
 	protected AnnotationNode getCorrespondingSpringAnnotation(final AnnotationNode grailsCacheAnnotationNode) {
 		final Map<String, Expression> grailsAnnotationMembers = grailsCacheAnnotationNode.getMembers();
         
-		final ClassNode springCacheAnnotationNode = GRAILS_ANNOTATION_CLASS_NODE_TO_SPRING_ANNOTATION_CLASS_NODE.get(grailsCacheAnnotationNode.getClassNode());
-		final AnnotationNode springCacheableAnnotationNode = new AnnotationNode(springCacheAnnotationNode);
+		final ClassNode springCacheAnnotationClassNode = GRAILS_ANNOTATION_CLASS_NODE_TO_SPRING_ANNOTATION_CLASS_NODE.get(grailsCacheAnnotationNode.getClassNode());
+		final AnnotationNode springCacheAnnotationNode = new AnnotationNode(springCacheAnnotationClassNode);
         for(Map.Entry<String, Expression> entry : grailsAnnotationMembers.entrySet()) {
-            springCacheableAnnotationNode.addMember(entry.getKey(), entry.getValue());
+            springCacheAnnotationNode.addMember(entry.getKey(), entry.getValue());
         }
-		return springCacheableAnnotationNode;
+		return springCacheAnnotationNode;
 	}
 }
