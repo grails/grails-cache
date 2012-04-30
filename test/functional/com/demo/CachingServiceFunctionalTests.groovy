@@ -60,5 +60,9 @@ class CachingServiceFunctionalTests extends functionaltestplugin.FunctionalTestC
 		get '/demo/cacheGet?key=singer'
 		assertStatus 200
 		assertContentContains 'Result: ** John Sykes'
+
+    	get '/demo/cacheGet?key=band'
+    	assertStatus 200
+    	assertContentContains 'Result: ** Thin Lizzy'
     }
 }
