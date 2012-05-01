@@ -14,6 +14,8 @@
  */
 package org.grails.plugin.cache
 
+import grails.plugin.cache.util.ClassUtils
+
 import org.codehaus.groovy.grails.web.pages.GroovyPageTemplate
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
 import org.springframework.web.context.request.RequestContextHolder
@@ -33,7 +35,7 @@ class CacheTagLib {
      */
     def block = { attrs, body ->
         def cache = grailsCacheManager.getCache('grailsBlocksCache')
-        def bodyClosure = body.@bodyClosure
+        def bodyClosure = ClassUtils.getPropertyOrFieldValue(body, 'bodyClosure')
         def closureClass = bodyClosure.getClass()
         def key = closureClass.getName()
         if(attrs.key) {
