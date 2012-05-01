@@ -22,7 +22,7 @@ grails.project.dependency.resolution = {
 				export = false
 			}
 		}
-		test(':functional-test:1.2.7') {
+		test(':functional-test:1.2.7', ':spock:0.6') {
 			export = false
 		}
 		compile ':webxml:1.4.1'
