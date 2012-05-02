@@ -15,10 +15,10 @@ class ClassUtilsSpec extends Specification {
         expectedValue == ClassUtils.getPropertyOrFieldValue(obj, fieldOrPropertyName)
         
         where:
-        fieldOrPropertyName | expectedValue
-        'someProperty' | 1
-        'publicField' | 2
-        'privateField' | 3
+        fieldOrPropertyName        | expectedValue
+        'someProperty'             | 1
+        'publicField'              | 2
+        'privateField'             | 3
         'propertyWithPrivateField' | 100
     }
 }
