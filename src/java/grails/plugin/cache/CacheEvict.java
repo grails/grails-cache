@@ -14,7 +14,6 @@
  */
 package grails.plugin.cache;
 
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -25,9 +24,10 @@ import java.lang.annotation.Target;
 import org.codehaus.groovy.transform.GroovyASTTransformationClass;
 
 /**
- * Annotation indicating that a method (or all methods on a class) trigger(s)
+ * Indicates that a method (or all methods on a class) trigger(s)
  * a cache invalidate operation.
  *
+ * @author Jeff Brown
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
@@ -38,7 +38,7 @@ public @interface CacheEvict {
 
 	/**
 	 * Qualifier value for the specified cached operation.
-	 * <p>May be used to determine the target cache (or caches), matching the qualifier 
+	 * <p>May be used to determine the target cache (or caches), matching the qualifier
 	 * value (or the bean name(s)) of (a) specific bean definition.
 	 */
 	String[] value();
@@ -50,7 +50,7 @@ public @interface CacheEvict {
 	String key() default "";
 
 	/**
-	 * Spring Expression Language (SpEL) attribute used for conditioning the method caching. 
+	 * Spring Expression Language (SpEL) attribute used for conditioning the method caching.
 	 * <p>Default is "", meaning the method is always cached.
 	 */
 	String condition() default "";

@@ -57,6 +57,5 @@ class ConfigLoaderTests extends GroovyTestCase {
 		assertEquals(['basic', 'fromConfigGroovy1', 'fromConfigGroovy_new',
 		              'grailsBlocksCache', 'grailsTemplatesCache'],
 		             grailsCacheManager.cacheNames.sort())
-
 	}
 }

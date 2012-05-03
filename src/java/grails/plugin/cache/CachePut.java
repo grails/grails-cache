@@ -22,14 +22,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.codehaus.groovy.transform.GroovyASTTransformationClass;
-import org.springframework.cache.Cache;
 
 /**
- * Annotation indicating that a method (or all methods on a class) trigger(s)
+ * Indicates that a method (or all methods on a class) trigger(s)
  * a {@link Cache#put(Object, Object)} operation. As opposed to {@link Cacheable} annotation,
  * this annotation does not cause the target method to be skipped - rather it
  * always causes the method to be invoked and its result to be placed into the cache.
  *
+ * @author Jeff Brown
  */
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)

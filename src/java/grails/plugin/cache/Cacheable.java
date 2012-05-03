@@ -24,11 +24,12 @@ import java.lang.annotation.Target;
 import org.codehaus.groovy.transform.GroovyASTTransformationClass;
 
 /**
- * Annotation indicating that a method (or all the methods on a class) can be cached.
+ * Indicates that a method (or all the methods on a class) can be cached.
  *
  * <p>The method arguments and signature are used for computing the key while the
  * returned instance is used as the cache value.
  *
+ * @author Jeff Brown
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
@@ -51,7 +52,7 @@ public @interface Cacheable {
     String key() default "";
 
     /**
-     * Spring Expression Language (SpEL) attribute used for conditioning the method caching. 
+     * Spring Expression Language (SpEL) attribute used for conditioning the method caching.
      * <p>Default is "", meaning the method is always cached.
      */
     String condition() default "";
