@@ -59,23 +59,23 @@ import org.springframework.web.servlet.FlashMap;
 public class PageInfo implements Serializable {
 	private static final long serialVersionUID = 1;
 
-	private static final Pattern PATTERN_CACHE_DIRECTIVE = Pattern.compile("([\\w-]+)(?:=(.+))?");
+	protected static final Pattern PATTERN_CACHE_DIRECTIVE = Pattern.compile("([\\w-]+)(?:=(.+))?");
 	protected static final int FOUR_KB = 4196;
 	protected static final int GZIP_MAGIC_NUMBER_BYTE_1 = 31;
 	protected static final int GZIP_MAGIC_NUMBER_BYTE_2 = -117;
 	protected static final long ONE_YEAR_IN_SECONDS = 60 * 60 * 24 * 365;
 
-	private final HttpDateFormatter httpDateFormatter = new HttpDateFormatter();
-	private final List<Header<? extends Serializable>> responseHeaders = new ArrayList<Header<? extends Serializable>>();
-	private final List<SerializableCookie> serializableCookies = new ArrayList<SerializableCookie>();
-	private Map<String, Serializable> requestAttributes;
-	private String contentType;
-	private byte[] gzippedBody;
-	private byte[] ungzippedBody;
-	private int statusCode;
-	private boolean storeGzipped;
-	private Date created;
-	private long timeToLiveSeconds;
+	protected final HttpDateFormatter httpDateFormatter = new HttpDateFormatter();
+	protected final List<Header<? extends Serializable>> responseHeaders = new ArrayList<Header<? extends Serializable>>();
+	protected final List<SerializableCookie> serializableCookies = new ArrayList<SerializableCookie>();
+	protected Map<String, Serializable> requestAttributes;
+	protected String contentType;
+	protected byte[] gzippedBody;
+	protected byte[] ungzippedBody;
+	protected int statusCode;
+	protected boolean storeGzipped;
+	protected Date created;
+	protected long timeToLiveSeconds;
 
 	/**
 	 * Creates a PageInfo object representing the "page".
@@ -160,7 +160,7 @@ public class PageInfo implements Serializable {
 	 * @param ungzipped the bytes to be gzipped
 	 * @return gzipped bytes
 	 */
-	private byte[] gzip(byte[] ungzipped) throws IOException, AlreadyGzippedException {
+	protected byte[] gzip(byte[] ungzipped) throws IOException, AlreadyGzippedException {
 		if (isGzipped(ungzipped)) {
 			throw new AlreadyGzippedException("The byte[] is already gzipped. It should not be gzipped again.");
 		}
@@ -176,7 +176,7 @@ public class PageInfo implements Serializable {
 	 *
 	 * @return true if the body is gzipped
 	 */
-	private boolean isBodyParameterGzipped() {
+	protected boolean isBodyParameterGzipped() {
 		for (Header<? extends Serializable> header : responseHeaders) {
 			if ("gzip".equals(header.getValue())) {
 				return true;
@@ -255,7 +255,7 @@ public class PageInfo implements Serializable {
 	 * @return an ungzipped byte[]
 	 * @throws IOException
 	 */
-	private byte[] ungzip(final byte[] gzipped) throws IOException {
+	protected byte[] ungzip(final byte[] gzipped) throws IOException {
 		GZIPInputStream inputStream = new GZIPInputStream(new ByteArrayInputStream(gzipped));
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(gzipped.length);
 		byte[] buffer = new byte[FOUR_KB];
@@ -394,7 +394,7 @@ public class PageInfo implements Serializable {
 		return directives;
 	}
 
-	private void setCacheableRequestAttributes(Map<String, Serializable> attributes) {
+	protected void setCacheableRequestAttributes(Map<String, Serializable> attributes) {
 		requestAttributes = new HashMap<String, Serializable>();
 
 		for (Map.Entry<String, Serializable> entry : attributes.entrySet()) {

@@ -34,15 +34,15 @@ import org.springframework.util.StringUtils;
  */
 public class CacheOperationContext {
 
-	private final Collection<Cache> caches;
-	private final ExpressionEvaluator evaluator;
-	private final WebKeyGenerator keyGenerator;
-	final CacheOperation operation;
-	final Method method;
+	protected final Collection<Cache> caches;
+	protected final ExpressionEvaluator evaluator;
+	protected final WebKeyGenerator keyGenerator;
+	protected final CacheOperation operation;
+	protected final Method method;
 
 	// context passed around to avoid multiple creations
-	private final EvaluationContext evalContext;
-	final HttpServletRequest request;
+	protected final EvaluationContext evalContext;
+	protected final HttpServletRequest request;
 
 	public CacheOperationContext(CacheOperation operation, Method method, Object[] args,
 			Class<?> targetClass, Collection<Cache> caches, ExpressionEvaluator evaluator,

@@ -31,11 +31,11 @@ import org.springframework.util.StringUtils;
  */
 public class ContentCacheParameters {
 
-	private final GrailsWebRequest grailsWebRequest;
+	protected final GrailsWebRequest grailsWebRequest;
 
-	/*@Lazy*/ private GrailsControllerClass controllerClass;
-	/*@Lazy*/ private Method method;
-	private String actionName;
+	/*@Lazy*/ protected GrailsControllerClass controllerClass;
+	/*@Lazy*/ protected Method method;
+	protected String actionName;
 
 	public ContentCacheParameters(GrailsWebRequest request) {
 		grailsWebRequest = request;
@@ -74,12 +74,12 @@ public class ContentCacheParameters {
 		return controllerClass == null ? null : controllerClass.getClazz();
 	}
 
-	private void initController() {
+	protected void initController() {
 		controllerClass = (GrailsControllerClass) GrailsWebRequest.lookupApplication().getArtefactByLogicalPropertyName(
 				"Controller", getControllerName());
 	}
 
-	private void initAction() {
+	protected void initAction() {
 		if (controllerClass == null) {
 			return;
 		}

@@ -28,7 +28,7 @@ import org.springframework.cache.concurrent.ConcurrentMapCache;
  */
 public class MemoryBlockingCache extends ConcurrentMapCache implements BlockingCache {
 
-	private final CacheConfiguration cacheConfiguration = new MemoryCacheConfiguration();
+	protected final CacheConfiguration cacheConfiguration = new MemoryCacheConfiguration();
 
 	public MemoryBlockingCache(String name, ConcurrentMap<Object, Object> store, boolean allowNullValues) {
 		super(name, store, allowNullValues);

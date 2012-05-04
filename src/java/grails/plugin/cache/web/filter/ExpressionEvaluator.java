@@ -34,14 +34,14 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
  */
 public class ExpressionEvaluator {
 
-	private SpelExpressionParser parser = new SpelExpressionParser();
+	protected SpelExpressionParser parser = new SpelExpressionParser();
 
 	// shared param discoverer since it caches data internally
-	private ParameterNameDiscoverer paramNameDiscoverer = new LocalVariableTableParameterNameDiscoverer();
+	protected ParameterNameDiscoverer paramNameDiscoverer = new LocalVariableTableParameterNameDiscoverer();
 
-	private Map<String, Expression> conditionCache = new ConcurrentHashMap<String, Expression>();
-	private Map<String, Expression> keyCache = new ConcurrentHashMap<String, Expression>();
-	private Map<String, Method> targetMethodCache = new ConcurrentHashMap<String, Method>();
+	protected Map<String, Expression> conditionCache = new ConcurrentHashMap<String, Expression>();
+	protected Map<String, Expression> keyCache = new ConcurrentHashMap<String, Expression>();
+	protected Map<String, Method> targetMethodCache = new ConcurrentHashMap<String, Method>();
 
 	public EvaluationContext createEvaluationContext(Collection<Cache> caches, Method method,
 			Object[] args, Class<?> targetClass) {
@@ -70,7 +70,7 @@ public class ExpressionEvaluator {
 		return keyExp.getValue(evalContext);
 	}
 
-	private String toString(Method method, String expression) {
+	protected String toString(Method method, String expression) {
 		return method.getDeclaringClass().getName() + '#' + method + '#' + expression;
 	}
 }

@@ -26,9 +26,9 @@ import org.slf4j.LoggerFactory;
  */
 public class Timer {
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
-	private final String uri;
-	private final StopWatch stopWatch = new StopWatch();
+	protected final Logger log = LoggerFactory.getLogger(getClass());
+	protected final String uri;
+	protected final StopWatch stopWatch = new StopWatch();
 
 	public Timer(String uri) {
 		this.uri = uri;

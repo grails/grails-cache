@@ -28,9 +28,9 @@ import org.springframework.util.Assert;
  */
 public class CacheExpressionRootObject {
 
-	private final Collection<Cache> caches;
-	private final Method method;
-	private final Class<?> targetClass;
+	protected final Collection<Cache> caches;
+	protected final Method method;
+	protected final Class<?> targetClass;
 
 	public CacheExpressionRootObject(Collection<Cache> caches, Method method, Class<?> targetClass) {
 

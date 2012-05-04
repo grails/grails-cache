@@ -113,21 +113,21 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 
 	public static final String X_CACHED = "X-Grails-Cached";
 
-	private static final String CACHEABLE = "cacheable";
-	private static final String UPDATE = "cacheupdate";
-	private static final String EVICT = "cacheevict";
+	protected static final String CACHEABLE = "cacheable";
+	protected static final String UPDATE = "cacheupdate";
+	protected static final String EVICT = "cacheevict";
 
-	private CacheOperationSource cacheOperationSource;
+	protected CacheOperationSource cacheOperationSource;
 
-	private final ThreadLocal<Stack<ContentCacheParameters>> contextHolder = new ThreadLocal<Stack<ContentCacheParameters>>() {
+	protected final ThreadLocal<Stack<ContentCacheParameters>> contextHolder = new ThreadLocal<Stack<ContentCacheParameters>>() {
 		@Override
 		protected Stack<ContentCacheParameters> initialValue() {
 			return new Stack<ContentCacheParameters>();
 		}
 	};
 
-	private ExpressionEvaluator expressionEvaluator;
-	private WebKeyGenerator keyGenerator;
+	protected ExpressionEvaluator expressionEvaluator;
+	protected WebKeyGenerator keyGenerator;
 
 	@Override
 	protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws Exception {
@@ -201,7 +201,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 		}
 	}
 
-	private PageInfo buildNewPageInfo(HttpServletRequest request, HttpServletResponse response,
+	protected PageInfo buildNewPageInfo(HttpServletRequest request, HttpServletResponse response,
 			FilterChain chain, CacheStatus cacheStatus,
 			Map<String, Collection<CacheOperationContext>> operationsByType) throws Exception {
 
@@ -254,7 +254,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 		return pageInfo;
 	}
 
-	private PageInfo buildCachedPageInfo(HttpServletRequest request, HttpServletResponse response,
+	protected PageInfo buildCachedPageInfo(HttpServletRequest request, HttpServletResponse response,
 			CacheStatus cacheStatus) throws Exception {
 
 		Timer timer = new Timer(getCachedUri(request));
@@ -300,7 +300,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 	 */
 	protected abstract void put(Cache cache, String key, PageInfo pageInfo, Integer timeToLive);
 
-	private void releaseCacheLocks(Map<String, Collection<CacheOperationContext>> operationsByType, String key) {
+	protected void releaseCacheLocks(Map<String, Collection<CacheOperationContext>> operationsByType, String key) {
 //		/*Blocking*/Cache cache
 		// TODO is this needed since inspectBeforeCacheEvicts seems to do the right thing?
 
@@ -311,7 +311,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 		}
 	}
 
-	private PageInfo buildPage(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+	protected PageInfo buildPage(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 		// Invoke the next entity in the chain
 		SerializableByteArrayOutputStream out = new SerializableByteArrayOutputStream();
 		GenericResponseWrapper wrapper = new GenericResponseWrapper(response, out);
@@ -354,7 +354,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 			false, timeToLiveSeconds, wrapper.getAllHeaders(), wrapper.getCookies(), cacheableRequestAttributes);
 	}
 
-	private List<String> toList(Enumeration<String> e) {
+	protected List<String> toList(Enumeration<String> e) {
 		List<String> list = new ArrayList<String>();
 		while (e.hasMoreElements()) {
 			list.add(e.nextElement());
@@ -362,7 +362,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 		return list;
 	}
 
-	private String calculateKey(HttpServletRequest request) {
+	protected String calculateKey(HttpServletRequest request) {
 		return keyGenerator.generate(request);
 	}
 
@@ -380,7 +380,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 	 * @throws IOException
 	 * @throws DataFormatException
 	 */
-	private void writeResponse(final HttpServletRequest request, final HttpServletResponse response,
+	protected void writeResponse(final HttpServletRequest request, final HttpServletResponse response,
 			final PageInfo pageInfo) throws IOException, DataFormatException {
 
 		if (!WebUtils.isIncludeRequest(request)) {
@@ -393,7 +393,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 		writeResponse(response, pageInfo);
 	}
 
-	private int determineResponseStatus(HttpServletRequest request, PageInfo pageInfo) {
+	protected int determineResponseStatus(HttpServletRequest request, PageInfo pageInfo) {
 		int statusCode = pageInfo.getStatusCode();
 		if (!pageInfo.isModified(request)) {
 			log.debug("Content not modified since {} sending 304", request.getHeader(HttpHeaders.IF_MODIFIED_SINCE));
@@ -406,14 +406,14 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 		return statusCode;
 	}
 
-	private void setContentType(final HttpServletResponse response, final PageInfo pageInfo) {
+	protected void setContentType(final HttpServletResponse response, final PageInfo pageInfo) {
 		String contentType = pageInfo.getContentType();
 		if (contentType != null && contentType.length() > 0) {
 			response.setContentType(contentType);
 		}
 	}
 
-	private void setCookies(final PageInfo pageInfo, final HttpServletResponse response) {
+	protected void setCookies(final PageInfo pageInfo, final HttpServletResponse response) {
 		Collection<SerializableCookie> cookies = pageInfo.getSerializableCookies();
 		for (SerializableCookie cookie : cookies) {
 			response.addCookie(cookie.toCookie());
@@ -425,7 +425,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 	 * @param pageInfo
 	 * @param response
 	 */
-	private void setHeaders(final PageInfo pageInfo, final HttpServletResponse response) {
+	protected void setHeaders(final PageInfo pageInfo, final HttpServletResponse response) {
 
 		Collection<Header<? extends Serializable>> headers = pageInfo.getHeaders();
 
@@ -470,28 +470,28 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 		}
 	}
 
-	private void initContext() {
+	protected void initContext() {
 		GrailsWebRequest requestAttributes = (GrailsWebRequest)RequestContextHolder.getRequestAttributes();
 		contextHolder.get().push(new ContentCacheParameters(requestAttributes));
 	}
 
-	private ContentCacheParameters getContext() {
+	protected ContentCacheParameters getContext() {
 		return contextHolder.get().peek();
 	}
 
-	private void destroyContext() {
+	protected void destroyContext() {
 		contextHolder.get().pop();
 		if (contextHolder.get().empty()) contextHolder.remove();
 	}
 
-	private String getCachedUri(HttpServletRequest request) {
+	protected String getCachedUri(HttpServletRequest request) {
 		if (WebUtils.isIncludeRequest(request)) {
 			return (String)request.getAttribute(WebUtils.INCLUDE_REQUEST_URI_ATTRIBUTE);
 		}
 		return request.getRequestURI();
 	}
 
-	private void logRequestDetails(HttpServletRequest request, ContentCacheParameters cacheParameters, String message) {
+	protected void logRequestDetails(HttpServletRequest request, ContentCacheParameters cacheParameters, String message) {
 		if (!log.isDebugEnabled()) {
 			return;
 		}
@@ -510,7 +510,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 		log.debug("    params = {}", cacheParameters.getParams());
 	}
 
-	private Map<String, Collection<CacheOperationContext>> createOperationContext(
+	protected Map<String, Collection<CacheOperationContext>> createOperationContext(
 			Collection<CacheOperation> cacheOperations, Method method,
 			Class<?> targetClass, HttpServletRequest request) {
 
@@ -547,7 +547,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 		return map;
 	}
 
-	private Collection<Cache> getCaches(CacheOperation operation) {
+	protected Collection<Cache> getCaches(CacheOperation operation) {
 		Set<String> cacheNames = operation.getCacheNames();
 		Collection<Cache> caches = new ArrayList<Cache>(cacheNames.size());
 		for (String name : cacheNames) {
@@ -560,15 +560,15 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 		return caches;
 	}
 
-	private boolean inspectBeforeCacheEvicts(Collection<CacheOperationContext> evictions) {
+	protected boolean inspectBeforeCacheEvicts(Collection<CacheOperationContext> evictions) {
 		return inspectCacheEvicts(evictions, true);
 	}
 
-	private boolean inspectAfterCacheEvicts(Collection<CacheOperationContext> evictions) {
+	protected boolean inspectAfterCacheEvicts(Collection<CacheOperationContext> evictions) {
 		return inspectCacheEvicts(evictions, false);
 	}
 
-	private boolean inspectCacheEvicts(Collection<CacheOperationContext> evictions, boolean beforeInvocation) {
+	protected boolean inspectCacheEvicts(Collection<CacheOperationContext> evictions, boolean beforeInvocation) {
 		if (evictions.isEmpty()) {
 			return false;
 		}
@@ -613,7 +613,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 		return atLeastOne;
 	}
 
-	private CacheStatus inspectCacheables(Collection<CacheOperationContext> cacheables) {
+	protected CacheStatus inspectCacheables(Collection<CacheOperationContext> cacheables) {
 
 		if (cacheables.isEmpty()) {
 			return null;
@@ -677,7 +677,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 		return null;
 	}
 
-	private Map<CacheOperationContext, Object> inspectCacheUpdates(Collection<CacheOperationContext> updates) {
+	protected Map<CacheOperationContext, Object> inspectCacheUpdates(Collection<CacheOperationContext> updates) {
 
 		Map<CacheOperationContext, Object> cUpdates = new LinkedHashMap<CacheOperationContext, Object>(updates.size());
 		if (updates.isEmpty()) {
@@ -720,7 +720,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 	 * gzipped The content length should not be set in the response, because it
 	 * is a fragment of a page. Don't write any headers at all.
 	 */
-	private void writeResponse(final HttpServletResponse response, final PageInfo pageInfo) throws IOException {
+	protected void writeResponse(final HttpServletResponse response, final PageInfo pageInfo) throws IOException {
 		byte[] cachedPage = pageInfo.getUngzippedBody();
 		String page = new String(cachedPage, response.getCharacterEncoding());
 
@@ -733,7 +733,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 		}
 	}
 
-	private void update(Collection<Cache> caches, PageInfo pageInfo, CacheStatus cacheStatus, String key) {
+	protected void update(Collection<Cache> caches, PageInfo pageInfo, CacheStatus cacheStatus, String key) {
 		ValueWrapper element = cacheStatus == null ? null : cacheStatus.valueWrapper;
 		Object maxAge = pageInfo.getCacheDirectives().get("max-age");
 		int timeToLive = (maxAge instanceof Integer) ? ((Integer)maxAge) : (int)pageInfo.getTimeToLiveSeconds();
@@ -744,7 +744,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 		}
 	}
 
-	private Object lookupController(Class<?> controllerClass) {
+	protected Object lookupController(Class<?> controllerClass) {
       return getBean(controllerClass.getName());
 	}
 
@@ -780,13 +780,13 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 		Assert.notNull(keyGenerator, "keyGenerator is required");
 	}
 
-	private static class CacheStatus {
+	public static class CacheStatus {
 		// caches/key
-		final Map<CacheOperationContext, Object> updates;
-		final boolean updateRequired;
-		final ValueWrapper valueWrapper;
+		protected final Map<CacheOperationContext, Object> updates;
+		protected final boolean updateRequired;
+		protected final ValueWrapper valueWrapper;
 
-		CacheStatus(Map<CacheOperationContext, Object> updates, boolean updateRequired, ValueWrapper valueWrapper) {
+		protected CacheStatus(Map<CacheOperationContext, Object> updates, boolean updateRequired, ValueWrapper valueWrapper) {
 			this.updates = updates;
 			this.updateRequired = updateRequired;
 			this.valueWrapper = valueWrapper;

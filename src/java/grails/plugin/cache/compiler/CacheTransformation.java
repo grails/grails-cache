@@ -35,7 +35,7 @@ import org.codehaus.groovy.transform.GroovyASTTransformation;
 public class CacheTransformation implements ASTTransformation {
 
    @SuppressWarnings("unchecked")
-   private static final Map<ClassNode, ClassNode> GRAILS_ANNOTATION_CLASS_NODE_TO_SPRING_ANNOTATION_CLASS_NODE = CollectionUtils.<ClassNode, ClassNode>newMap(
+   protected static final Map<ClassNode, ClassNode> GRAILS_ANNOTATION_CLASS_NODE_TO_SPRING_ANNOTATION_CLASS_NODE = CollectionUtils.<ClassNode, ClassNode>newMap(
    		new ClassNode(grails.plugin.cache.Cacheable.class), new ClassNode(org.springframework.cache.annotation.Cacheable.class),
    		new ClassNode(grails.plugin.cache.CachePut.class), new ClassNode(org.springframework.cache.annotation.CachePut.class),
    		new ClassNode(grails.plugin.cache.CacheEvict.class), new ClassNode(org.springframework.cache.annotation.CacheEvict.class));

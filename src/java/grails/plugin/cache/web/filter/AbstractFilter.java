@@ -49,9 +49,8 @@ public abstract class AbstractFilter extends GenericFilterBean {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
-	private CacheManager cacheManager;
-	private Object nativeCacheManager;
-
+	protected CacheManager cacheManager;
+	protected Object nativeCacheManager;
 	protected boolean suppressStackTraces;
 
 	public final void doFilter(final ServletRequest req, final ServletResponse res, final FilterChain chain)

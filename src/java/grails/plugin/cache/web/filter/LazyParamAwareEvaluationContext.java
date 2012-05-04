@@ -36,14 +36,14 @@ import org.springframework.util.ObjectUtils;
  */
 public class LazyParamAwareEvaluationContext extends StandardEvaluationContext {
 
-	private final ParameterNameDiscoverer paramDiscoverer;
-	private final Method method;
-	private final Object[] args;
-	private final Class<?> targetClass;
-	private final Map<String, Method> methodCache;
-	private boolean paramLoaded = false;
+	protected final ParameterNameDiscoverer paramDiscoverer;
+	protected final Method method;
+	protected final Object[] args;
+	protected final Class<?> targetClass;
+	protected final Map<String, Method> methodCache;
+	protected boolean paramLoaded = false;
 
-	LazyParamAwareEvaluationContext(Object rootObject, ParameterNameDiscoverer paramDiscoverer, Method method,
+	public LazyParamAwareEvaluationContext(Object rootObject, ParameterNameDiscoverer paramDiscoverer, Method method,
 			Object[] args, Class<?> targetClass, Map<String, Method> methodCache) {
 		super(rootObject);
 
@@ -73,20 +73,20 @@ public class LazyParamAwareEvaluationContext extends StandardEvaluationContext {
 		return variable;
 	}
 
-	private void loadArgsAsVariables() {
+	protected void loadArgsAsVariables() {
 		// shortcut if no args need to be loaded
 		if (ObjectUtils.isEmpty(args)) {
 			return;
 		}
 
-		String mKey = toString(method);
-		Method targetMethod = methodCache.get(mKey);
+		String key = toString(method);
+		Method targetMethod = methodCache.get(key);
 		if (targetMethod == null) {
 			targetMethod = AopUtils.getMostSpecificMethod(method, targetClass);
 			if (targetMethod == null) {
 				targetMethod = method;
 			}
-			methodCache.put(mKey, targetMethod);
+			methodCache.put(key, targetMethod);
 		}
 
 		// save arguments as indexed variables
@@ -103,7 +103,7 @@ public class LazyParamAwareEvaluationContext extends StandardEvaluationContext {
 		}
 	}
 
-	private String toString(Method m) {
+	protected String toString(Method m) {
 		return m.getDeclaringClass().getName() + '#' + m;
 	}
 }

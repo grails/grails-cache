@@ -23,7 +23,7 @@ import org.springframework.cache.support.SimpleValueWrapper;
  */
 public class GrailsValueWrapper extends SimpleValueWrapper {
 
-	private Object nativeWrapper;
+	protected Object nativeWrapper;
 
 	public GrailsValueWrapper(Object value, Object nativeWrapper) {
 		super(value);

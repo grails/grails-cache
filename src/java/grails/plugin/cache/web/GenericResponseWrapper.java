@@ -53,15 +53,15 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper implement
 
 	private static final long serialVersionUID = 1;
 
-	private int statusCode = SC_OK;
-	private int contentLength;
-	private String contentType;
-	private final Map<String, List<Serializable>> headersMap = new TreeMap<String, List<Serializable>>(
+	protected int statusCode = SC_OK;
+	protected int contentLength;
+	protected String contentType;
+	protected final Map<String, List<Serializable>> headersMap = new TreeMap<String, List<Serializable>>(
 			String.CASE_INSENSITIVE_ORDER);
-	private final List<Cookie> cookies = new ArrayList<Cookie>();
-	private ServletOutputStream out;
-	private transient PrintWriter writer;
-	private boolean disableFlushBuffer = true;
+	protected final List<Cookie> cookies = new ArrayList<Cookie>();
+	protected ServletOutputStream out;
+	protected transient PrintWriter writer;
+	protected boolean disableFlushBuffer = true;
 
 	/**
 	 * Creates a GenericResponseWrapper

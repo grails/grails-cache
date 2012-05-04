@@ -32,9 +32,9 @@ public class Header<T extends Serializable> implements Serializable {
 
 	private static final long serialVersionUID = 1;
 
-	private final String name;
-	private final T value;
-	private final Type type;
+	protected final String name;
+	protected final T value;
+	protected final Type type;
 
 	/**
 	 * Used to help differentiate the different header types
