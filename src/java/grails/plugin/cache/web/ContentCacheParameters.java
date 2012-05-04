@@ -15,6 +15,8 @@
 package grails.plugin.cache.web;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -86,10 +88,25 @@ public class ContentCacheParameters {
 
 		getActionName();
 
+		List<Method> matches = new ArrayList<Method>();
 		for (Method m : controllerClass.getClazz().getMethods()) {
 			if (m.getName().equals(actionName)) {
-				method = m;
-				return;
+				matches.add(m);
+			}
+		}
+
+		// if the controller class method has parameters, there will be two methods; one no-arg
+		// and one with args that gets delegated to by the no-arg method. we need the one with
+		// args if it exists
+		if (matches.size() == 1) {
+			method = matches.get(0);
+		}
+		else if (matches.size() > 1) {
+			if (matches.get(0).getParameterTypes().length > 0) {
+				method = matches.get(0);
+			}
+			else {
+				method = matches.get(1);
 			}
 		}
 

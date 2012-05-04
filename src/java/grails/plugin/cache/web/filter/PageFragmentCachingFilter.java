@@ -21,6 +21,7 @@ import grails.plugin.cache.web.GenericResponseWrapper;
 import grails.plugin.cache.web.Header;
 import grails.plugin.cache.web.PageInfo;
 import grails.plugin.cache.web.SerializableCookie;
+import grails.util.GrailsNameUtils;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -48,6 +49,7 @@ import org.codehaus.groovy.grails.plugins.web.api.RequestMimeTypesApi;
 import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes;
 import org.codehaus.groovy.grails.web.servlet.HttpHeaders;
 import org.codehaus.groovy.grails.web.servlet.WrappedResponseHolder;
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap;
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest;
 import org.codehaus.groovy.grails.web.util.WebUtils;
 import org.springframework.aop.framework.AopProxyUtils;
@@ -58,8 +60,12 @@ import org.springframework.cache.interceptor.CacheOperation;
 import org.springframework.cache.interceptor.CacheOperationSource;
 import org.springframework.cache.interceptor.CachePutOperation;
 import org.springframework.cache.interceptor.CacheableOperation;
+import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
+import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 
@@ -116,6 +122,37 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 	protected static final String CACHEABLE = "cacheable";
 	protected static final String UPDATE = "cacheupdate";
 	protected static final String EVICT = "cacheevict";
+
+	// TODO share with ExpressionEvaluator
+	protected ParameterNameDiscoverer paramNameDiscoverer = new LocalVariableTableParameterNameDiscoverer();
+
+	@SuppressWarnings("unchecked")
+	protected static final Map<Class<?>, String> TYPE_TO_CONVERSION_METHOD_NAME = grails.util.CollectionUtils.<Class<?>, String>newMap(
+			Boolean.class,   "boolean",
+			Byte.class,      "byte",
+			Character.class, "char",
+			Double.class,    "double",
+			Float.class,     "float",
+			Integer.class,   "int",
+			Long.class,      "long",
+			Short.class,     "short");
+	protected static List<Class<?>> PRIMITIVE_CLASSES = grails.util.CollectionUtils.<Class<?>>newList(
+			boolean.class,
+			byte.class,
+			char.class,
+			double.class,
+			float.class,
+			int.class,
+			long.class,
+			short.class);
+	protected static final Map<String, Method> PARAMS_METHODS = new HashMap<String, Method>();
+	static {
+		for (String typeName : TYPE_TO_CONVERSION_METHOD_NAME.values()) {
+			String methodName = GrailsNameUtils.getGetterName(typeName);
+			Method method = ClassUtils.getMethod(GrailsParameterMap.class, methodName, String.class);
+			PARAMS_METHODS.put(typeName, method);
+		}
+	}
 
 	protected CacheOperationSource cacheOperationSource;
 
@@ -520,7 +557,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 		Collection<CacheOperationContext> evicts = new ArrayList<CacheOperationContext>();
 		Collection<CacheOperationContext> updates = new ArrayList<CacheOperationContext>();
 
-		Object[] args = null; // TODO
+		Object[] args = findArgs(request, method);
 
 		for (CacheOperation cacheOperation : cacheOperations) {
 			CacheOperationContext opContext = new CacheOperationContext(
@@ -545,6 +582,57 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 		map.put(UPDATE, updates);
 
 		return map;
+	}
+
+	protected Object[] findArgs(HttpServletRequest request, Method method) {
+		String[] names = paramNameDiscoverer.getParameterNames(method);
+		if (names == null) {
+			log.warn("Unable to lookup parameter names for method " + method);
+			return null;
+		}
+
+		List<Object> args = new ArrayList<Object>();
+		Class<?>[] types = method.getParameterTypes();
+		for (int i = 0, count = types.length; i < count; i++) {
+			args.add(findArg(request, types[i], names[i]));
+		}
+		return args.toArray();
+	}
+
+	protected Object findArg(HttpServletRequest request, Class<?> type, String name) {
+
+		if (String.class.equals(type)) {
+			return request.getParameter(name);
+		}
+
+		if (PRIMITIVE_CLASSES.contains(type) || TYPE_TO_CONVERSION_METHOD_NAME.containsKey(type)) {
+
+			String conversionMethodName;
+			if (TYPE_TO_CONVERSION_METHOD_NAME.containsKey(type)) {
+				conversionMethodName = TYPE_TO_CONVERSION_METHOD_NAME.get(type);
+			}
+			else {
+				conversionMethodName = type.getName();
+			}
+
+			GrailsWebRequest grailsRequest = (GrailsWebRequest)RequestContextHolder.getRequestAttributes();
+			GrailsParameterMap params = grailsRequest.getParams();
+
+			return getParamValue(params, conversionMethodName, name);
+		}
+
+		log.warn("Unsupported parameter type " + type + " for parameter " + name);
+		return null;
+	}
+
+	protected Object getParamValue(GrailsParameterMap params, String conversionMethodName, String paramName) {
+		Method method = PARAMS_METHODS.get(conversionMethodName);
+		if (method == null) {
+			log.warn("No method found for " + conversionMethodName + " in GrailsParameterMap");
+			return null;
+		}
+
+		return ReflectionUtils.invokeMethod(method, params, paramName);
 	}
 
 	protected Collection<Cache> getCaches(CacheOperation operation) {
