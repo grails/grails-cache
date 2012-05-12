@@ -32,10 +32,6 @@ class ConfigLoaderTests extends GroovyTestCase {
 
 	void testLoadConfigs() {
 
-		for (String name in grailsCacheManager.cacheNames) {
-			assertTrue grailsCacheManager.destroyCache(name)
-		}
-
 		grailsCacheConfigLoader.reload grailsApplication.mainContext
 
 		assertEquals(['basic', 'fromConfigGroovy1', 'fromConfigGroovy2',
@@ -57,5 +53,60 @@ class ConfigLoaderTests extends GroovyTestCase {
 		assertEquals(['basic', 'fromConfigGroovy1', 'fromConfigGroovy_new',
 		              'grailsBlocksCache', 'grailsTemplatesCache'],
 		             grailsCacheManager.cacheNames.sort())
+	}
+
+	void testOrder() {
+
+		grailsCacheConfigLoader.reload grailsApplication.mainContext
+
+		assertEquals(['basic', 'fromConfigGroovy1', 'fromConfigGroovy2',
+		              'grailsBlocksCache', 'grailsTemplatesCache'],
+		             grailsCacheManager.cacheNames.sort())
+
+		// simulate editing Config.groovy
+		grailsApplication.config.grails.cache.config = {
+			cache {
+				name 'fromConfigGroovy1'
+			}
+			cache {
+				name 'fromConfigGroovy_new2'
+			}
+		}
+
+		grailsCacheConfigLoader.reload grailsApplication.mainContext
+
+		assertEquals(['basic', 'fromConfigGroovy1', 'fromConfigGroovy_new2',
+		              'grailsBlocksCache', 'grailsTemplatesCache'],
+		             grailsCacheManager.cacheNames.sort())
+	}
+
+	protected void setUp() {
+		super.setUp()
+		reset()
+	}
+
+	protected void tearDown() {
+		super.tearDown()
+		reset()
+	}
+
+	private void clearCaches() {
+		for (String name in grailsCacheManager.cacheNames) {
+			assertTrue grailsCacheManager.destroyCache(name)
+		}
+	}
+
+	private void reset() {
+
+		clearCaches()
+
+		grailsApplication.config.grails.cache.config = {
+			cache {
+				name 'fromConfigGroovy1'
+			}
+			cache {
+				name 'fromConfigGroovy2'
+			}
+		}
 	}
 }

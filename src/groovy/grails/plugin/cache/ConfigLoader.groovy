@@ -15,6 +15,8 @@
 package grails.plugin.cache
 
 import org.codehaus.groovy.grails.commons.GrailsApplication
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationContext
 
 import grails.plugin.cache.CacheConfigArtefactHandler.CacheConfigGrailsClass
@@ -27,19 +29,30 @@ class ConfigLoader {
 
 	static final int DEFAULT_ORDER = 1000
 
+	protected Logger log = LoggerFactory.getLogger(getClass())
+
+	/**
+	 * Reload the cache configuration from Config.groovy and *CacheConfig.groovy files.
+	 *
+	 * @param ctx the application context
+	 */
 	void reload(ApplicationContext ctx) {
 		def application = ctx.grailsApplication
 		List<ConfigObject> configs = loadOrderedConfigs(application)
 		reload configs, ctx
 	}
 
+	/**
+	 * Reload the cache configuration from the specified config objects.
+	 *
+	 * @param configs ordered ConfigObjects, typically from loadOrderedConfigs(); must contain
+	 * a 'config' closure defining cache(s).
+	 * @param ctx the application context
+	 */
 	void reload(List<ConfigObject> configs, ApplicationContext ctx) {
 
-		// order doesn't matter in this impl, but in general process in reverse order so
-		// lower order values have higher priority and can override previous settings
 		def configuredCacheNames = [] as LinkedHashSet
-		for (ListIterator<ConfigObject> iter = configs.listIterator(configs.size()); iter.hasPrevious(); ) {
-			ConfigObject co = iter.previous()
+		for (ConfigObject co : configs) {
 			ConfigBuilder builder = new ConfigBuilder()
 			if (co.config instanceof Closure) {
 				builder.parse co.config
@@ -60,23 +73,37 @@ class ConfigLoader {
 		}
 	}
 
+	/**
+	 * Retrieve ConfigObject instances from Config.groovy and *CacheConfig.groovy files.
+	 * @param application the application
+	 * @return the configs, ordered by their 'order' value (or the default value of 1000 if not specified)
+	 */
 	List<ConfigObject> loadOrderedConfigs(GrailsApplication application) {
 		ConfigSlurper slurper = new ConfigSlurper(Environment.current.name)
 
 		List<ConfigObject> configs = []
 		def cacheConfig
 		for (configClass in application.cacheConfigClasses) {
-		   def config = slurper.parse(configClass.clazz)
-		   cacheConfig = config.config
-		   if ((cacheConfig instanceof Closure) && processConfig(config, configClass)) {
+			def config = slurper.parse(configClass.clazz)
+			cacheConfig = config.config
+			if ((cacheConfig instanceof Closure) && processConfig(config, configClass)) {
 				configs << config
-		   }
+				log.debug "Including configs from $configClass.name with order $cacheConfig.order"
+			}
+			else {
+				log.debug "Not including configs from $configClass.name"
+			}
 		}
 
 		cacheConfig = application.config.grails.cache
-	   if ((cacheConfig.config instanceof Closure) && processConfig(cacheConfig, null)) {
+
+		if ((cacheConfig.config instanceof Closure) && processConfig(cacheConfig, null)) {
 			configs << cacheConfig
-	   }
+			log.debug "Including configs from Config.groovy with order $cacheConfig.order"
+		}
+		else {
+			log.debug "Not including configs from Config.groovy"
+		}
 
 		sortConfigs configs
 
