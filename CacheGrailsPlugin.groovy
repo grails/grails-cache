@@ -59,7 +59,9 @@ class CacheGrailsPlugin {
 		'**/com/demo/**',
 		'grails-app/conf/TestCacheConfig.groovy',
 		'grails-app/views/**',
-		'web-app/**'
+		'web-app/**',
+		'docs/**',
+		'src/docs/**'
 	]
 
 	def getWebXmlFilterOrder() {
