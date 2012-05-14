@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>2.3 Annotations 1.0.0.M2</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/introduction.html"><strong>1</strong><span>Introduction To The Cache Plugin</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/usage.html"><strong>2</strong><span>Usage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/cacheTags.html"><strong>3</strong><span>GSP Cache Tags</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/grailsCacheAdminService.html"><strong>4</strong><span>Grails Cache Admin Service</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>Grails Cache Plugin</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction To The Cache Plugin</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../../guide/cacheTags.html"><strong>3</strong><span>GSP Cache Tags</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>2.3 Annotations - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Jeff Brown, Burt Beckwith</p>
+
+                    <p><strong>Version:</strong> 1.0.0.M2</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h2 id="annotations">2.3 Annotations</h2>
+The <a href="../gapi/grails/plugin/cache/Cacheable.html" class="api">Cacheable</a> and <a href="../gapi/grails/plugin/cache/CacheEvict.html" class="api">CacheEvict</a> annotations proviated by the plugin have counterparts with the same names provided by Spring. See the <a href="http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/cache.html" target="blank">Spring documentation</a> for their usage and allowed syntax.<p class="paragraph"/><h4>Service method caching</h4><p class="paragraph"/>Given this simple service, you can see that the <code>getMessage</code> method is configured to cache the results in the <code>"message"</code> cache. The <code>title</code> parameter will be used as the cache key; if there were multiple parameters they would be combined into the key, and you can always specify the key using the Spring SpEL support. The <code>save</code> method is configured as one that evicts elements from the cache. There is no need to clear the entire cache in this case; instead any previously cached item with the same <code>title</code> attribute will be replaced with the current <code>Message</code> instance.<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">package</span> com.yourcompany<p class="paragraph"/><span class="java&#45;keyword">import</span> grails.plugin.cache.CacheEvict
+<span class="java&#45;keyword">import</span> grails.plugin.cache.Cacheable<p class="paragraph"/>class MessageService &#123;<p class="paragraph"/>   @Cacheable('message')
+   Message getMessage(<span class="java&#45;object">String</span> title) &#123;
+      println 'Fetching message'
+      Message.findByTitle(title)
+   &#125;<p class="paragraph"/>   @CacheEvict(value='message', key='&#35;message.title')
+   void save(Message message) &#123;
+      println <span class="java&#45;quote">"Saving message $message"</span>
+      message.save()
+   &#125;
+&#125;</pre></div><p class="paragraph"/>This service works with the <code>Message</code> domain class:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">package</span> com.yourcompany<p class="paragraph"/>class Message <span class="java&#45;keyword">implements</span> Serializable &#123;<p class="paragraph"/>   <span class="java&#45;keyword">private</span> <span class="java&#45;keyword">static</span> <span class="java&#45;keyword">final</span> <span class="java&#45;object">long</span> serialVersionUID = 1<p class="paragraph"/>   <span class="java&#45;object">String</span> title
+   <span class="java&#45;object">String</span> body<p class="paragraph"/>   <span class="java&#45;object">String</span> toString() &#123;
+      <span class="java&#45;quote">"$title: $body"</span>
+   &#125;
+&#125;</pre></div><p class="paragraph"/>Note that for in-memory cache implementations it's not required that the objects being cached implement <code>Serializable</code> but if you use an implementation that uses Java serialization (for example the Redis plugin, or the Ehcache plugin when you have configured clustered caching) you must implement <code>Serializable</code>.<p class="paragraph"/>To test this out, be sure to define a <code>"message"</code> cache in <code>Config.groovy</code> and save and retrieve <code>Message</code> instances using the service. There are <code>println</code> statements but you can also turn on SQL logging to watch the database access that's needed to retrieve instances that aren't cached yet, and you shouldn't see database access for cached values.<p class="paragraph"/><h4>Controller action caching</h4><p class="paragraph"/>In addition to caching Spring bean return values, you can also cache responses for web requests using the same annotations. Note that since caching is implemented only for methods (Spring creates a proxy for your cached class in the same way that it creates a transactional proxy to start, commit, and roll back transactions for transactional Grails services) so you cannot annotate action closures. This doesn't fail silently; your controller class will not compile since the annotations are only allowed on the class or on methods; since Closures are fields, the annotations aren't valid.<p class="paragraph"/>For example, in this controller the <code>lookup</code> action will use the <code>"message"</code> cache, so the first time you call the action you will see the output from the <code>println</code> statement but subsequent calls won't execute and you'll see the cached response instead. When you call the <code>evict</code> action the entire cache will be cleared (because of the <code>allEntries=true</code> attribute):<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">package</span> com.yourcompany<p class="paragraph"/><span class="java&#45;keyword">import</span> grails.plugin.cache.CacheEvict
+<span class="java&#45;keyword">import</span> grails.plugin.cache.Cacheable<p class="paragraph"/>class TestController &#123;<p class="paragraph"/>   @Cacheable('message')
+   def lookup() &#123;
+      // perform some expensive operations
+      println <span class="java&#45;quote">"called 'lookup'"</span>
+   &#125;<p class="paragraph"/>   @CacheEvict(value='message', allEntries=<span class="java&#45;keyword">true</span>)
+   def evict() &#123;
+      println <span class="java&#45;quote">"called 'evict'"</span>
+   &#125;
+&#125;</pre></div><p class="paragraph"/><h4>If you can't use annotations</h4><p class="paragraph"/>Annotations aren't required, they're just the most convenient approach for configuration. If you like you can define caching semantics in <code>grails-app/conf/spring/resources.groovy</code> (or <code>resources.xml</code> if you like XML). This is also useful if you want to apply caching but can't edit the code to add annotations (for example if you have compiled classes in a jar).<p class="paragraph"/>This Spring BeanBuilder DSL code will configure the same behavior as the two annotations in the example service class:<p class="paragraph"/><div class="code"><pre>beans = &#123;<p class="paragraph"/>   xmlns cache: 'http://www.springframework.org/schema/cache'
+   xmlns aop: 'http://www.springframework.org/schema/aop'<p class="paragraph"/>   cache.'advice'(id: 'messageServiceCacheAdvice',
+                  'cache&#45;manager': 'grailsCacheManager') &#123;
+      caching(cache: 'message') &#123;
+         cacheable(method: 'getMessage')
+         'cache&#45;evict'(method: 'save', key: '&#35;message.title')
+      &#125;
+   &#125;<p class="paragraph"/>   // apply the cacheable behavior to MessageService
+   aop.config &#123;
+      advisor('advice&#45;ref': 'messageServiceCacheAdvice',
+              pointcut: 'execution(&#42; com.yourcompany.MessageService.&#42;(..))')
+   &#125;
+&#125;</pre></div>
+
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction To The Cache Plugin</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../../guide/cacheTags.html"><strong>3</strong><span>GSP Cache Tags</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Tags</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../../ref/Tags/block.html">block</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../../ref/Tags/render.html">render</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>
