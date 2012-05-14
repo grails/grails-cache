@@ -1,0 +1,5 @@
+The plugin provides GSP tags which are useful for caching the result of evaluating sections of markup.  These tags
+allow for the result of evaluating sections of markup to be cached so subsequent renderings of the same markup
+do not have to result in the markup being evaluated again.
+
+See the documentation for the [block|tags] and [render|tags] tags for more details.
