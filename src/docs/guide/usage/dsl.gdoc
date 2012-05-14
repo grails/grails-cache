@@ -13,7 +13,20 @@ grails.cache.config = {
 }
 {code}
 
-This creates two caches, one with name "messages" and one with name "maps". You can also use attributes from other DSLs and they will be ignored, for example:
+or in a \*CacheConfig.groovy file in the @grails-app/conf@ directory under the @config@ key, for example
+
+{code}
+config = {
+   cache {
+      name 'messages'
+   }
+   cache {
+      name 'maps'
+   }
+}
+{code}
+
+Both of these will create two caches, one with name "messages" and one with name "maps". You can also use attributes from other DSLs and they will be ignored, for example:
 
 {code}
 grails.cache.config = {
@@ -31,4 +44,21 @@ grails.cache.config = {
 {code}
 
 This configuration results in the same caches as the simpler one.
+
+h4. Order
+
+You can configure your cache definitions to be loaded before or after others by setting the @order@ attribute. Configurations with higher numbers are loaded later, so these can override previously-configured values, although there is no support for removing caches or cache attributes, only adding or overriding:
+
+{code}
+order = 2000
+
+config = {
+   cache {
+      name 'messages'
+   }
+   cache {
+      name 'maps'
+   }
+}
+{code}
 

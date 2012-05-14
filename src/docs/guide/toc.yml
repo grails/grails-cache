@@ -3,9 +3,10 @@ introduction:
   changeLog: Change log
 usage:
   title: Usage
-  dsl: Cache DSL
   configuration: Configuration
+  dsl: Cache DSL
   annotations: Annotations
+  cacheManager: CacheManager
 cacheTags:
   title: GSP Cache Tags
 grailsCacheAdminService:
