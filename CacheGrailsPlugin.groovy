@@ -59,6 +59,7 @@ class CacheGrailsPlugin {
 		'**/com/demo/**',
 		'grails-app/conf/TestCacheConfig.groovy',
 		'grails-app/views/**',
+		'grails-app/i18n/**',
 		'web-app/**',
 		'docs/**',
 		'src/docs/**'
