@@ -75,6 +75,10 @@ class TestController {
 }
 {code}
 
+{note}
+Caching of dynamically scaffolded actions is not supported.  If the scaffolding templates are installed with @grails install-templates@ and cache related annotations are added to methods in the controller template, those annotations will only be relevant to generated scaffolding, not dynamic scaffolding.
+{note}
+
 h4. If you can't use annotations
 
 Annotations aren't required, they're just the most convenient approach for configuration. If you like you can define caching semantics in @grails-app/conf/spring/resources.groovy@ (or @resources.xml@ if you like XML). This is also useful if you want to apply caching but can't edit the code to add annotations (for example if you have compiled classes in a jar).
