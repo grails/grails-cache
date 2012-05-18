@@ -84,7 +84,9 @@ function addJsClass() {
                 
 
 <h2 id="dsl">2.2 Cache DSL</h2>
-The cache implementation used by this plugin is very simple, so there aren't many configuration options (compared to the Ehcache implementation for example, where you have fine-grained control over features like overflowing to disk, time-to-live settings, maximum size of caches, etc.) So there aren't many supported options in the cache configuration DSL, although each plugin's DSL parser is lenient and just logs warnings if you specify options that aren't understood. This lets you share configurations between applications that use different plugins.<p class="paragraph"/>You specify the cache configuration in <code>Config.groovy</code> under the <code>grails.cache.config</code> key, for example<p class="paragraph"/><div class="code"><pre>grails.cache.config = &#123;
+The cache implementation used by this plugin is very simple, so there aren't many configuration options (compared to the Ehcache implementation for example, where you have fine-grained control over features like overflowing to disk, time-to-live settings, maximum size of caches, etc.) So there aren't many supported options in the cache configuration DSL, although each plugin's DSL parser is lenient and just logs warnings if you specify options that aren't understood. This lets you share configurations between applications that use different plugins.<p class="paragraph"/><blockquote class="warning">
+Since there is no way to configure "time to live" with this plugin, all cached items have no timeout and remain cached until either the JVM restarts (since the backing store is in-memory) or the cache is partially or fully cleared (by calling a method or action annotated with &#64;CacheEvict or programmatically).
+</blockquote><p class="paragraph"/>You specify the cache configuration in <code>Config.groovy</code> under the <code>grails.cache.config</code> key, for example<p class="paragraph"/><div class="code"><pre>grails.cache.config = &#123;
    cache &#123;
       name 'messages'
    &#125;
