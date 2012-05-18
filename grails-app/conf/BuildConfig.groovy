@@ -17,6 +17,9 @@ grails.project.dependency.resolution = {
 		build(":tomcat:$grailsVersion") {
 			export = false
 		}
+		runtime(":hibernate:$grailsVersion") {
+		    export = false
+		}
 		if (Environment.current != Environment.TEST) {
 			build(':release:2.0.0', ':rest-client-builder:1.0.2') {
 				export = false

@@ -180,6 +180,12 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 				controllerClass = controller.getClass();
 			}
 			Method method = getContext().getMethod();
+			if(method == null) {
+				log.debug("No cacheable method found for {}:{} {}",
+						new Object[] { request.getMethod(), request.getRequestURI(), getContext() });
+				chain.doFilter(request, response);
+				return;
+			}
 			Collection<CacheOperation> cacheOperations = cacheOperationSource.getCacheOperations(
 					method, controllerClass);
 

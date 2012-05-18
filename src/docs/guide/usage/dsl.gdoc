@@ -1,5 +1,9 @@
 The cache implementation used by this plugin is very simple, so there aren't many configuration options (compared to the Ehcache implementation for example, where you have fine-grained control over features like overflowing to disk, time-to-live settings, maximum size of caches, etc.) So there aren't many supported options in the cache configuration DSL, although each plugin's DSL parser is lenient and just logs warnings if you specify options that aren't understood. This lets you share configurations between applications that use different plugins.
 
+{warning}
+Since there is no way to configure "time to live" with this plugin, all cached items have no timeout and remain cached until either the JVM restarts (since the backing store is in-memory) or the cache is partially or fully cleared (by calling a method or action annotated with \@CacheEvict or programmatically).
+{warning}
+
 You specify the cache configuration in @Config.groovy@ under the @grails.cache.config@ key, for example
 
 {code}
