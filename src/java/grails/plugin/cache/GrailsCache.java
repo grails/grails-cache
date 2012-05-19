@@ -14,14 +14,14 @@
  */
 package grails.plugin.cache;
 
+import java.util.Collection;
+
+import org.springframework.cache.Cache;
+
 /**
  * @author Burt Beckwith
  */
-public interface BlockingCache extends GrailsCache {
+public interface GrailsCache extends Cache {
 
-	CacheConfiguration getCacheConfiguration();
-
-	boolean isDisabled();
-
-	void setTimeoutMillis(int blockingTimeoutMillis);
+	Collection<Object> getAllKeys();
 }

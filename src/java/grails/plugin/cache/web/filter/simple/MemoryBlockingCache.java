@@ -17,6 +17,7 @@ package grails.plugin.cache.web.filter.simple;
 import grails.plugin.cache.BlockingCache;
 import grails.plugin.cache.CacheConfiguration;
 
+import java.util.Collection;
 import java.util.concurrent.ConcurrentMap;
 
 import org.springframework.cache.concurrent.ConcurrentMapCache;
@@ -34,19 +35,21 @@ public class MemoryBlockingCache extends ConcurrentMapCache implements BlockingC
 		super(name, store, allowNullValues);
 	}
 
-	@Override
 	public CacheConfiguration getCacheConfiguration() {
 		return cacheConfiguration;
 	}
 
-	@Override
 	public boolean isDisabled() {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
 	public void setTimeoutMillis(int blockingTimeoutMillis) {
 		// TODO Auto-generated method stub
+	}
+
+	public Collection<Object> getAllKeys() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
