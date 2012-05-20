@@ -1,6 +1,8 @@
 package com.demo
 
-class CacheTagFunctionalTests extends functionaltestplugin.FunctionalTestCase {
+import functionaltestplugin.FunctionalTestCase
+
+class CacheTagFunctionalTests extends FunctionalTestCase {
 
     void testBlockTag() {
         get '/demo/blockCache?counter=5'

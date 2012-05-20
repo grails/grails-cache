@@ -6,7 +6,7 @@ Renders a GSP template and caches the result so that the next time the same temp
 
 This tag behaves just like the @g:render@ tag provided by Grails except this one caches the rendered result so the template doesn't have to be re-evaluated each time it is rendered.
 
-By default the key used in the cache is the path to the template.  If the same template is rendered multiple times with a different model, an explicit key should be provided, otherwise the separate invocations (with different models) will share the same cache entry.  
+By default the key used in the cache is the path to the template.  If the same template is rendered multiple times with a different model, an explicit key should be provided, otherwise the separate invocations (with different models) will share the same cache entry.
 
 {code:xml}
 <cache:render template="myTemplate" model="[user: currentUser]" key="${currentUser.id}"/>
