@@ -1,7 +1,9 @@
 package com.demo
 
-class DynamicScaffoldingFunctionalTests extends functionaltestplugin.FunctionalTestCase {
-    
+import functionaltestplugin.FunctionalTestCase
+
+class DynamicScaffoldingFunctionalTests extends FunctionalTestCase {
+
     void testDynamicScaffolding() {
         get '/person/list'
         assertStatus 200

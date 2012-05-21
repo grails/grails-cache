@@ -12,16 +12,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package grails.plugin.cache;
+package grails.plugin.cache
 
-/**
- * @author Burt Beckwith
- */
-public interface BlockingCache extends GrailsCache {
+import grails.plugin.cache.CacheEvict
 
-	CacheConfiguration getCacheConfiguration();
+class GrailsCacheAdminService {
 
-	boolean isDisabled();
+    static transactional = false
 
-	void setTimeoutMillis(int blockingTimeoutMillis);
+    @CacheEvict(value="grailsBlocksCache", allEntries=true)
+    def clearBlocksCache() {}
+
+    @CacheEvict(value="grailsTemplatesCache", allEntries=true)
+    def clearTemplatesCache() {}
 }

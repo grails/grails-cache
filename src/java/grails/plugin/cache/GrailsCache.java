@@ -12,17 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.grails.plugin.cache
+package grails.plugin.cache;
 
-import grails.plugin.cache.CacheEvict
+import java.util.Collection;
 
-class GrailsCacheAdminService {
+import org.springframework.cache.Cache;
 
-    static transactional = false
+/**
+ * @author Burt Beckwith
+ */
+public interface GrailsCache extends Cache {
 
-    @CacheEvict(value="grailsBlocksCache", allEntries=true)
-    def clearBlocksCache() {}
-
-    @CacheEvict(value="grailsTemplatesCache", allEntries=true)
-    def clearTemplatesCache() {}
+	Collection<Object> getAllKeys();
 }

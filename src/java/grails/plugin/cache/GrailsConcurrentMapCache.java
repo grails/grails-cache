@@ -14,6 +14,7 @@
  */
 package grails.plugin.cache;
 
+import java.util.Collection;
 import java.util.concurrent.ConcurrentMap;
 
 import org.springframework.cache.concurrent.ConcurrentMapCache;
@@ -27,7 +28,7 @@ import org.springframework.cache.concurrent.ConcurrentMapCache;
  *
  * @author Burt Beckwith
  */
-public class GrailsConcurrentMapCache extends ConcurrentMapCache {
+public class GrailsConcurrentMapCache extends ConcurrentMapCache implements GrailsCache {
 
 	public GrailsConcurrentMapCache(String name) {
 		super(name);
@@ -45,5 +46,10 @@ public class GrailsConcurrentMapCache extends ConcurrentMapCache {
 	public GrailsValueWrapper get(Object key) {
 		Object value = getNativeCache().get(key);
 		return value == null ? null : new GrailsValueWrapper(fromStoreValue(value), null);
+	}
+
+	@SuppressWarnings("unchecked")
+	public Collection<Object> getAllKeys() {
+		return getNativeCache().keySet();
 	}
 }

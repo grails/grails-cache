@@ -35,8 +35,8 @@ class CacheGrailsPlugin {
 
 	def version = '1.0.0.BUILD-SNAPSHOT'
 	def grailsVersion = '2.0 > *'
-	def observe = ['controllers']
-	def loadAfter = ['controllers']
+	def observe = ['controllers', 'services']
+	def loadAfter = ['controllers', 'services']
 	def artefacts = [CacheConfigArtefactHandler]
 	def watchedResources = [
 		'file:./grails-app/conf/**/*CacheConfig.groovy',

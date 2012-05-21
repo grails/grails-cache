@@ -23,15 +23,15 @@ class DemoController {
         render "Value From Service Is \"${basicCachingService.data}\""
     }
 
-	def cachePut(String key, String value) {
-		def result = basicCachingService.getData(key, value)
-		render "Result: ${result}"
-	}
+    def cachePut(String key, String value) {
+        def result = basicCachingService.getData(key, value)
+        render "Result: ${result}"
+    }
 
-	def cacheGet(String key) {
-		def result = basicCachingService.getData(key)
-		render "Result: ${result}"
-	}
+    def cacheGet(String key) {
+        def result = basicCachingService.getData(key)
+        render "Result: ${result}"
+    }
 
     def blockCache(int counter) {
         [counter: counter]

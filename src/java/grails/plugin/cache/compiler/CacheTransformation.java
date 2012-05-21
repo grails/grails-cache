@@ -36,27 +36,30 @@ public class CacheTransformation implements ASTTransformation {
 
    @SuppressWarnings("unchecked")
    protected static final Map<ClassNode, ClassNode> GRAILS_ANNOTATION_CLASS_NODE_TO_SPRING_ANNOTATION_CLASS_NODE = CollectionUtils.<ClassNode, ClassNode>newMap(
-   		new ClassNode(grails.plugin.cache.Cacheable.class), new ClassNode(org.springframework.cache.annotation.Cacheable.class),
-   		new ClassNode(grails.plugin.cache.CachePut.class), new ClassNode(org.springframework.cache.annotation.CachePut.class),
+   		new ClassNode(grails.plugin.cache.Cacheable.class),  new ClassNode(org.springframework.cache.annotation.Cacheable.class),
+   		new ClassNode(grails.plugin.cache.CachePut.class),   new ClassNode(org.springframework.cache.annotation.CachePut.class),
    		new ClassNode(grails.plugin.cache.CacheEvict.class), new ClassNode(org.springframework.cache.annotation.CacheEvict.class));
 
 	public void visit(final ASTNode[] astNodes, final SourceUnit sourceUnit) {
 		final ASTNode firstNode = astNodes[0];
 		final ASTNode secondNode = astNodes[1];
 		if (!(firstNode instanceof AnnotationNode) || !(secondNode instanceof AnnotatedNode)) {
-			throw new RuntimeException("Internal error: wrong types: " + firstNode.getClass().getName() + " / " + secondNode.getClass().getName());
+			throw new RuntimeException("Internal error: wrong types: " + firstNode.getClass().getName() +
+					" / " + secondNode.getClass().getName());
 		}
 
 		final AnnotationNode grailsCacheAnnotationNode = (AnnotationNode) firstNode;
 		final AnnotatedNode annotatedNode = (AnnotatedNode) secondNode;
-		final AnnotationNode springCacheAnnotationNode = getCorrespondingSpringAnnotation(grailsCacheAnnotationNode);
+		final AnnotationNode springCacheAnnotationNode = getCorrespondingSpringAnnotation(
+				grailsCacheAnnotationNode);
 		annotatedNode.addAnnotation(springCacheAnnotationNode);
 	}
 
 	protected AnnotationNode getCorrespondingSpringAnnotation(final AnnotationNode grailsCacheAnnotationNode) {
 		final Map<String, Expression> grailsAnnotationMembers = grailsCacheAnnotationNode.getMembers();
 
-		final ClassNode springCacheAnnotationClassNode = GRAILS_ANNOTATION_CLASS_NODE_TO_SPRING_ANNOTATION_CLASS_NODE.get(grailsCacheAnnotationNode.getClassNode());
+		final ClassNode springCacheAnnotationClassNode = GRAILS_ANNOTATION_CLASS_NODE_TO_SPRING_ANNOTATION_CLASS_NODE.get(
+				grailsCacheAnnotationNode.getClassNode());
 		final AnnotationNode springCacheAnnotationNode = new AnnotationNode(springCacheAnnotationClassNode);
 		for (Map.Entry<String, Expression> entry : grailsAnnotationMembers.entrySet()) {
 			springCacheAnnotationNode.addMember(entry.getKey(), entry.getValue());

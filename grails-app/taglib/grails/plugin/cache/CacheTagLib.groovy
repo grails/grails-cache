@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.grails.plugin.cache
+package grails.plugin.cache
 
 import grails.plugin.cache.util.ClassUtils
 
@@ -38,7 +38,7 @@ class CacheTagLib {
         def bodyClosure = ClassUtils.getPropertyOrFieldValue(body, 'bodyClosure')
         def closureClass = bodyClosure.getClass()
         def key = closureClass.getName()
-        if(attrs.key) {
+        if (attrs.key) {
             key = key + ':' + attrs.key
         }
         def content = cache.get(key)
@@ -64,12 +64,12 @@ class CacheTagLib {
      * @attr var The variable name of the bean to be referenced in the template
      * @attr plugin The plugin to look for the template in
      */
-    def render =  { attrs ->
+    def render = { attrs ->
         def key = calculateFullKey(attrs.template, attrs.contextPath, attrs.plugin)
-
         if (attrs.key) {
             key = key + ':' + attrs.key
         }
+
         def cache = grailsCacheManager.getCache('grailsTemplatesCache')
         def content = cache.get(key)
         if (content == null) {
