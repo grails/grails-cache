@@ -12,3 +12,5 @@ cacheTags:
 grailsCacheAdminService:
   title: Grails Cache Admin Service
   clearingCaches: Clearing Caches
+implementation:
+  title: Implementation Details
