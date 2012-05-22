@@ -33,7 +33,7 @@ class CacheGrailsPlugin {
 
 	private final Logger log = LoggerFactory.getLogger('grails.plugin.cache.CacheGrailsPlugin')
 
-	def version = '1.0.0.RC1'
+	def version = '1.0.0.BUILD-SNAPSHOT'
 	def grailsVersion = '2.0 > *'
 	def observe = ['controllers', 'services']
 	def loadAfter = ['controllers', 'services']
