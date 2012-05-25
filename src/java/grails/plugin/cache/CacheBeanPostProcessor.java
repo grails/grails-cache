@@ -23,6 +23,7 @@ import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
+import org.springframework.cache.annotation.AnnotationCacheOperationSource;
 
 /**
  * Changes the bean class of the org.springframework.cache.annotation.AnnotationCacheOperationSource#0
@@ -37,8 +38,11 @@ public class CacheBeanPostProcessor implements BeanDefinitionRegistryPostProcess
 	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) {
 		log.info("postProcessBeanDefinitionRegistry start");
 
-		AbstractBeanDefinition beanDef = (AbstractBeanDefinition)registry.getBeanDefinition(
-				GrailsAnnotationCacheOperationSource.BEAN_NAME);
+		AbstractBeanDefinition beanDef = findBeanDefinition(registry);
+		if (beanDef == null) {
+			log.error("Unable to find the AnnotationCacheOperationSource bean definition");
+			return;
+		}
 
 		// change the class to the plugin's subclass
 		beanDef.setBeanClass(GrailsAnnotationCacheOperationSource.class);
@@ -54,7 +58,38 @@ public class CacheBeanPostProcessor implements BeanDefinitionRegistryPostProcess
 		log.debug("updated {}", beanDef);
 	}
 
-	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+	protected AbstractBeanDefinition findBeanDefinition(BeanDefinitionRegistry registry) {
+
+		AbstractBeanDefinition beanDef = null;
+		String beanName = null;
+
+		if (registry.containsBeanDefinition(GrailsAnnotationCacheOperationSource.BEAN_NAME)) {
+			beanDef = (AbstractBeanDefinition)registry.getBeanDefinition(
+					GrailsAnnotationCacheOperationSource.BEAN_NAME);
+			beanName = GrailsAnnotationCacheOperationSource.BEAN_NAME;
+		}
+		else {
+			String className = AnnotationCacheOperationSource.class.getName();
+			for (String name : registry.getBeanDefinitionNames()) {
+				if (className.equals(registry.getBeanDefinition(name).getBeanClassName())) {
+					beanDef = (AbstractBeanDefinition)registry.getBeanDefinition(name);
+					beanName = name;
+					break;
+				}
+			}
+		}
+
+		if (beanDef != null) {
+			// make it easier to work with
+			if (!"cacheOperationSource".equals(beanName)) {
+				registry.registerAlias(beanName, "cacheOperationSource");
+			}
+		}
+
+		return beanDef;
+	}
+
+	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 		log.info("postProcessBeanFactory");
 	}
 }

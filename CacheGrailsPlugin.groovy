@@ -126,6 +126,7 @@ class CacheGrailsPlugin {
 		                          'proxy-target-class': proxyTargetClass)
 
 		// updates the AnnotationCacheOperationSource with a custom subclass
+		// and adds the 'cacheOperationSource' alias
 		cacheBeanPostProcessor(CacheBeanPostProcessor)
 
 		grailsCacheManager(GrailsConcurrentMapCacheManager)
@@ -138,8 +139,7 @@ class CacheGrailsPlugin {
 
 		grailsCacheFilter(MemoryPageFragmentCachingFilter) {
 			cacheManager = ref('grailsCacheManager')
-			// TODO this name might be brittle - perhaps do by type?
-			cacheOperationSource = ref(GrailsAnnotationCacheOperationSource.BEAN_NAME)
+			cacheOperationSource = ref('cacheOperationSource')
 			keyGenerator = ref('webCacheKeyGenerator')
 			expressionEvaluator = ref('webExpressionEvaluator')
 		}
@@ -155,22 +155,21 @@ class CacheGrailsPlugin {
 
 	def onChange = { event ->
 
-		if (!isEnabled(event.application)) {
+		def application = event.application
+		if (!isEnabled(application)) {
 			return
 		}
 
-		if (!event.source) {
+		def source = event.source
+		if (!source) {
 			return
 		}
 
-		if (event.application.isControllerClass(event.source) ||
-		    event.application.isServiceClass(event.source)) {
-
-			def annotationCacheOperationSource = event.ctx.getBean(GrailsAnnotationCacheOperationSource.BEAN_NAME)
-			annotationCacheOperationSource.reset()
+		if (application.isControllerClass(source) || application.isServiceClass(source)) {
+			event.ctx.cacheOperationSource.reset()
 			log.debug 'Reset GrailsAnnotationCacheOperationSource cache'
 		}
-		else if (event.application.isCacheConfigClass(event.source)) {
+		else if (application.isCacheConfigClass(source)) {
 			reloadCaches event.ctx
 		}
 	}
