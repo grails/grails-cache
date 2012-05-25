@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import grails.plugin.cache.CacheBeanPostProcessor
 import grails.plugin.cache.CacheConfigArtefactHandler
 import grails.plugin.cache.ConfigLoader
 import grails.plugin.cache.GrailsConcurrentMapCacheManager
@@ -115,9 +116,16 @@ class CacheGrailsPlugin {
 		if (!(order instanceof Number)) order = Ordered.LOWEST_PRECEDENCE
 
 		xmlns cache: 'http://www.springframework.org/schema/cache'
+
+		// creates 3 beans: org.springframework.cache.config.internalCacheAdvisor (org.springframework.cache.interceptor.BeanFactoryCacheOperationSourceAdvisor),
+		//                  org.springframework.cache.annotation.AnnotationCacheOperationSource#0 (org.springframework.cache.annotation.AnnotationCacheOperationSource),
+		//                  org.springframework.cache.interceptor.CacheInterceptor#0 (org.springframework.cache.interceptor.CacheInterceptor)
 		cache.'annotation-driven'('cache-manager': 'grailsCacheManager',
 		                          mode: 'proxy', order: order,
 		                          'proxy-target-class': proxyTargetClass)
+
+		// updates the AnnotationCacheOperationSource with a custom subclass
+		cacheBeanPostProcessor(CacheBeanPostProcessor)
 
 		grailsCacheManager(GrailsConcurrentMapCacheManager)
 
