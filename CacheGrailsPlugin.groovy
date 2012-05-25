@@ -15,6 +15,7 @@
 import grails.plugin.cache.CacheBeanPostProcessor
 import grails.plugin.cache.CacheConfigArtefactHandler
 import grails.plugin.cache.ConfigLoader
+import grails.plugin.cache.GrailsAnnotationCacheOperationSource
 import grails.plugin.cache.GrailsConcurrentMapCacheManager
 import grails.plugin.cache.web.ProxyAwareMixedGrailsControllerHelper
 import grails.plugin.cache.web.filter.DefaultWebKeyGenerator
@@ -138,7 +139,7 @@ class CacheGrailsPlugin {
 		grailsCacheFilter(MemoryPageFragmentCachingFilter) {
 			cacheManager = ref('grailsCacheManager')
 			// TODO this name might be brittle - perhaps do by type?
-			cacheOperationSource = ref('org.springframework.cache.annotation.AnnotationCacheOperationSource#0')
+			cacheOperationSource = ref(GrailsAnnotationCacheOperationSource.BEAN_NAME)
 			keyGenerator = ref('webCacheKeyGenerator')
 			expressionEvaluator = ref('webExpressionEvaluator')
 		}
@@ -162,15 +163,14 @@ class CacheGrailsPlugin {
 			return
 		}
 
-		if (event.application.isControllerClass(event.source)) {
-			// TODO reload CacheOperation config based on updated annotations
-		}
+		if (event.application.isControllerClass(event.source) ||
+		    event.application.isServiceClass(event.source)) {
 
-		if (event.application.isServiceClass(event.source)) {
-			// TODO reload CacheOperation config based on updated annotations
+			def annotationCacheOperationSource = event.ctx.getBean(GrailsAnnotationCacheOperationSource.BEAN_NAME)
+			annotationCacheOperationSource.reset()
+			log.debug 'Reset GrailsAnnotationCacheOperationSource cache'
 		}
-
-		if (event.application.isCacheConfigClass(event.source)) {
+		else if (event.application.isCacheConfigClass(event.source)) {
 			reloadCaches event.ctx
 		}
 	}
@@ -181,6 +181,7 @@ class CacheGrailsPlugin {
 
 	private void reloadCaches(ctx) {
 		ctx.grailsCacheConfigLoader.reload ctx
+		log.debug 'Reloaded grailsCacheConfigLoader'
 	}
 
 	private boolean isEnabled(GrailsApplication application) {

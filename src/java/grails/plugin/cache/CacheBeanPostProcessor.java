@@ -38,7 +38,7 @@ public class CacheBeanPostProcessor implements BeanDefinitionRegistryPostProcess
 		log.info("postProcessBeanDefinitionRegistry start");
 
 		AbstractBeanDefinition beanDef = (AbstractBeanDefinition)registry.getBeanDefinition(
-				"org.springframework.cache.annotation.AnnotationCacheOperationSource#0");
+				GrailsAnnotationCacheOperationSource.BEAN_NAME);
 
 		// change the class to the plugin's subclass
 		beanDef.setBeanClass(GrailsAnnotationCacheOperationSource.class);
