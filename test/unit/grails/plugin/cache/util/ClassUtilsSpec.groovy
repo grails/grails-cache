@@ -6,7 +6,7 @@ import spock.lang.Unroll
 /**
  * @author Jeff Brown
  */
-class ClassUtilsSpec { // extends Specification {
+class ClassUtilsSpec extends Specification {
 
     @Unroll("#fieldOrPropertyName value should have been #expectedValue")
     def 'Test retrieving field or property value'() {
