@@ -4,6 +4,18 @@ import functionaltestplugin.FunctionalTestCase
 
 class CacheTagFunctionalTests extends FunctionalTestCase {
 
+    protected void setUp() {
+        super.setUp()
+
+        get '/demo/clearBlocksCache'
+        assertStatus 200
+        assertContentContains 'cleared blocks cache'
+
+        get '/demo/clearTemplatesCache'
+        assertStatus 200
+        assertContentContains 'cleared templates cache'
+    }
+
     void testBlockTag() {
         get '/demo/blockCache?counter=5'
         assertStatus 200
@@ -19,10 +31,6 @@ class CacheTagFunctionalTests extends FunctionalTestCase {
     }
 
     void testClearingBlocksCache() {
-        get '/demo/clearBlocksCache'
-        assertStatus 200
-        assertContentContains 'cleared blocks cache'
-
         get '/demo/blockCache?counter=100'
         assertStatus 200
         assertContentContains 'First block counter 101'
@@ -53,10 +61,6 @@ class CacheTagFunctionalTests extends FunctionalTestCase {
     }
 
     void testRenderTag() {
-        get '/demo/clearTemplatesCache'
-        assertStatus 200
-        assertContentContains 'cleared templates cache'
-
         get '/demo/renderTag?counter=1'
         assertStatus 200
 
