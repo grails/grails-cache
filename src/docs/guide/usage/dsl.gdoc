@@ -9,7 +9,7 @@ You specify the cache configuration in @Config.groovy@ under the @grails.cache.c
 {code}
 grails.cache.config = {
    cache {
-      name 'messages'
+      name 'message'
    }
    cache {
       name 'maps'
@@ -22,7 +22,7 @@ or in a \*CacheConfig.groovy file in the @grails-app/conf@ directory under the @
 {code}
 config = {
    cache {
-      name 'messages'
+      name 'message'
    }
    cache {
       name 'maps'
@@ -30,12 +30,12 @@ config = {
 }
 {code}
 
-Both of these will create two caches, one with name "messages" and one with name "maps". You can also use attributes from other DSLs and they will be ignored, for example:
+Both of these will create two caches, one with name "message" and one with name "maps". You can also use attributes from other DSLs and they will be ignored, for example:
 
 {code}
 grails.cache.config = {
    cache {
-      name 'messages'
+      name 'message'
       eternal false
       overflowToDisk true
       maxElementsInMemory 10000
@@ -58,7 +58,7 @@ order = 2000
 
 config = {
    cache {
-      name 'messages'
+      name 'message'
    }
    cache {
       name 'maps'
