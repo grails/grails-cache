@@ -130,6 +130,12 @@ Package grails.plugin.cache
     </TR>
 
         <TR BGCOLOR="white" CLASS="TableRowColor">
+        <TD WIDTH="15%"><B><A HREF="CacheBeanPostProcessor.html" title="class in grails/plugin/cache">CacheBeanPostProcessor</A></B></TD>
+        <TD>Changes the bean class of the org.springframework.cache.annotation.AnnotationCacheOperationSource#0
+ bean to a custom subclass.</TD>
+        </TR>
+
+        <TR BGCOLOR="white" CLASS="TableRowColor">
         <TD WIDTH="15%"><B><A HREF="CacheConfigArtefactHandler.html" title="class in grails/plugin/cache">CacheConfigArtefactHandler</A></B></TD>
         <TD>Artefact handler for CacheConfig classes.</TD>
         </TR>
@@ -152,6 +158,19 @@ Package grails.plugin.cache
         <TR BGCOLOR="white" CLASS="TableRowColor">
         <TD WIDTH="15%"><B><A HREF="ConfigLoader.html" title="class in grails/plugin/cache">ConfigLoader</A></B></TD>
         <TD>@author Burt Beckwith</TD>
+        </TR>
+
+        <TR BGCOLOR="white" CLASS="TableRowColor">
+        <TD WIDTH="15%"><B><A HREF="GrailsAnnotationCacheOperationSource.html" title="class in grails/plugin/cache">GrailsAnnotationCacheOperationSource</A></B></TD>
+        <TD>getCacheOperations is called when beans are initialized and also from
+ PageFragmentCachingFilter during requests; the filter needs annotations on
+ controllers but if the standard lookup includes controllers, the return
+ values from the controller method calls are cached unnecessarily.</TD>
+        </TR>
+
+        <TR BGCOLOR="white" CLASS="TableRowColor">
+        <TD WIDTH="15%"><B><A HREF="GrailsAnnotationCacheOperationSource.DefaultCacheKey.html" title="class in grails/plugin/cache">GrailsAnnotationCacheOperationSource.DefaultCacheKey</A></B></TD>
+        <TD>Default cache key for the CacheOperation cache.</TD>
         </TR>
 
         <TR BGCOLOR="white" CLASS="TableRowColor">

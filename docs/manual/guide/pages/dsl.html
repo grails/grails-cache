@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>2.2 Cache DSL 1.0.0.RC1</title>
+    <title>2.2 Cache DSL 1.0.0</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -77,7 +77,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> Jeff Brown, Burt Beckwith</p>
 
-                    <p><strong>Version:</strong> 1.0.0.RC1</p>
+                    <p><strong>Version:</strong> 1.0.0</p>
 
                     
                 </div>
@@ -91,21 +91,21 @@ The cache implementation used by this plugin is very simple, so there aren't man
 Since there is no way to configure "time to live" with this plugin, all cached items have no timeout and remain cached until either the JVM restarts (since the backing store is in-memory) or the cache is partially or fully cleared (by calling a method or action annotated with &#64;CacheEvict or programmatically).
 </blockquote><p class="paragraph"/>You specify the cache configuration in <code>Config.groovy</code> under the <code>grails.cache.config</code> key, for example<p class="paragraph"/><div class="code"><pre>grails.cache.config = &#123;
    cache &#123;
-      name 'messages'
+      name 'message'
    &#125;
    cache &#123;
       name 'maps'
    &#125;
 &#125;</pre></div><p class="paragraph"/>or in a &#42;CacheConfig.groovy file in the <code>grails-app/conf</code> directory under the <code>config</code> key, for example<p class="paragraph"/><div class="code"><pre>config = &#123;
    cache &#123;
-      name 'messages'
+      name 'message'
    &#125;
    cache &#123;
       name 'maps'
    &#125;
-&#125;</pre></div><p class="paragraph"/>Both of these will create two caches, one with name "messages" and one with name "maps". You can also use attributes from other DSLs and they will be ignored, for example:<p class="paragraph"/><div class="code"><pre>grails.cache.config = &#123;
+&#125;</pre></div><p class="paragraph"/>Both of these will create two caches, one with name "message" and one with name "maps". You can also use attributes from other DSLs and they will be ignored, for example:<p class="paragraph"/><div class="code"><pre>grails.cache.config = &#123;
    cache &#123;
-      name 'messages'
+      name 'message'
       eternal <span class="java&#45;keyword">false</span>
       overflowToDisk <span class="java&#45;keyword">true</span>
       maxElementsInMemory 10000
@@ -116,7 +116,7 @@ Since there is no way to configure "time to live" with this plugin, all cached i
    &#125;
 &#125;</pre></div><p class="paragraph"/>This configuration results in the same caches as the simpler one.<p class="paragraph"/><h4>Order</h4><p class="paragraph"/>You can configure your cache definitions to be loaded before or after others by setting the <code>order</code> attribute. Configurations with higher numbers are loaded later, so these can override previously-configured values, although there is no support for removing caches or cache attributes, only adding or overriding:<p class="paragraph"/><div class="code"><pre>order = 2000<p class="paragraph"/>config = &#123;
    cache &#123;
-      name 'messages'
+      name 'message'
    &#125;
    cache &#123;
       name 'maps'

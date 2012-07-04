@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
     <head>
-        <title>Cache Plugin 1.0.0.RC1</title>
+        <title>Cache Plugin 1.0.0</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
         <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8" />
@@ -60,7 +60,7 @@ function addJsClass(el) {
                         <div class="project">
                             <h1>Cache Plugin - Reference Documentation</h1>
                             <p><strong>Authors:</strong> Jeff Brown, Burt Beckwith</p>
-                            <p><strong>Version:</strong> 1.0.0.RC1</p>
+                            <p><strong>Version:</strong> 1.0.0</p>
                             
                         </div>
 
@@ -101,19 +101,20 @@ The Grails Cache plugin provides powerful and easy to use caching functionality 
 
 <a name="1.1 Change log"><!-- Legacy link --></a>
 <h2 id="changeLog">1.1 Change log</h2>
-<h3>Version 1.0.0.M2 - May 12, 2012</h3>
+<h3>Version 1.0.0 - July 4, 2012</h3>
 <h3>Version 1.0.0.RC1 - May 22, 2012</h3>
+<h3>Version 1.0.0.M2 - May 12, 2012</h3>
 
 
 
 <h1 id="usage">2 Usage</h1>
-The cache plugin adds Spring bean method call, controller action, and GSP page fragment and template caching to Grails applications. You configure one or more caches in <code>Config.groovy</code> and/or one or more Groovy artifact files with names ending in CacheConfig.groovy (for example FooCacheConfig.groovy, BarCacheConfig.groovy, and these can also be in packages) in <code>grails-app/conf</code> (or a subdirectory if in a package) using an implementation-specific DSL, and annotate methods (either in Spring beans (typically Grails services) or controllers) to be cached. You can also wrap GSP sections in cache tags and render cached templates.<p class="paragraph"/>There are three annotations; <a href="../gapi/grails/plugin/cache/Cacheable.html" class="api">Cacheable</a>, <a href="../gapi/grails/plugin/cache/CachePut.html" class="api">CachePut</a>, and <a href="../gapi/grails/plugin/cache/CacheEvict.html" class="api">CacheEvict</a>. You use &#64;Cacheable to mark a method as one that should check the cache for a pre-existing result, or generate a new result and cache it. Use &#64;CachePut to mark a method as one that should always be evaluated and store its result in the cache regardless of existing cache values. And use &#64;CacheEvict to flush a cache (either fully or partially) to force the re-evaluation of previously cached results. The annotations are based on the annotations with the same name from Spring (<a href="http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/springframework/cache/annotation/Cacheable.html" target="blank">Cacheable</a>, <a href="http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/springframework/cache/annotation/CachePut.html" target="blank">CachePut</a>, and <a href="http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/
-springframework/cache/annotation/CacheEvict.html" target="blank">CacheEvict</a>) and support the same syntax but may support extended functionality in the future.<p class="paragraph"/>This 'core' cache plugin uses an in-memory implementation where the caches and cache manager are backed by a thread-safe <code>java.util.concurrent.ConcurrentMap</code>. This is fine for testing and possibly for low-traffic sites, but you should consider using one of the extension plugins if you need clustering, disk storage, persistence between restarts, and more configurability of features like time-to-live, maximum cache size, etc. Currently the extension plugins include <a href="http://grails.org/plugin/cache-ehcache" target="blank">cache-ehcache</a>, <a href="http://grails.org/plugin/cache-redis" target="blank">cache-redis</a>, and <a href="http://grails.org/plugin/cache-gemfire" target="blank">cache-gemfire</a>.
+The cache plugin adds Spring bean method call, controller action, and GSP page fragment and template caching to Grails applications. You configure one or more caches in <code>Config.groovy</code> and/or one or more Groovy artifact files with names ending in CacheConfig.groovy (for example FooCacheConfig.groovy, BarCacheConfig.groovy, and these can also be in packages) in <code>grails-app/conf</code> (or a subdirectory if in a package) using an implementation-specific DSL, and annotate methods (either in Spring beans (typically Grails services) or controllers) to be cached. You can also wrap GSP sections in cache tags and render cached templates.<p class="paragraph"/>There are three annotations; <a href="../gapi/grails/plugin/cache/Cacheable.html" class="api">Cacheable</a>, <a href="../gapi/grails/plugin/cache/CachePut.html" class="api">CachePut</a>, and <a href="../gapi/grails/plugin/cache/CacheEvict.html" class="api">CacheEvict</a>. You use &#64;Cacheable to mark a method as one that should check the cache for a pre-existing result, or generate a new result and cache it. Use &#64;CachePut to mark a method as one that should always be evaluated and store its result in the cache regardless of existing cache values. And use &#64;CacheEvict to flush a cache (either fully or partially) to force the re-evaluation of previously cached results. The annotations are based on the annotations with the same name from Spring (<a href="http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/springframework/cache/annotation/Cacheable.html" target="blank">Cacheable</a>, <a href="http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/springframework/cache/annotation/CachePut.html" target="blank">CachePut</a>, and <a href="../ref/Httpstaticspringsourceorgspringdocs31xjavadocapiorgspringframeworkcacheannotation Cache Evicthtml/CacheEvict.html" class="http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/
+springframework/cache/annotation/CacheEvict.html">CacheEvict</a>) and support the same syntax but may support extended functionality in the future.<p class="paragraph"/>This 'core' cache plugin uses an in-memory implementation where the caches and cache manager are backed by a thread-safe <code>java.util.concurrent.ConcurrentMap</code>. This is fine for testing and possibly for low-traffic sites, but you should consider using one of the extension plugins if you need clustering, disk storage, persistence between restarts, and more configurability of features like time-to-live, maximum cache size, etc. Currently the extension plugins include <a href="http://grails.org/plugin/cache-ehcache" target="blank">cache-ehcache</a>, <a href="http://grails.org/plugin/cache-redis" target="blank">cache-redis</a>, and <a href="http://grails.org/plugin/cache-gemfire" target="blank">cache-gemfire</a>.
 
 
 
 <h2 id="configuration">2.1 Configuration</h2>
-<h4>Config.groovy and artifact files</h4><p class="paragraph"/>The caching configuration can be specified in <code>Config.groovy</code> or &#42;CacheConfig.groovy files. Both approaches support <code>environments</code> blocks for environment-specific configuration, and you can specify the loading order, for example to support overriding values. One example of this might be a plugin that specifies a known load order, allowing you to choose a lower value in your file and override some or all of the plugin's configuration.<p class="paragraph"/>There are a few configuration options for the plugin; these are specified in <code>Config.groovy</code>.<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Property</strong></th><th><strong class="bold">Default</strong></th><th><strong class="bold">Description</strong></th></tr><tr class="table-odd"><td>grails.cache.proxyTargetClass</td><td><code>false</code></td><td>From the Spring Javadoc: "By default, all proxies are created as JDK proxies. This may cause some problems if you are injecting objects as concrete classes rather than interfaces. To overcome this restriction you can set the <code>proxy-target-class</code> attribute to <code>true</code> which will result in class-based proxies being created."</td></tr><tr class="table-even"><td>grails.cache.aopOrder</td><td>Ordered.LOWEST_PRECEDENCE</td><td>From the Spring docs: "Defines the order of the cache advice that is applied to beans annotated with &#64;Cacheable or &#64;CacheEvict. No specified ordering means that the AOP subsystem determines the order of the advice."</td></tr></table>
+<h4>Config.groovy and artifact files</h4><p class="paragraph"/>The caching configuration can be specified in <code>Config.groovy</code> or &#42;CacheConfig.groovy files. Both approaches support <code>environments</code> blocks for environment-specific configuration, and you can specify the loading order, for example to support overriding values. One example of this might be a plugin that specifies a known load order, allowing you to choose a lower value in your file and override some or all of the plugin's configuration.<p class="paragraph"/>There are a few configuration options for the plugin; these are specified in <code>Config.groovy</code>.<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Property</strong></th><th><strong class="bold">Default</strong></th><th><strong class="bold">Description</strong></th></tr><tr class="table-odd"><td>grails.cache.proxyTargetClass</td><td><code>false</code></td><td>From the Spring Javadoc: "By default, all proxies are created as JDK proxies. This may cause some problems if you are injecting objects as concrete classes rather than interfaces. To overcome this restriction you can set the <code>proxy-target-class</code> attribute to <code>true</code> which will result in class-based proxies being created."</td></tr><tr class="table-even"><td>grails.cache.aopOrder</td><td>Ordered.LOWEST_PRECEDENCE</td><td>From the Spring docs: "Defines the order of the cache advice that is applied to beans annotated with &#64;Cacheable or &#64;CacheEvict. No specified ordering means that the AOP subsystem determines the order of the advice."</td></tr><tr class="table-odd"><td>grails.cache.clearAtStartup</td><td><code>false</code></td><td>Whether to clear all caches at startup</td></tr></table>
 
 
 
@@ -122,21 +123,21 @@ The cache implementation used by this plugin is very simple, so there aren't man
 Since there is no way to configure "time to live" with this plugin, all cached items have no timeout and remain cached until either the JVM restarts (since the backing store is in-memory) or the cache is partially or fully cleared (by calling a method or action annotated with &#64;CacheEvict or programmatically).
 </blockquote><p class="paragraph"/>You specify the cache configuration in <code>Config.groovy</code> under the <code>grails.cache.config</code> key, for example<p class="paragraph"/><div class="code"><pre>grails.cache.config = &#123;
    cache &#123;
-      name 'messages'
+      name 'message'
    &#125;
    cache &#123;
       name 'maps'
    &#125;
 &#125;</pre></div><p class="paragraph"/>or in a &#42;CacheConfig.groovy file in the <code>grails-app/conf</code> directory under the <code>config</code> key, for example<p class="paragraph"/><div class="code"><pre>config = &#123;
    cache &#123;
-      name 'messages'
+      name 'message'
    &#125;
    cache &#123;
       name 'maps'
    &#125;
-&#125;</pre></div><p class="paragraph"/>Both of these will create two caches, one with name "messages" and one with name "maps". You can also use attributes from other DSLs and they will be ignored, for example:<p class="paragraph"/><div class="code"><pre>grails.cache.config = &#123;
+&#125;</pre></div><p class="paragraph"/>Both of these will create two caches, one with name "message" and one with name "maps". You can also use attributes from other DSLs and they will be ignored, for example:<p class="paragraph"/><div class="code"><pre>grails.cache.config = &#123;
    cache &#123;
-      name 'messages'
+      name 'message'
       eternal <span class="java&#45;keyword">false</span>
       overflowToDisk <span class="java&#45;keyword">true</span>
       maxElementsInMemory 10000
@@ -147,7 +148,7 @@ Since there is no way to configure "time to live" with this plugin, all cached i
    &#125;
 &#125;</pre></div><p class="paragraph"/>This configuration results in the same caches as the simpler one.<p class="paragraph"/><h4>Order</h4><p class="paragraph"/>You can configure your cache definitions to be loaded before or after others by setting the <code>order</code> attribute. Configurations with higher numbers are loaded later, so these can override previously-configured values, although there is no support for removing caches or cache attributes, only adding or overriding:<p class="paragraph"/><div class="code"><pre>order = 2000<p class="paragraph"/>config = &#123;
    cache &#123;
-      name 'messages'
+      name 'message'
    &#125;
    cache &#123;
       name 'maps'
