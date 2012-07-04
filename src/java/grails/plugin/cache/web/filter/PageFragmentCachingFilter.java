@@ -14,6 +14,7 @@
  */
 package grails.plugin.cache.web.filter;
 
+import grails.plugin.cache.GrailsAnnotationCacheOperationSource;
 import grails.plugin.cache.SerializableByteArrayOutputStream;
 import grails.plugin.cache.Timer;
 import grails.plugin.cache.web.ContentCacheParameters;
@@ -57,7 +58,6 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.Cache.ValueWrapper;
 import org.springframework.cache.interceptor.CacheEvictOperation;
 import org.springframework.cache.interceptor.CacheOperation;
-import org.springframework.cache.interceptor.CacheOperationSource;
 import org.springframework.cache.interceptor.CachePutOperation;
 import org.springframework.cache.interceptor.CacheableOperation;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
@@ -154,7 +154,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 		}
 	}
 
-	protected CacheOperationSource cacheOperationSource;
+	protected GrailsAnnotationCacheOperationSource cacheOperationSource;
 
 	protected final ThreadLocal<Stack<ContentCacheParameters>> contextHolder = new ThreadLocal<Stack<ContentCacheParameters>>() {
 		@Override
@@ -187,7 +187,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 				return;
 			}
 			Collection<CacheOperation> cacheOperations = cacheOperationSource.getCacheOperations(
-					method, controllerClass);
+					method, controllerClass, true);
 
 			if (CollectionUtils.isEmpty(cacheOperations)) {
 				log.debug("No cacheable annotation found for {}:{} {}",
@@ -843,10 +843,10 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 	}
 
 	/**
-	 * Dependency injection for CacheOperationSource.
+	 * Dependency injection for GrailsAnnotationCacheOperationSource.
 	 * @param source
 	 */
-	public void setCacheOperationSource(CacheOperationSource source) {
+	public void setCacheOperationSource(GrailsAnnotationCacheOperationSource source) {
 		cacheOperationSource = source;
 	}
 

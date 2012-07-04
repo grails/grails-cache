@@ -21,11 +21,11 @@ grails.project.dependency.resolution = {
 		    export = false
 		}
 		if (Environment.current != Environment.TEST) {
-			build(':release:2.0.0', ':rest-client-builder:1.0.2') {
+			build(':release:2.0.3', ':rest-client-builder:1.0.2') {
 				export = false
 			}
 		}
-		test(':functional-test:1.2.7', ':spock:0.6') {
+		test(':functional-test:1.2.7') {//, ':spock:0.6') {
 			export = false
 		}
 		compile ':webxml:1.4.1'
