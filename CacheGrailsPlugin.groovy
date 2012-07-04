@@ -26,6 +26,7 @@ import grails.plugin.cache.web.filter.simple.MemoryPageFragmentCachingFilter
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.cache.Cache
 import org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean
 import org.springframework.context.ApplicationContext
 import org.springframework.core.Ordered
@@ -138,10 +139,10 @@ class CacheGrailsPlugin {
 		webExpressionEvaluator(ExpressionEvaluator)
 
 		grailsCacheFilter(MemoryPageFragmentCachingFilter) {
-			cacheManager = ref('grailsCacheManager')
+			cacheManager =         ref('grailsCacheManager')
 			cacheOperationSource = ref('cacheOperationSource')
-			keyGenerator = ref('webCacheKeyGenerator')
-			expressionEvaluator = ref('webExpressionEvaluator')
+			keyGenerator =         ref('webCacheKeyGenerator')
+			expressionEvaluator =  ref('webExpressionEvaluator')
 		}
 
 		grailsControllerHelper(ProxyAwareMixedGrailsControllerHelper) {
@@ -151,6 +152,16 @@ class CacheGrailsPlugin {
 
 	def doWithApplicationContext = { ctx ->
 		reloadCaches ctx
+
+		def cacheConfig = ctx.grailsApplication.config.grails.cache
+		if (cacheConfig.clearAtStartup instanceof Boolean && cacheConfig.clearAtStartup) {
+			def grailsCacheManager = ctx.grailsCacheManager
+			for (String cacheName in grailsCacheManager.cacheNames) {
+				log.info "Clearing cache $cacheName"
+				Cache cache = grailsCacheManager.getCache(cacheName)
+				cache.clear()
+			}
+		}
 	}
 
 	def onChange = { event ->
