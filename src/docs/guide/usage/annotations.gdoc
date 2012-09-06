@@ -18,13 +18,21 @@ class MessageService {
       Message.findByTitle(title)
    }
 
-   @CacheEvict(value='message', key='#message.title')
+   @CachePut(value='message', key='#message.title')
    void save(Message message) {
       println "Saving message $message"
       message.save()
    }
+
+   @CacheEvict(value='message', key='#message.title')
+   void delete(Message message) {
+      println "Deleting message $message"
+      message.delete()
+   }
 }
 {code}
+
+Note that you could also use \@CacheEvict for the @save@ method, which would remove the old cached value but not cache the current value.
 
 This service works with the @Message@ domain class:
 
