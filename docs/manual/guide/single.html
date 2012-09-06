@@ -163,12 +163,16 @@ The <a href="../gapi/grails/plugin/cache/Cacheable.html" class="api">Cacheable</
    Message getMessage(<span class="java&#45;object">String</span> title) &#123;
       println 'Fetching message'
       Message.findByTitle(title)
-   &#125;<p class="paragraph"/>   @CacheEvict(value='message', key='&#35;message.title')
+   &#125;<p class="paragraph"/>   @CachePut(value='message', key='&#35;message.title')
    void save(Message message) &#123;
       println <span class="java&#45;quote">"Saving message $message"</span>
       message.save()
+   &#125;<p class="paragraph"/>   @CacheEvict(value='message', key='&#35;message.title')
+   void delete(Message message) &#123;
+      println <span class="java&#45;quote">"Deleting message $message"</span>
+      message.delete()
    &#125;
-&#125;</pre></div><p class="paragraph"/>This service works with the <code>Message</code> domain class:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">package</span> com.yourcompany<p class="paragraph"/>class Message <span class="java&#45;keyword">implements</span> Serializable &#123;<p class="paragraph"/>   <span class="java&#45;keyword">private</span> <span class="java&#45;keyword">static</span> <span class="java&#45;keyword">final</span> <span class="java&#45;object">long</span> serialVersionUID = 1<p class="paragraph"/>   <span class="java&#45;object">String</span> title
+&#125;</pre></div><p class="paragraph"/>Note that you could also use &#64;CacheEvict for the <code>save</code> method, which would remove the old cached value but not cache the current value.<p class="paragraph"/>This service works with the <code>Message</code> domain class:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">package</span> com.yourcompany<p class="paragraph"/>class Message <span class="java&#45;keyword">implements</span> Serializable &#123;<p class="paragraph"/>   <span class="java&#45;keyword">private</span> <span class="java&#45;keyword">static</span> <span class="java&#45;keyword">final</span> <span class="java&#45;object">long</span> serialVersionUID = 1<p class="paragraph"/>   <span class="java&#45;object">String</span> title
    <span class="java&#45;object">String</span> body<p class="paragraph"/>   <span class="java&#45;object">String</span> toString() &#123;
       <span class="java&#45;quote">"$title: $body"</span>
    &#125;
