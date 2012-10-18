@@ -49,6 +49,7 @@ import org.slf4j.LoggerFactory;
  * @author Greg Luck
  * @author Burt Beckwith
  */
+@SuppressWarnings("deprecation")
 public class GenericResponseWrapper extends HttpServletResponseWrapper implements Serializable {
 
 	private static final long serialVersionUID = 1;
