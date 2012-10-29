@@ -21,7 +21,7 @@ grails.project.dependency.resolution = {
 		    export = false
 		}
 		if (Environment.current != Environment.TEST) {
-			build(':release:2.0.3', ':rest-client-builder:1.0.2') {
+			build(':release:2.0.4', ':rest-client-builder:1.0.2') {
 				export = false
 			}
 		}
