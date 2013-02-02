@@ -190,12 +190,18 @@ class CacheGrailsPlugin {
 	}
 
 	private void reloadCaches(ctx) {
+
+        if (!isEnabled(ctx.grailsApplication)) {
+            return
+        }
+
 		ctx.grailsCacheConfigLoader.reload ctx
 		log.debug 'Reloaded grailsCacheConfigLoader'
 	}
 
 	private boolean isEnabled(GrailsApplication application) {
-		// TODO
-		true
+        application.config.grails.cache.with {
+            (enabled == null || enabled != false)
+        }
 	}
 }

@@ -34,21 +34,26 @@ class CacheTagLib {
      * @attr key An optional cache key allowing the same block to be cached with different content
      */
     def block = { attrs, body ->
-        def cache = grailsCacheManager.getCache('grailsBlocksCache')
-        def bodyClosure = ClassUtils.getPropertyOrFieldValue(body, 'bodyClosure')
-        def closureClass = bodyClosure.getClass()
-        def key = closureClass.getName()
-        if (attrs.key) {
-            key = key + ':' + attrs.key
+        if (grailsCacheManager) {
+            def cache = grailsCacheManager.getCache('grailsBlocksCache')
+            def bodyClosure = ClassUtils.getPropertyOrFieldValue(body, 'bodyClosure')
+            def closureClass = bodyClosure.getClass()
+            def key = closureClass.getName()
+            if (attrs.key) {
+                key = key + ':' + attrs.key
+            }
+            def content = cache.get(key)
+            if (content == null) {
+                content = body()
+                cache.put(key, content)
+            } else {
+                content = content.get()
+            }
+            out << content
         }
-        def content = cache.get(key)
-        if (content == null) {
-            content = body()
-            cache.put(key, content)
-        } else {
-            content = content.get()
+        else {
+            out << body()
         }
-        out << content
     }
 
     /**
@@ -70,15 +75,20 @@ class CacheTagLib {
             key = key + ':' + attrs.key
         }
 
-        def cache = grailsCacheManager.getCache('grailsTemplatesCache')
-        def content = cache.get(key)
-        if (content == null) {
-            content = g.render(attrs)
-            cache.put(key, content)
-        } else {
-            content = content.get()
+        if (grailsCacheManager) {
+            def cache = grailsCacheManager.getCache('grailsTemplatesCache')
+            def content = cache.get(key)
+            if (content == null) {
+                content = g.render(attrs)
+                cache.put(key, content)
+            } else {
+                content = content.get()
+            }
+            out << content
         }
-        out << content
+        else {
+            out <<  g.render(attrs)
+        }
     }
 
     protected String calculateFullKey(String templateName, String contextPath, String pluginName) {
