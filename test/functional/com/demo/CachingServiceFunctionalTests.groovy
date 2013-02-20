@@ -3,8 +3,67 @@ package com.demo
 import functionaltestplugin.FunctionalTestCase
 
 class CachingServiceFunctionalTests extends FunctionalTestCase {
+    void testCachingServiceWithSameMethodParams() {
+        get '/demo/basicCachingServiceInvocationCount'
+        assertStatus 200
+        assertContentContains 'Basic Caching Service Invocation Count Is 0.'
+        get '/demo/basicCachingServiceInvocation2Count'
+        assertStatus 200
+        assertContentContains 'Basic Caching Service Invocation Count Is 100.'
 
+        // first retrieval. no cache. service method is invoked for each call.
+        get '/demo/basicCachingService'
+        assertStatus 200
+        assertContentContains 'Value From Service Is "Hello World!"'
+        get '/demo/basicCachingServiceInvocationCount'
+        assertStatus 200
+        assertContentContains 'Basic Caching Service Invocation Count Is 1.'
+        get '/demo/basicCaching2Service'
+        assertStatus 200
+        assertContentContains 'Value From Service Is "Hello World 2!"'
+        get '/demo/basicCachingServiceInvocation2Count'
+        assertStatus 200
+        assertContentContains 'Basic Caching Service Invocation Count Is 101.'
+
+        // there's should be no change because it took the value from cache. and both service methods don't get mixed up
+        get '/demo/basicCachingService'
+        assertStatus 200
+        assertContentContains 'Value From Service Is "Hello World!"'
+        get '/demo/basicCachingServiceInvocationCount'
+        assertStatus 200
+        assertContentContains 'Basic Caching Service Invocation Count Is 1.'
+        get '/demo/basicCaching2Service'
+        assertStatus 200
+        assertContentContains 'Value From Service Is "Hello World 2!"'
+        get '/demo/basicCachingServiceInvocation2Count'
+        assertStatus 200
+        assertContentContains 'Basic Caching Service Invocation Count Is 101.'
+        get '/demo/basicCaching2Service'
+        assertStatus 200
+        assertContentContains 'Value From Service Is "Hello World 2!"'
+        get '/demo/basicCachingServiceInvocation2Count'
+        assertStatus 200
+        assertContentContains 'Basic Caching Service Invocation Count Is 101.'
+        get '/demo/basicCachingService'
+        assertStatus 200
+        assertContentContains 'Value From Service Is "Hello World!"'
+        get '/demo/basicCachingServiceInvocationCount'
+        assertStatus 200
+        assertContentContains 'Basic Caching Service Invocation Count Is 1.'
+
+        // reset
+        get '/demo/basicResetCachingService'
+        assertStatus 200
+        get '/demo/basicCachingServiceInvocationCount'
+        assertStatus 200
+        assertContentContains 'Basic Caching Service Invocation Count Is 0.'
+        get '/demo/basicCachingServiceInvocation2Count'
+        assertStatus 200
+        assertContentContains 'Basic Caching Service Invocation Count Is 100.'
+
+    }
     void testBasicCachingService() {
+
         get '/demo/basicCachingServiceInvocationCount'
         assertStatus 200
         assertContentContains 'Basic Caching Service Invocation Count Is 0.'
