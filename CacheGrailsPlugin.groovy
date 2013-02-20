@@ -31,6 +31,9 @@ import org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean
 import org.springframework.context.ApplicationContext
 import org.springframework.core.Ordered
 import org.springframework.web.filter.DelegatingFilterProxy
+import org.springframework.cache.interceptor.KeyGenerator
+import grails.plugin.cache.CustomCacheKeyGenerator
+import org.springframework.cache.interceptor.DefaultKeyGenerator
 
 class CacheGrailsPlugin {
 
@@ -116,15 +119,18 @@ class CacheGrailsPlugin {
 		if (!(proxyTargetClass instanceof Boolean)) proxyTargetClass = false
 		def order = cacheConfig.aopOrder
 		if (!(order instanceof Number)) order = Ordered.LOWEST_PRECEDENCE
+        // allow user can to use their own key generator.
+        def cacheKeyGen = cacheConfig.keyGenerator ?: 'customCacheKeyGenerator'
+        customCacheKeyGenerator(CustomCacheKeyGenerator)
 
 		xmlns cache: 'http://www.springframework.org/schema/cache'
 
 		// creates 3 beans: org.springframework.cache.config.internalCacheAdvisor (org.springframework.cache.interceptor.BeanFactoryCacheOperationSourceAdvisor),
 		//                  org.springframework.cache.annotation.AnnotationCacheOperationSource#0 (org.springframework.cache.annotation.AnnotationCacheOperationSource),
 		//                  org.springframework.cache.interceptor.CacheInterceptor#0 (org.springframework.cache.interceptor.CacheInterceptor)
-		cache.'annotation-driven'('cache-manager': 'grailsCacheManager',
-		                          mode: 'proxy', order: order,
-		                          'proxy-target-class': proxyTargetClass)
+
+		cache.'annotation-driven'('cache-manager': 'grailsCacheManager' ,'key-generator': cacheKeyGen,
+                mode: 'proxy', order: order, 'proxy-target-class': proxyTargetClass)
 
 		// updates the AnnotationCacheOperationSource with a custom subclass
 		// and adds the 'cacheOperationSource' alias
