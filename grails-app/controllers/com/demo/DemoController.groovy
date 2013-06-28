@@ -1,5 +1,7 @@
 package com.demo
 
+import grails.plugin.cache.CacheEvict
+
 class DemoController {
 
     def basicCachingService
@@ -22,6 +24,24 @@ class DemoController {
     def basicCachingService() {
         render "Value From Service Is \"${basicCachingService.data}\""
     }
+
+    def basicCachingServiceInvocation2Count() {
+        render "Basic Caching Service Invocation Count Is ${basicCachingService.invocationCounter2}."
+    }
+    def basicCaching2Service() {
+        render "Value From Service Is \"${basicCachingService.data2}\""
+    }
+    def basicCachingWithParamService() {
+        render "Value From Service Is \"${basicCachingService.getDataWithParams("dummy")}\""
+    }
+    def basicCaching2WithParamService() {
+        render "Value From Service Is \"${basicCachingService.getData2WithParams("dummy")}\""
+    }
+
+    def basicResetCachingService() {
+        render "Value From Service Is \"${basicCachingService.resetData()}\""
+    }
+
 
     def cachePut(String key, String value) {
         def result = basicCachingService.getData(key, value)
