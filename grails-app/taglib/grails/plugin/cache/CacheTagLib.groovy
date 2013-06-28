@@ -22,85 +22,87 @@ import org.springframework.web.context.request.RequestContextHolder
 
 class CacheTagLib {
 
-    static namespace = 'cache'
+	static namespace = 'cache'
 
-    def grailsCacheManager
-    def groovyPagesTemplateRenderer
+	def grailsCacheManager
+	def groovyPagesTemplateRenderer
 
-    /**
-     * Renders a block of markup and caches the result so the next time the same block
-     * is rendered, it does not need to be evaluated again.
-     *
-     * @attr key An optional cache key allowing the same block to be cached with different content
-     */
-    def block = { attrs, body ->
-        if (grailsCacheManager) {
-            def cache = grailsCacheManager.getCache('grailsBlocksCache')
-            def bodyClosure = ClassUtils.getPropertyOrFieldValue(body, 'bodyClosure')
-            def closureClass = bodyClosure.getClass()
-            def key = closureClass.getName()
-            if (attrs.key) {
-                key += ':' + attrs.key
-            }
-            def content = cache.get(key)
-            if (content == null) {
-                content = body()
-                cache.put(key, content)
-            } else {
-                content = content.get()
-            }
-            out << content
-        }
-        else {
-            out << body()
-        }
-    }
+	/**
+	 * Renders a block of markup and caches the result so the next time the same block
+	 * is rendered, it does not need to be evaluated again.
+	 *
+	 * @attr key An optional cache key allowing the same block to be cached with different content
+	 */
+	def block = { attrs, body ->
+		if (!grailsCacheManager) {
+			out << body()
+			return
+		}
 
-    /**
-     * Renders a GSP template and caches the result so the next time the same template
-     * is rendered, it does not need to be evaluated again.
-     *
-     * @attr template REQUIRED The name of the template to apply
-     * @attr key An optional cache key allowing the same template to be cached with different content
-     * @attr contextPath the context path to use (relative to the application context path). Defaults to "" or path to the plugin for a plugin view or template.
-     * @attr bean The bean to apply the template against
-     * @attr model The model to apply the template against as a java.util.Map
-     * @attr collection A collection of model objects to apply the template to
-     * @attr var The variable name of the bean to be referenced in the template
-     * @attr plugin The plugin to look for the template in
-     */
-    def render = { attrs ->
-        def key = calculateFullKey(attrs.template, attrs.contextPath, attrs.plugin)
-        if (attrs.key) {
-            key = key + ':' + attrs.key
-        }
+		def cache = grailsCacheManager.getCache('grailsBlocksCache')
+		def bodyClosure = ClassUtils.getPropertyOrFieldValue(body, 'bodyClosure')
+		def closureClass = bodyClosure.getClass()
+		def key = closureClass.getName()
+		if (attrs.key) {
+			key += ':' + attrs.key
+		}
+		def content = cache.get(key)
+		if (content == null) {
+			content = body()
+			cache.put(key, content)
+		}
+		else {
+			content = content.get()
+		}
+		out << content
+	}
 
-        if (grailsCacheManager) {
-            def cache = grailsCacheManager.getCache('grailsTemplatesCache')
-            def content = cache.get(key)
-            if (content == null) {
-                content = g.render(attrs)
-                cache.put(key, content)
-            } else {
-                content = content.get()
-            }
-            out << content
-        }
-        else {
-            out <<  g.render(attrs)
-        }
-    }
+	/**
+	 * Renders a GSP template and caches the result so the next time the same template
+	 * is rendered, it does not need to be evaluated again.
+	 *
+	 * @attr template REQUIRED The name of the template to apply
+	 * @attr key An optional cache key allowing the same template to be cached with different content
+	 * @attr contextPath the context path to use (relative to the application context path). Defaults to "" or path to the plugin for a plugin view or template.
+	 * @attr bean The bean to apply the template against
+	 * @attr model The model to apply the template against as a java.util.Map
+	 * @attr collection A collection of model objects to apply the template to
+	 * @attr var The variable name of the bean to be referenced in the template
+	 * @attr plugin The plugin to look for the template in
+	 */
+	def render = { attrs ->
+		def key = calculateFullKey(attrs.template, attrs.contextPath, attrs.plugin)
+		if (attrs.key) {
+			key += ':' + attrs.key
+		}
 
-    protected String calculateFullKey(String templateName, String contextPath, String pluginName) {
-        GrailsWebRequest webRequest = RequestContextHolder.currentRequestAttributes()
-        String uri = webRequest.attributes.getTemplateUri(templateName, webRequest.request)
+		if (!grailsCacheManager) {
+			out <<  g.render(attrs)
+			return
+		}
 
-        GroovyPageTemplate t = groovyPagesTemplateRenderer.findAndCacheTemplate(
-             webRequest, pageScope, templateName, contextPath, pluginName, uri)
-        if (!t) {
-            throwTagError("Template not found for name [$templateName] and path [$uri]")
-        }
+		def cache = grailsCacheManager.getCache('grailsTemplatesCache')
+		def content = cache.get(key)
+		if (content == null) {
+			content = g.render(attrs)
+			cache.put(key, content)
+		}
+		else {
+			content = content.get()
+		}
+		out << content
+	}
 
-        t.metaInfo.pageClass.name
-    }
+	protected String calculateFullKey(String templateName, String contextPath, String pluginName) {
+		GrailsWebRequest webRequest = RequestContextHolder.currentRequestAttributes()
+		String uri = webRequest.attributes.getTemplateUri(templateName, webRequest.request)
+
+		GroovyPageTemplate t = groovyPagesTemplateRenderer.findAndCacheTemplate(
+			webRequest, pageScope, templateName, contextPath, pluginName, uri)
+		if (!t) {
+			throwTagError("Template not found for name [$templateName] and path [$uri]")
+		}
+
+		t.metaInfo.pageClass.name
+	}
 }
