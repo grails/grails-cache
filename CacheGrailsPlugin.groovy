@@ -53,7 +53,7 @@ class CacheGrailsPlugin {
 	def author = 'Jeff Brown'
 	def authorEmail = 'jbrown@vmware.com'
 	def description = 'Grails Cache Plugin'
-	def documentation = 'http://grails.org/plugin/cache'
+	def documentation = 'http://grails-plugins.github.com/grails-cache/'
 
 	def license = 'APACHE'
 	def organization = [name: 'SpringSource', url: 'http://www.springsource.org/']
