@@ -37,7 +37,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TreeSet;
-import java.util.zip.DataFormatException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -174,13 +173,19 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 		try {
 
 			Object controller = lookupController(getContext().getControllerClass());
+			if (controller == null) {
+				log.debug("Not a controller request {}:{} {}",
+						new Object[] { request.getMethod(), request.getRequestURI(), getContext() });
+				chain.doFilter(request, response);
+				return;
+			}
 
 			Class<?> controllerClass = AopProxyUtils.ultimateTargetClass(controller);
-			if (controllerClass == null && controller != null) {
+			if (controllerClass == null) {
 				controllerClass = controller.getClass();
 			}
 			Method method = getContext().getMethod();
-			if(method == null) {
+			if (method == null) {
 				log.debug("No cacheable method found for {}:{} {}",
 						new Object[] { request.getMethod(), request.getRequestURI(), getContext() });
 				chain.doFilter(request, response);
@@ -421,10 +426,9 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 	 * @param response
 	 * @param pageInfo
 	 * @throws IOException
-	 * @throws DataFormatException
 	 */
 	protected void writeResponse(final HttpServletRequest request, final HttpServletResponse response,
-			final PageInfo pageInfo) throws IOException, DataFormatException {
+			final PageInfo pageInfo) throws IOException {
 
 		if (!WebUtils.isIncludeRequest(request)) {
 			int statusCode = determineResponseStatus(request, pageInfo);
@@ -524,7 +528,9 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 
 	protected void destroyContext() {
 		contextHolder.get().pop();
-		if (contextHolder.get().empty()) contextHolder.remove();
+		if (contextHolder.get().empty()) {
+			contextHolder.remove();
+		}
 	}
 
 	protected String getCachedUri(HttpServletRequest request) {
@@ -839,7 +845,10 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 	}
 
 	protected Object lookupController(Class<?> controllerClass) {
-      return getBean(controllerClass.getName());
+		if (controllerClass == null) {
+			return null;
+		}
+		return getBean(controllerClass.getName());
 	}
 
 	/**

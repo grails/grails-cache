@@ -1,63 +1,63 @@
 package com.demo
 
-import grails.plugin.cache.CacheEvict
-
 class DemoController {
 
-    def basicCachingService
-    def grailsCacheAdminService
+	def basicCachingService
+	def grailsCacheAdminService
 
-    def clearBlocksCache() {
-        grailsCacheAdminService.clearBlocksCache()
-        render "cleared blocks cache"
-    }
+	def clearBlocksCache() {
+		grailsCacheAdminService.clearBlocksCache()
+		render "cleared blocks cache"
+	}
 
-    def clearTemplatesCache() {
-        grailsCacheAdminService.clearTemplatesCache()
-        render "cleared templates cache"
-    }
+	def clearTemplatesCache() {
+		grailsCacheAdminService.clearTemplatesCache()
+		render "cleared templates cache"
+	}
 
-    def basicCachingServiceInvocationCount() {
-        render "Basic Caching Service Invocation Count Is ${basicCachingService.invocationCounter}."
-    }
+	def basicCachingServiceInvocationCount() {
+		render "Basic Caching Service Invocation Count Is ${basicCachingService.invocationCounter}."
+	}
 
-    def basicCachingService() {
-        render "Value From Service Is \"${basicCachingService.data}\""
-    }
+	def basicCachingService() {
+		render "Value From Service Is \"${basicCachingService.data}\""
+	}
 
-    def basicCachingServiceInvocation2Count() {
-        render "Basic Caching Service Invocation Count Is ${basicCachingService.invocationCounter2}."
-    }
-    def basicCaching2Service() {
-        render "Value From Service Is \"${basicCachingService.data2}\""
-    }
-    def basicCachingWithParamService() {
-        render "Value From Service Is \"${basicCachingService.getDataWithParams("dummy")}\""
-    }
-    def basicCaching2WithParamService() {
-        render "Value From Service Is \"${basicCachingService.getData2WithParams("dummy")}\""
-    }
+	def basicCachingServiceInvocation2Count() {
+		render "Basic Caching Service Invocation Count Is ${basicCachingService.invocationCounter2}."
+	}
 
-    def basicResetCachingService() {
-        render "Value From Service Is \"${basicCachingService.resetData()}\""
-    }
+	def basicCaching2Service() {
+		render "Value From Service Is \"${basicCachingService.data2}\""
+	}
 
+	def basicCachingWithParamService() {
+		render "Value From Service Is \"${basicCachingService.getDataWithParams("dummy")}\""
+	}
 
-    def cachePut(String key, String value) {
-        def result = basicCachingService.getData(key, value)
-        render "Result: ${result}"
-    }
+	def basicCaching2WithParamService() {
+		render "Value From Service Is \"${basicCachingService.getData2WithParams("dummy")}\""
+	}
 
-    def cacheGet(String key) {
-        def result = basicCachingService.getData(key)
-        render "Result: ${result}"
-    }
+	def basicResetCachingService() {
+		render "Value From Service Is \"${basicCachingService.resetData()}\""
+	}
 
-    def blockCache(int counter) {
-        [counter: counter]
-    }
+	def cachePut(String key, String value) {
+		def result = basicCachingService.getData(key, value)
+		render "Result: ${result}"
+	}
 
-    def renderTag(int counter) {
-        [counter: counter]
-    }
+	def cacheGet(String key) {
+		def result = basicCachingService.getData(key)
+		render "Result: ${result}"
+	}
+
+	def blockCache(int counter) {
+		[counter: counter]
+	}
+
+	def renderTag(int counter) {
+		[counter: counter]
+	}
 }

@@ -40,7 +40,7 @@ class CacheTagLib {
             def closureClass = bodyClosure.getClass()
             def key = closureClass.getName()
             if (attrs.key) {
-                key = key + ':' + attrs.key
+                key += ':' + attrs.key
             }
             def content = cache.get(key)
             if (content == null) {
