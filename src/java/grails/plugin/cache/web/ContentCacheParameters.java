@@ -20,6 +20,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.codehaus.groovy.grails.commons.ControllerArtefactHandler;
 import org.codehaus.groovy.grails.commons.GrailsControllerClass;
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap;
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest;
@@ -77,8 +78,8 @@ public class ContentCacheParameters {
 	}
 
 	protected void initController() {
-		controllerClass = (GrailsControllerClass) GrailsWebRequest.lookupApplication().getArtefactByLogicalPropertyName(
-				"Controller", getControllerName());
+		controllerClass = (GrailsControllerClass) GrailsWebRequest.lookupApplication().getArtefactForFeature(
+				ControllerArtefactHandler.TYPE, '/' + getControllerName());
 	}
 
 	protected void initAction() {
