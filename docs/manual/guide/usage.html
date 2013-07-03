@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>2 Usage 1.0.1</title>
+    <title>2 Usage 1.1</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -77,7 +77,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> Jeff Brown, Burt Beckwith</p>
 
-                    <p><strong>Version:</strong> 1.0.1</p>
+                    <p><strong>Version:</strong> 1.1</p>
 
                     
                 </div>
@@ -110,7 +110,7 @@ springframework/cache/annotation/CacheEvict.html">CacheEvict</a>) and support th
 
 
 <h2 id="configuration">2.1 Configuration</h2>
-<h4>Config.groovy and artifact files</h4><p class="paragraph"/>The caching configuration can be specified in <code>Config.groovy</code> or &#42;CacheConfig.groovy files. Both approaches support <code>environments</code> blocks for environment-specific configuration, and you can specify the loading order, for example to support overriding values. One example of this might be a plugin that specifies a known load order, allowing you to choose a lower value in your file and override some or all of the plugin's configuration.<p class="paragraph"/>There are a few configuration options for the plugin; these are specified in <code>Config.groovy</code>.<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Property</strong></th><th><strong class="bold">Default</strong></th><th><strong class="bold">Description</strong></th></tr><tr class="table-odd"><td>grails.cache.proxyTargetClass</td><td><code>false</code></td><td>From the Spring Javadoc: "By default, all proxies are created as JDK proxies. This may cause some problems if you are injecting objects as concrete classes rather than interfaces. To overcome this restriction you can set the <code>proxy-target-class</code> attribute to <code>true</code> which will result in class-based proxies being created."</td></tr><tr class="table-even"><td>grails.cache.aopOrder</td><td>Ordered.LOWEST_PRECEDENCE</td><td>From the Spring docs: "Defines the order of the cache advice that is applied to beans annotated with &#64;Cacheable or &#64;CacheEvict. No specified ordering means that the AOP subsystem determines the order of the advice."</td></tr><tr class="table-odd"><td>grails.cache.clearAtStartup</td><td><code>false</code></td><td>Whether to clear all caches at startup</td></tr></table>
+<h4>Config.groovy and artifact files</h4><p class="paragraph"/>The caching configuration can be specified in <code>Config.groovy</code> or &#42;CacheConfig.groovy files. Both approaches support <code>environments</code> blocks for environment-specific configuration, and you can specify the loading order, for example to support overriding values. One example of this might be a plugin that specifies a known load order, allowing you to choose a lower value in your file and override some or all of the plugin's configuration.<p class="paragraph"/>There are a few configuration options for the plugin; these are specified in <code>Config.groovy</code>.<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Property</strong></th><th><strong class="bold">Default</strong></th><th><strong class="bold">Description</strong></th></tr><tr class="table-odd"><td>grails.cache.enabled</td><td><code>true</code></td><td>Whether to enable the plugin</td></tr><tr class="table-even"><td>grails.cache.proxyTargetClass</td><td><code>false</code></td><td>From the Spring Javadoc: "By default, all proxies are created as JDK proxies. This may cause some problems if you are injecting objects as concrete classes rather than interfaces. To overcome this restriction you can set the <code>proxy-target-class</code> attribute to <code>true</code> which will result in class-based proxies being created."</td></tr><tr class="table-odd"><td>grails.cache.aopOrder</td><td>Ordered.LOWEST_PRECEDENCE</td><td>From the Spring docs: "Defines the order of the cache advice that is applied to beans annotated with &#64;Cacheable or &#64;CacheEvict. No specified ordering means that the AOP subsystem determines the order of the advice."</td></tr><tr class="table-even"><td>grails.cache.clearAtStartup</td><td><code>false</code></td><td>Whether to clear all caches at startup</td></tr><tr class="table-odd"><td>grails.cache.keyGenerator</td><td>"customCacheKeyGenerator"</td><td>Replace the key generator with your own. e.g. if your config is <code>grails.cache.keyGenerator="myCacheKeygen"</code>, you would declare something like this <code>myCacheKeygen(my.company.MyKeyGen)</code> in your resources.groovy. Note: MyKeyGen must implement KeyGenerator.</td></tr></table>
 
 
 
