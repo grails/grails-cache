@@ -18,6 +18,7 @@ import grails.plugin.cache.util.ClassUtils
 
 import org.codehaus.groovy.grails.web.pages.GroovyPageTemplate
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
+import org.codehaus.groovy.grails.web.util.StreamCharBuffer
 import org.springframework.web.context.request.RequestContextHolder
 
 class CacheTagLib {
@@ -46,14 +47,16 @@ class CacheTagLib {
 		if (attrs.key) {
 			key += ':' + attrs.key
 		}
+
 		def content = cache.get(key)
 		if (content == null) {
-			content = body()
+			content = cloneIfNecessary(body())
 			cache.put(key, content)
 		}
 		else {
 			content = content.get()
 		}
+
 		out << content
 	}
 
@@ -71,20 +74,20 @@ class CacheTagLib {
 	 * @attr plugin The plugin to look for the template in
 	 */
 	def render = { attrs ->
-		def key = calculateFullKey(attrs.template, attrs.contextPath, attrs.plugin)
-		if (attrs.key) {
-			key += ':' + attrs.key
-		}
-
 		if (!grailsCacheManager) {
 			out <<  g.render(attrs)
 			return
 		}
 
+		def key = calculateFullKey(attrs.template, attrs.contextPath, attrs.plugin)
+		if (attrs.key) {
+			key += ':' + attrs.key
+		}
+
 		def cache = grailsCacheManager.getCache('grailsTemplatesCache')
 		def content = cache.get(key)
 		if (content == null) {
-			content = g.render(attrs)
+			content = cloneIfNecessary(g.render(attrs))
 			cache.put(key, content)
 		}
 		else {
@@ -104,5 +107,18 @@ class CacheTagLib {
 		}
 
 		t.metaInfo.pageClass.name
+	}
+
+	protected cloneIfNecessary(content) {
+		if (content instanceof StreamCharBuffer) {
+			if (content instanceof Cloneable) {
+				content = content.clone()
+			}
+			else {
+				// pre Grails 2.3
+				content = content.toString()
+			}
+		}
+		content
 	}
 }
