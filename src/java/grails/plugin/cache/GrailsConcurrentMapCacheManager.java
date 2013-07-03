@@ -38,7 +38,11 @@ public class GrailsConcurrentMapCacheManager implements GrailsCacheManager {
 	public Cache getCache(String name) {
 		Cache cache = cacheMap.get(name);
 		if (cache == null) {
-			cache = cacheMap.putIfAbsent(name, createConcurrentMapCache(name));
+			cache = createConcurrentMapCache(name);
+			Cache existing = cacheMap.putIfAbsent(name, cache);
+			if (existing != null) {
+				cache = existing;
+			}
 		}
 		return cache;
 	}
@@ -48,9 +52,7 @@ public class GrailsConcurrentMapCacheManager implements GrailsCacheManager {
 	}
 
 	public boolean destroyCache(String name) {
-		synchronized (cacheMap) {
-			return cacheMap.remove(name) != null;
-		}
+		return cacheMap.remove(name) != null;
 	}
 
 	protected GrailsConcurrentMapCache createConcurrentMapCache(String name) {
