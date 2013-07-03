@@ -1,4 +1,4 @@
-/* Copyright 2012 SpringSource.
+/* Copyright 2012-2013 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,18 @@
 import grails.plugin.cache.CacheBeanPostProcessor
 import grails.plugin.cache.CacheConfigArtefactHandler
 import grails.plugin.cache.ConfigLoader
-import grails.plugin.cache.GrailsAnnotationCacheOperationSource
+import grails.plugin.cache.CustomCacheKeyGenerator
 import grails.plugin.cache.GrailsConcurrentMapCacheManager
 import grails.plugin.cache.web.ProxyAwareMixedGrailsControllerHelper
 import grails.plugin.cache.web.filter.DefaultWebKeyGenerator
-import grails.plugin.cache.web.filter.NoOpFilter
 import grails.plugin.cache.web.filter.ExpressionEvaluator
+import grails.plugin.cache.web.filter.NoOpFilter
 import grails.plugin.cache.web.filter.simple.MemoryPageFragmentCachingFilter
 
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.cache.Cache
-import org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean
-import org.springframework.context.ApplicationContext
 import org.springframework.core.Ordered
 import org.springframework.web.filter.DelegatingFilterProxy
 
@@ -36,7 +34,7 @@ class CacheGrailsPlugin {
 
 	private final Logger log = LoggerFactory.getLogger('grails.plugin.cache.CacheGrailsPlugin')
 
-	def version = '1.0.1'
+	def version = '1.1'
 	def grailsVersion = '2.0 > *'
 	def observe = ['controllers', 'services']
 	def loadAfter = ['controllers', 'services']
@@ -50,7 +48,7 @@ class CacheGrailsPlugin {
 	def author = 'Jeff Brown'
 	def authorEmail = 'jbrown@vmware.com'
 	def description = 'Grails Cache Plugin'
-	def documentation = 'http://grails.org/plugin/cache'
+	def documentation = 'http://grails-plugins.github.com/grails-cache/'
 
 	def license = 'APACHE'
 	def organization = [name: 'SpringSource', url: 'http://www.springsource.org/']
@@ -116,15 +114,18 @@ class CacheGrailsPlugin {
 		if (!(proxyTargetClass instanceof Boolean)) proxyTargetClass = false
 		def order = cacheConfig.aopOrder
 		if (!(order instanceof Number)) order = Ordered.LOWEST_PRECEDENCE
+		// allow user can to use their own key generator.
+		def cacheKeyGen = cacheConfig.keyGenerator ?: 'customCacheKeyGenerator'
+		customCacheKeyGenerator(CustomCacheKeyGenerator)
 
 		xmlns cache: 'http://www.springframework.org/schema/cache'
 
 		// creates 3 beans: org.springframework.cache.config.internalCacheAdvisor (org.springframework.cache.interceptor.BeanFactoryCacheOperationSourceAdvisor),
 		//                  org.springframework.cache.annotation.AnnotationCacheOperationSource#0 (org.springframework.cache.annotation.AnnotationCacheOperationSource),
 		//                  org.springframework.cache.interceptor.CacheInterceptor#0 (org.springframework.cache.interceptor.CacheInterceptor)
-		cache.'annotation-driven'('cache-manager': 'grailsCacheManager',
-		                          mode: 'proxy', order: order,
-		                          'proxy-target-class': proxyTargetClass)
+
+		cache.'annotation-driven'('cache-manager': 'grailsCacheManager' ,'key-generator': cacheKeyGen,
+		                          mode: 'proxy', order: order, 'proxy-target-class': proxyTargetClass)
 
 		// updates the AnnotationCacheOperationSource with a custom subclass
 		// and adds the 'cacheOperationSource' alias
@@ -190,12 +191,17 @@ class CacheGrailsPlugin {
 	}
 
 	private void reloadCaches(ctx) {
+
+		if (!isEnabled(ctx.grailsApplication)) {
+			return
+		}
+
 		ctx.grailsCacheConfigLoader.reload ctx
 		log.debug 'Reloaded grailsCacheConfigLoader'
 	}
 
 	private boolean isEnabled(GrailsApplication application) {
-		// TODO
-		true
+		def enabled = application.config.grails.cache.enabled
+		enabled == null || enabled != false
 	}
 }

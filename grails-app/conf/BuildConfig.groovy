@@ -13,15 +13,22 @@ grails.project.dependency.resolution = {
 		grailsCentral()
 	}
 
+	dependencies {
+		build('net.sourceforge.nekohtml:nekohtml:1.9.14') {
+			excludes "xml-apis"
+			export = false
+		}
+	}
+
 	plugins {
 		build(":tomcat:$grailsVersion") {
 			export = false
 		}
 		runtime(":hibernate:$grailsVersion") {
-		    export = false
+			export = false
 		}
 		if (Environment.current != Environment.TEST) {
-			build(':release:2.0.4', ':rest-client-builder:1.0.2') {
+			build ':release:2.2.1', ':rest-client-builder:1.0.3', {
 				export = false
 			}
 		}
