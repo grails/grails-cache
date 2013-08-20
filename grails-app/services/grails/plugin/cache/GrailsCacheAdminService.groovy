@@ -20,9 +20,22 @@ class GrailsCacheAdminService {
 
     static transactional = false
 
+    def grailsCacheManager
+
     @CacheEvict(value="grailsBlocksCache", allEntries=true)
     def clearBlocksCache() {}
 
     @CacheEvict(value="grailsTemplatesCache", allEntries=true)
     def clearTemplatesCache() {}
+
+    def clearCache(cacheName) {
+        grailsCacheManager.getCache(cacheName)?.clear()
+    }
+
+    def clearAllCaches() {
+        grailsCacheManager.cacheNames.each { cacheName ->
+            clearCache(cacheName)
+        }
+    }
+
 }
