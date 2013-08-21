@@ -33,6 +33,7 @@ class CacheTagLib {
 	 * is rendered, it does not need to be evaluated again.
 	 *
 	 * @attr key An optional cache key allowing the same block to be cached with different content
+	 * @attr cache Cache name ("grailsBlocksCache" is used if not specified)
 	 */
 	def block = { attrs, body ->
 		if (!grailsCacheManager) {
@@ -40,7 +41,7 @@ class CacheTagLib {
 			return
 		}
 
-		def cache = grailsCacheManager.getCache('grailsBlocksCache')
+		def cache = grailsCacheManager.getCache(attrs.cache ?: 'grailsBlocksCache')
 		def bodyClosure = ClassUtils.getPropertyOrFieldValue(body, 'bodyClosure')
 		def closureClass = bodyClosure.getClass()
 		def key = closureClass.getName()
@@ -72,6 +73,7 @@ class CacheTagLib {
 	 * @attr collection A collection of model objects to apply the template to
 	 * @attr var The variable name of the bean to be referenced in the template
 	 * @attr plugin The plugin to look for the template in
+	 * @attr cache Cache name ("grailsTemplatesCache" is used if not specified)
 	 */
 	def render = { attrs ->
 		if (!grailsCacheManager) {
@@ -84,7 +86,7 @@ class CacheTagLib {
 			key += ':' + attrs.key
 		}
 
-		def cache = grailsCacheManager.getCache('grailsTemplatesCache')
+		def cache = grailsCacheManager.getCache(attrs.cache ?: 'grailsTemplatesCache')
 		def content = cache.get(key)
 		if (content == null) {
 			content = cloneIfNecessary(g.render(attrs))
