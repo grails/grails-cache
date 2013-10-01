@@ -233,16 +233,6 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 			writeResponse(request, response, pageInfo);
 
 			inspectAfterCacheEvicts(operationsByType.get(EVICT));
-
-			if (!updates.isEmpty()) {
-				Collection<Cache> caches = new ArrayList<Cache>();
-				for (Map.Entry<CacheOperationContext, Object> entry : updates.entrySet()) {
-					for (Cache cache : entry.getKey().getCaches()) {
-						caches.add(cache);
-					}
-				}
-				update(caches, pageInfo, status, calculateKey(request));
-			}
 		}
 		finally {
 			destroyContext();
