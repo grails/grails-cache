@@ -5,7 +5,7 @@ import functionaltestplugin.FunctionalTestCase
 class DynamicScaffoldingFunctionalTests extends FunctionalTestCase {
 
     void testDynamicScaffolding() {
-        get '/person/list'
+        get '/person/index'
         assertStatus 200
         assertTitle 'Person List'
     }

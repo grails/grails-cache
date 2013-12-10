@@ -14,10 +14,14 @@
  */
 package grails.plugin.cache
 
+import grails.test.mixin.TestMixin
+import grails.test.mixin.integration.IntegrationTestMixin
+import static org.junit.Assert.*
 /**
  * @author Burt Beckwith
  */
-class ConfigLoaderTests extends GroovyTestCase {
+@TestMixin(IntegrationTestMixin)
+class ConfigLoaderTests {
 
 	def grailsApplication
 	def grailsCacheConfigLoader
@@ -80,13 +84,11 @@ class ConfigLoaderTests extends GroovyTestCase {
 		             grailsCacheManager.cacheNames.sort())
 	}
 
-	protected void setUp() {
-		super.setUp()
+	void setUp() {
 		reset()
 	}
 
-	protected void tearDown() {
-		super.tearDown()
+	void tearDown() {
 		reset()
 	}
 
