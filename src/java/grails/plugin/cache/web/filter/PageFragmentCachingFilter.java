@@ -43,8 +43,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.ehcache.constructs.blocking.LockTimeoutException;
-
 import org.codehaus.groovy.grails.plugins.web.api.RequestMimeTypesApi;
 import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes;
 import org.codehaus.groovy.grails.web.servlet.HttpHeaders;
@@ -287,11 +285,11 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 				releaseCacheLocks(operationsByType, key);
 			}
 		}
-		catch (LockTimeoutException e) {
-			//do not release the lock, because you never acquired it
-			throw e;
-		}
 		catch (Exception e) {
+            if("net.sf.ehcache.constructs.blocking.LockTimeoutException".equals(e.getClass().getName())) {
+			    //do not release the lock, because you never acquired it
+			    throw e;
+            }
 			// Must unlock the cache if the above fails. Will be logged at Filter
 			releaseCacheLocks(operationsByType, key);
 			throw e;
@@ -311,27 +309,20 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 		String key = calculateKey(request);
 		PageInfo pageInfo;
 		ValueWrapper element = cacheStatus.valueWrapper;
-		try {
-			log.debug("Serving cached content for {}", key);
-			pageInfo = (PageInfo) element.get();
+		log.debug("Serving cached content for {}", key);
+		pageInfo = (PageInfo) element.get();
 
-			for (Map.Entry<String, ? extends Serializable> entry : pageInfo.getRequestAttributes().entrySet()) {
-				request.setAttribute(entry.getKey(), entry.getValue());
-			}
-
-			// As the page is cached, we need to add an instance of the associated
-			// controller to the request. This is required by GrailsLayoutDecoratorMapper
-			// to pick the appropriate layout.
-			if (StringUtils.hasLength(getContext().getControllerName())) {
-				Object controller = lookupController(getContext().getControllerClass());
-				request.setAttribute(GrailsApplicationAttributes.CONTROLLER, controller);
-			}
-		}
-		catch (LockTimeoutException e) {
-			//do not release the lock, because you never acquired it
-			throw e;
+		for (Map.Entry<String, ? extends Serializable> entry : pageInfo.getRequestAttributes().entrySet()) {
+			request.setAttribute(entry.getKey(), entry.getValue());
 		}
 
+		// As the page is cached, we need to add an instance of the associated
+		// controller to the request. This is required by GrailsLayoutDecoratorMapper
+		// to pick the appropriate layout.
+		if (StringUtils.hasLength(getContext().getControllerName())) {
+			Object controller = lookupController(getContext().getControllerClass());
+			request.setAttribute(GrailsApplicationAttributes.CONTROLLER, controller);
+		}
 		timer.stop(true);
 		response.addHeader(X_CACHED, String.valueOf(true));
 		return pageInfo;
