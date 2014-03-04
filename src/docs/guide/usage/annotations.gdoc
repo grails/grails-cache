@@ -1,4 +1,4 @@
-The [Cacheable|api:grails.plugin.cache.Cacheable] and [CacheEvict|api:grails.plugin.cache.CacheEvict] annotations proviated by the plugin have counterparts with the same names provided by Spring. See the [Spring documentation|http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/cache.html] for their usage and allowed syntax.
+The [Cacheable|api:grails.plugin.cache.Cacheable] and [CacheEvict|api:grails.plugin.cache.CacheEvict] annotations provided by the plugin have counterparts with the same names provided by Spring. See the [Spring documentation|http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/cache.html] for their usage and allowed syntax.
 
 h4. Service method caching
 
