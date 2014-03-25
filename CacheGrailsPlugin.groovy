@@ -23,11 +23,13 @@ import grails.plugin.cache.web.filter.NoOpFilter
 import grails.plugin.cache.web.filter.simple.MemoryPageFragmentCachingFilter
 
 import org.codehaus.groovy.grails.commons.GrailsApplication
+import org.codehaus.groovy.grails.plugins.GrailsVersionUtils;
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.cache.Cache
 import org.springframework.core.Ordered
 import org.springframework.web.filter.DelegatingFilterProxy
+import org.springframework.core.SpringVersion;
 
 class CacheGrailsPlugin {
 
@@ -115,7 +117,14 @@ class CacheGrailsPlugin {
 		if (!(order instanceof Number)) order = Ordered.LOWEST_PRECEDENCE
 		// allow user can to use their own key generator.
 		def cacheKeyGen = cacheConfig.keyGenerator ?: 'customCacheKeyGenerator'
-		customCacheKeyGenerator(CustomCacheKeyGenerator)
+
+		// Use the Spring key generator if the Spring version is 4.0.3 or later
+		// Can't use the Spring key generator if < 4.0.3 because of https://jira.spring.io/browse/SPR-11505
+		if(SpringVersion.version==null || GrailsVersionUtils.isVersionGreaterThan(SpringVersion.version,'4.0.3')){
+			customCacheKeyGenerator(CustomCacheKeyGenerator)
+		}else{
+			customCacheKeyGenerator(org.springframework.cache.interceptor.SimpleKeyGenerator)
+		}
 
 		xmlns cache: 'http://www.springframework.org/schema/cache'
 
