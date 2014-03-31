@@ -233,19 +233,25 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper implement
 		for (Map.Entry<String, List<Serializable>> headerEntry : headersMap.entrySet()) {
 			String name = headerEntry.getKey();
 			for (Serializable value : headerEntry.getValue()) {
-				Type type = Header.Type.determineType(value.getClass());
-				switch (type) {
-					case STRING:
-						headers.add(new Header<String>(name, (String)value));
-						break;
-					case DATE:
-						headers.add(new Header<Long>(name, (Long)value));
-						break;
-					case INT:
-						headers.add(new Header<Integer>(name, (Integer)value));
-						break;
-					default:
-						throw new IllegalArgumentException("No mapping for Header.Type: " + type);
+				
+				// Null Check for value before doing value.getClass()
+				// FIX for: http://jira.grails.org/browse/GPCACHE-37
+				if(value != null) {
+				
+					Type type = Header.Type.determineType(value.getClass());
+					switch (type) {
+						case STRING:
+							headers.add(new Header<String>(name, (String)value));
+							break;
+						case DATE:
+							headers.add(new Header<Long>(name, (Long)value));
+							break;
+						case INT:
+							headers.add(new Header<Integer>(name, (Integer)value));
+							break;
+						default:
+							throw new IllegalArgumentException("No mapping for Header.Type: " + type);
+					}
 				}
 			}
 		}
