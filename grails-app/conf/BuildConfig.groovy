@@ -47,7 +47,7 @@ grails.project.dependency.resolution = {
 
         compile ':scaffolding:2.0.1', { export = false }
 		
-        test(':functional-test:2.0.RC2-SNAPSHOT') {
+        test(':functional-test:2.0.0') {
 			export = false
 		}
 		
