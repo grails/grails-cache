@@ -18,6 +18,7 @@ grails.project.dependency.resolution = {
 	}
 
 	dependencies {
+        compile 'cglib:cglib-nodep:2.2.2'
 		test 'org.codehaus.gpars:gpars:1.0.0', {
 			export = false
 		}
@@ -30,11 +31,11 @@ grails.project.dependency.resolution = {
 	}
 
 	plugins {
-		build(":tomcat:7.0.42") {
+		build(":tomcat:7.0.52.1") {
 			export = false
 		}
 		
-        runtime(":hibernate:3.6.10.6") {
+        runtime(":hibernate:3.6.10.13") {
 			export = false
 		}
 		
