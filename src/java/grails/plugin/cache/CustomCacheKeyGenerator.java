@@ -14,28 +14,106 @@
  */
 package grails.plugin.cache;
 
+import org.codehaus.groovy.grails.plugins.GrailsVersionUtils;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.cache.interceptor.KeyGenerator;
+import org.springframework.core.SpringVersion;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
- * Generate better cache key, compare to {@link org.springframework.cache.interceptor.DefaultKeyGenerator}
+ * Includes the hashcode, method signature, and class name of the target (caller) in the cache key
  */
 public class CustomCacheKeyGenerator implements KeyGenerator {
+	
+	private final KeyGenerator innerKeyGenerator;
+	
+	public CustomCacheKeyGenerator(KeyGenerator innerKeyGenerator){
+		this.innerKeyGenerator = innerKeyGenerator;
+	}
+	
+	public CustomCacheKeyGenerator(){
+		// Use the Spring key generator if the Spring version is 4.0.3 or later
+		// Can't use the Spring key generator if < 4.0.3 because of https://jira.spring.io/browse/SPR-11505
+		if(SpringVersion.getVersion()==null || GrailsVersionUtils.isVersionGreaterThan(SpringVersion.getVersion(),"4.0.3")){
+			this.innerKeyGenerator = new SimpleKeyGenerator();
+		}else{
+			try {
+				this.innerKeyGenerator = (KeyGenerator) Class.forName("org.springframework.cache.interceptor.SimpleKeyGenerator").newInstance();
+			} catch (Exception e) {
+				// this should never happen
+				throw new RuntimeException(e);
+			}
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	private static final class CacheKey implements Serializable {
+		final String targetClassName;
+		final String targetMethodName;
+		final int targetObjectHashCode;
+		final Object simpleKey;
+		public CacheKey(String targetClassName, String targetMethodName,
+				int targetObjectHashCode, Object simpleKey) {
+			this.targetClassName = targetClassName;
+			this.targetMethodName = targetMethodName;
+			this.targetObjectHashCode = targetObjectHashCode;
+			this.simpleKey = simpleKey;
+		}
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result
+					+ ((simpleKey == null) ? 0 : simpleKey.hashCode());
+			result = prime
+					* result
+					+ ((targetClassName == null) ? 0 : targetClassName
+							.hashCode());
+			result = prime
+					* result
+					+ ((targetMethodName == null) ? 0 : targetMethodName
+							.hashCode());
+			result = prime * result + targetObjectHashCode;
+			return result;
+		}
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			CacheKey other = (CacheKey) obj;
+			if (simpleKey == null) {
+				if (other.simpleKey != null)
+					return false;
+			} else if (!simpleKey.equals(other.simpleKey))
+				return false;
+			if (targetClassName == null) {
+				if (other.targetClassName != null)
+					return false;
+			} else if (!targetClassName.equals(other.targetClassName))
+				return false;
+			if (targetMethodName == null) {
+				if (other.targetMethodName != null)
+					return false;
+			} else if (!targetMethodName.equals(other.targetMethodName))
+				return false;
+			if (targetObjectHashCode != other.targetObjectHashCode)
+				return false;
+			return true;
+		}
+	}
 
 	public Object generate(Object target, Method method, Object... params) {
 		Class<?> objClass = AopProxyUtils.ultimateTargetClass(target);
-		List<Object> cacheKey = new ArrayList<Object>(4);
-		cacheKey.add(objClass.getName().intern());
-		cacheKey.add(System.identityHashCode(target));
-		cacheKey.add(method.toString().intern());
-		if (params != null) {
-			cacheKey.addAll(Arrays.asList(params));
-		}
-		return cacheKey;
+		
+		return new CacheKey(
+				objClass.getName().intern(),
+				method.toString().intern(),
+				target.hashCode(), innerKeyGenerator.generate(target, method, params));
 	}
 }
