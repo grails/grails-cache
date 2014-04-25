@@ -1,0 +1,15 @@
+language: groovy
+jdk:
+- openjdk6
+before_script:
+  # if we run on the same box as previous build, make sure target is clean
+  - rm -rf target
+script: ./travis-build.sh
+env:
+  global:
+  - GIT_NAME="Craig Andrews"
+  - GIT_EMAIL="candrews@integralblue.com"
+  # travis encrypt -a env.global 'GRAILS_CENTRAL_USERNAME=myusername'
+  # travis encrypt -a env.global 'GRAILS_CENTRAL_PASSWORD=mypassword'
+  # travis encrypt -a env.global 'GH_TOKEN=token' # get the token from https://github.com/settings/applications
+  # TODO add the 3 "secure" lines created by the preceding "travis encrypt" commands here
