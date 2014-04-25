@@ -1,10 +1,21 @@
+# Eclipse
+.classpath
+.project
+.settings/
+target-eclipse/
+
+# Intellij
+.idea/
+*.iml
+*.iws
+
+*.log
+*.zip
+.DS_Store
 /docs
 plugin.xml
-grails-cache*.zip
-stacktrace.log
 target
 web-app/WEB-INF/tld
-.settings
 grails-app/conf/ApplicationResources.groovy
 grails-app/conf/BootStrap.groovy
 grails-app/conf/spring/
