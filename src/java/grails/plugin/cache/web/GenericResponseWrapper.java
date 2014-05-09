@@ -16,12 +16,15 @@ package grails.plugin.cache.web;
 
 import grails.plugin.cache.SerializableOutputStream;
 import grails.plugin.cache.web.Header.Type;
-import grails.plugin.cache.web.filter.FilterServletOutputStream;
+import net.sf.cglib.proxy.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -34,7 +37,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
-import org.slf4j.LoggerFactory;
 
 /**
  * Provides a wrapper for {@link javax.servlet.http.HttpServletResponseWrapper}.
@@ -52,9 +54,10 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("deprecation")
 public class GenericResponseWrapper extends HttpServletResponseWrapper implements Serializable {
 
-	private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 1;
+    public static final Log LOG = LogFactory.getLog(GenericResponseWrapper.class);
 
-	protected int statusCode = SC_OK;
+    protected int statusCode = SC_OK;
 	protected int contentLength;
 	protected String contentType;
 	protected final Map<String, List<Serializable>> headersMap = new TreeMap<String, List<Serializable>>(
@@ -69,7 +72,30 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper implement
 	 */
 	public GenericResponseWrapper(final HttpServletResponse response, final SerializableOutputStream outputStream) {
 		super(response);
-		out = new FilterServletOutputStream(outputStream);
+
+		out = (ServletOutputStream) Enhancer.create(ServletOutputStream.class, new MethodInterceptor() {
+            @Override
+            public Object intercept(Object o, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
+                if("write".equals(method.getName())) {
+                    switch(args.length) {
+                        case 1:
+                            Object arg = args[0];
+                            if(arg instanceof Integer) {
+                                outputStream.write((Integer)arg);
+                            }
+                            else {
+                                outputStream.write((byte[])arg);
+                            }
+                        case 3:
+                            outputStream.write((byte[])args[0], (Integer)args[1], (Integer)args[2]);
+                    }
+                    return null;
+                }
+                else {
+                    return methodProxy.invokeSuper(o, args);
+                }
+            }
+        });
 	}
 
 	@Override
@@ -126,7 +152,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper implement
 	@Override
 	public void setStatus(final int code, final String msg) {
 		statusCode = code;
-		LoggerFactory.getLogger(getClass()).warn("Discarding message because this method is deprecated.");
+		LOG.warn("Discarding message because this method is deprecated.");
 		super.setStatus(code);
 	}
 
