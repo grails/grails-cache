@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>5 Implementation Details 1.1.6</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction To The Cache Plugin</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/usage.html"><strong>2</strong><span>Usage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/cacheTags.html"><strong>3</strong><span>GSP Cache Tags</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/grailsCacheAdminService.html"><strong>4</strong><span>Grails Cache Admin Service</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/implementation.html"><strong>5</strong><span>Implementation Details</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>Grails Cache Plugin</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/grailsCacheAdminService.html">&lt;&lt; <strong>4</strong><span>Grails Cache Admin Service</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+
+
+                <div class="project">
+                    <h1>5 Implementation Details - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Jeff Brown, Burt Beckwith</p>
+
+                    <p><strong>Version:</strong> 1.1.6</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h1 id="implementation">5 Implementation Details</h1>
+All of the plugin's classes are designed for extensibility; the classes are all public, and fields and methods are mostly public or protected. Consider subclassing existing classes to reuse as much as possible instead of completely rewriting them.<p class="paragraph"/><h4>Cache manager</h4><p class="paragraph"/>The core cache plugin registers a <code>grailsCacheManager</code> Spring bean, and the extension plugins replace this bean with one that creates and manages caches for that implementation. The default implementation is an instance of <code>grails.plugin.cache.GrailsConcurrentMapCacheManager</code> which uses <code>grails.plugin.cache.GrailsConcurrentMapCache</code> as its cache implementation. It uses a <code>java.util.concurrent.ConcurrentHashMap</code> to store cached values.<p class="paragraph"/>You can customize the cache manager by replacing the <code>grailsCacheManager</code> Spring bean in <code>resources.groovy</code> with your own; either subclass <code>GrailsConcurrentMapCacheManager</code> (e.g. to override the <code>createConcurrentMapCache()</code> method) or by implementing the <code>grails.plugin.cache.GrailsCacheManager</code> interface.<p class="paragraph"/><h4>Controller caching</h4><p class="paragraph"/>The controller caching is implemented with a filter registered as <code>grailsCacheFilter</code> in <code>web.xml</code> and it is backed by the Spring bean of the same name. The implementation class is <code>grails.plugin.cache.web.filter.simple.MemoryPageFragmentCachingFilter</code>.<p class="paragraph"/>The content that is cached is the response generated by GSP (or directly by the controller if a response is rendered programmatically) before Sitemesh applies its template(s).<p class="paragraph"/><h5>Key generation</h5><p class="paragraph"/>Controller caching uses a key generator, a class that implements the <code>grails.plugin.cache.web.filter.WebKeyGenerator</code> interface (by default a <code>grails.plugin.cache.web.filter.DefaultWebKeyGenerator</code>). This is registered as the <code>webCacheKeyGenerator</code> Spring bean, so customizing the key generation is simply a matter of subclassing <code>DefaultWebKeyGenerator</code> or re-implementing the interface and registering your own <code>webCacheKeyGenerator</code> bean in <code>resources.groovy</code>.<p class="paragraph"/><h4>Fragment caching</h4><p class="paragraph"/>You can cache partial GSP page sections with the <code>&#60;cache:block&#62;</code> tag. You can specify a key when using this tag but it's in general unnecessary. This is because the block will be rendered with its own Closure, and the default key is the full closure class name. This is unique since the closures aren't re-used; for example these two blocks will be cached independently, even in the same GSP:<p class="paragraph"/><div class="code"><pre>&#60;cache:block&#62;
+foo
+&#60;/cache:block&#62;<p class="paragraph"/>&#60;cache:block&#62;
+bar
+&#60;/cache:block&#62;</pre></div><p class="paragraph"/>You can cache the content of templates with the <code>&#60;cache:render&#62;</code> tag. You can specify a key when using this tag but like the <code>block</code> tag, it's in general unnecessary because the default key is the full template class name.<p class="paragraph"/><h4>Service caching</h4><p class="paragraph"/>You can cache the return value of a service method by annotating it with <code>Cacheable</code>.<p class="paragraph"/><h5>Key generation</h5><p class="paragraph"/>The default implementation of the <code>org.springframework.cache.interceptor.KeyGenerator</code> used to generate keys for service method calls is <code>org.springframework.cache.interceptor.DefaultKeyGenerator</code>. This is only used if there is no <code>key</code> attribute specified in the annotation for the method. It generates a numeric key, with the following logic:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">public</span> <span class="java&#45;object">Object</span> generate(<span class="java&#45;object">Object</span> target, Method method, <span class="java&#45;object">Object</span>&#8230; params) &#123;
+   <span class="java&#45;keyword">if</span> (params.length == 1) &#123;
+      <span class="java&#45;keyword">return</span> (params&#91;0&#93; == <span class="java&#45;keyword">null</span> ? 53 : params&#91;0&#93;);
+   &#125;<p class="paragraph"/>   <span class="java&#45;keyword">if</span> (params.length == 0) &#123;
+      <span class="java&#45;keyword">return</span> 0;
+   &#125;<p class="paragraph"/>   <span class="java&#45;object">int</span> hashCode = 17;
+   <span class="java&#45;keyword">for</span> (<span class="java&#45;object">Object</span> object : params) &#123;
+      hashCode = 31 &#42; hashCode + (object == <span class="java&#45;keyword">null</span> ? 53 : object.hashCode());
+   &#125;
+   <span class="java&#45;keyword">return</span> hashCode;
+&#125;</pre></div><p class="paragraph"/>This is very generic and somewhat risky, since two no-arg methods that use the same cache will store values under the same key (0), and different methods with similar signatures can easily generate the same key for different return values. So it's best to either specify the <code>key</code> attribute in the annotation, or use separate caches.<p class="paragraph"/><h4>DSL parsing</h4><p class="paragraph"/>The cache plugin's DSL is very basic; only the cache name can be specified. But you could extend it (for example if you customized the cache or cache manager implementation, although a new plugin would probably make more sense) by replacing the <code>grailsCacheConfigLoader</code> Spring bean in <code>resources.groovy</code>. The default implementation is a <code>grails.plugin.cache.ConfigLoader</code>.<p class="paragraph"/><h4>Annotation SpEL expression evaluator</h4><p class="paragraph"/>You can extend or customize what is SpEL expressions are supported by re-defining the <code>webExpressionEvaluator</code> Spring bean in <code>resources.groovy</code>. The default implementation is an instance of <code>grails.plugin.cache.web.filter.ExpressionEvaluator</code>.
+
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/grailsCacheAdminService.html">&lt;&lt; <strong>4</strong><span>Grails Cache Admin Service</span></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Tags</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../ref/Tags/block.html">block</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/Tags/render.html">render</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>
