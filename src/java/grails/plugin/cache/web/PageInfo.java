@@ -34,11 +34,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.cglib.proxy.Callback;
-
 import org.codehaus.groovy.grails.plugins.web.api.ControllersApi;
 import org.codehaus.groovy.grails.web.servlet.GrailsFlashScope;
 import org.codehaus.groovy.grails.web.servlet.HttpHeaders;
+import org.codehaus.groovy.grails.commons.*;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.PointcutAdvisor;
 import org.springframework.aop.TargetSource;
@@ -64,6 +63,11 @@ public class PageInfo implements Serializable {
 	protected static final int GZIP_MAGIC_NUMBER_BYTE_1 = 31;
 	protected static final int GZIP_MAGIC_NUMBER_BYTE_2 = -117;
 	protected static final long ONE_YEAR_IN_SECONDS = 60 * 60 * 24 * 365;
+	protected static final java.util.Set<String> IGNORED_INTERFACES = new java.util.HashSet<String>() {{
+		add("net.sf.cglib.proxy");
+		add("javassist.util.proxy.ProxyObject");
+	}};
+
 
 	protected final HttpDateFormatter httpDateFormatter = new HttpDateFormatter();
 	protected final List<Header<? extends Serializable>> responseHeaders = new ArrayList<Header<? extends Serializable>>();
@@ -403,26 +407,36 @@ public class PageInfo implements Serializable {
 			if (value instanceof GrailsFlashScope) {
 				continue;
 			}
-			if (value instanceof FlashMap) {
+			else if (value instanceof FlashMap) {
 				continue;
 			}
-			if (value instanceof HttpServletResponse) {
+			else if (value instanceof HttpServletResponse) {
 				continue;
 			}
-			if (value instanceof ControllersApi) {
+			else if (value instanceof ControllersApi) {
 				continue;
 			}
-			if (value instanceof PointcutAdvisor || value instanceof PointcutAdvisor[]) {
+			else if (value instanceof PointcutAdvisor || value instanceof PointcutAdvisor[]) {
 				continue;
 			}
-			if (value instanceof Callback || value instanceof Callback[]) {
+			else if (value instanceof TargetSource) {
 				continue;
 			}
-			if (value instanceof TargetSource) {
+			else if(isInvalidObject(value)) {
 				continue;
 			}
 
 			requestAttributes.put(entry.getKey(), value);
 		}
+	}
+
+	protected boolean isInvalidObject(Object object) {
+			Class[] interfaces = GrailsClassUtils.getAllInterfaces(object);
+			for(Class i : interfaces) {
+				if(IGNORED_INTERFACES.contains(i.getName())) {
+					return true;
+				}
+			}
+			return false;
 	}
 }
