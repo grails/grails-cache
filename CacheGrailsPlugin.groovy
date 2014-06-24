@@ -28,8 +28,17 @@ import org.slf4j.LoggerFactory
 import org.springframework.cache.Cache
 import org.springframework.core.Ordered
 import org.springframework.web.filter.DelegatingFilterProxy
+import javassist.util.proxy.*;
 
 class CacheGrailsPlugin {
+
+	static {
+		ProxyFactory.classLoaderProvider = new ProxyFactory.ClassLoaderProvider() {
+			public ClassLoader get(ProxyFactory pf) {
+					return Thread.currentThread().getContextClassLoader();
+			}
+		};
+	}
 
 	private final Logger log = LoggerFactory.getLogger('grails.plugin.cache.CacheGrailsPlugin')
 
@@ -101,7 +110,6 @@ class CacheGrailsPlugin {
 	}
 
 	def doWithSpring = {
-
 		if (!isEnabled(application)) {
 			log.warn 'Cache plugin is disabled'
 			grailsCacheFilter(NoOpFilter)

@@ -54,10 +54,10 @@ import javax.servlet.http.HttpServletResponseWrapper;
 @SuppressWarnings("deprecation")
 public class GenericResponseWrapper extends HttpServletResponseWrapper implements Serializable {
 
-    private static final long serialVersionUID = 1;
-    public static final Log LOG = LogFactory.getLog(GenericResponseWrapper.class);
+  private static final long serialVersionUID = 1;
+  public static final Log LOG = LogFactory.getLog(GenericResponseWrapper.class);
 
-    protected int statusCode = SC_OK;
+  protected int statusCode = SC_OK;
 	protected int contentLength;
 	protected String contentType;
 	protected final Map<String, List<Serializable>> headersMap = new TreeMap<String, List<Serializable>>(
@@ -66,6 +66,14 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper implement
 	protected ServletOutputStream out;
 	protected transient PrintWriter writer;
 	protected boolean disableFlushBuffer = true;
+
+  static {
+    ProxyFactory.classLoaderProvider = new ProxyFactory.ClassLoaderProvider() {
+      public ClassLoader get(ProxyFactory pf) {
+          return Thread.currentThread().getContextClassLoader();
+      }
+    };
+  }
 
 	/**
 	 * Creates a GenericResponseWrapper
