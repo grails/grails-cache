@@ -16,7 +16,7 @@ package grails.plugin.cache.web;
 
 import grails.plugin.cache.SerializableOutputStream;
 import grails.plugin.cache.web.Header.Type;
-import net.sf.cglib.proxy.*;
+import javassist.util.proxy.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -73,29 +73,44 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper implement
 	public GenericResponseWrapper(final HttpServletResponse response, final SerializableOutputStream outputStream) {
 		super(response);
 
-		out = (ServletOutputStream) Enhancer.create(ServletOutputStream.class, new MethodInterceptor() {
-            @Override
-            public Object intercept(Object o, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
-                if("write".equals(method.getName())) {
-                    switch(args.length) {
-                        case 1:
-                            Object arg = args[0];
-                            if(arg instanceof Integer) {
-                                outputStream.write((Integer)arg);
-                            }
-                            else {
-                                outputStream.write((byte[])arg);
-                            }
-                        case 3:
-                            outputStream.write((byte[])args[0], (Integer)args[1], (Integer)args[2]);
-                    }
-                    return null;
-                }
-                else {
-                    return methodProxy.invokeSuper(o, args);
-                }
-            }
-        });
+    ProxyFactory factory = new ProxyFactory();
+
+    factory.setSuperclass(ServletOutputStream.class);
+    Class clazz = factory.createClass();
+
+    try {
+      this.out = (ServletOutputStream)clazz.newInstance();
+      MethodHandler handler = new MethodHandler() {
+
+              public Object invoke(Object o, Method method, Method forwarder, Object[] args) throws Throwable {
+                  if("write".equals(method.getName())) {
+                      switch(args.length) {
+                          case 1:
+                              Object arg = args[0];
+                              if(arg instanceof Integer) {
+                                  outputStream.write((Integer)arg);
+                              }
+                              else {
+                                  outputStream.write((byte[])arg);
+                              }
+                          case 3:
+                              outputStream.write((byte[])args[0], (Integer)args[1], (Integer)args[2]);
+                      }
+                      return null;
+                  }
+                  else {
+                      return forwarder.invoke(o, args);
+                  }
+              }
+        };
+
+        ((ProxyObject) out).setHandler(handler);
+    }
+    catch(Exception e) {
+          throw new RuntimeException("Cannot create output stream proxy: " + e.getMessage(), e);
+    }
+
+
 	}
 
 	@Override
@@ -259,11 +274,11 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper implement
 		for (Map.Entry<String, List<Serializable>> headerEntry : headersMap.entrySet()) {
 			String name = headerEntry.getKey();
 			for (Serializable value : headerEntry.getValue()) {
-				
+
 				// Null Check for value before doing value.getClass()
 				// FIX for: http://jira.grails.org/browse/GPCACHE-37
 				if(value != null) {
-				
+
 					Type type = Header.Type.determineType(value.getClass());
 					switch (type) {
 						case STRING:
