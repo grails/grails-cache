@@ -103,7 +103,7 @@ class CacheTagLib {
 		String uri = webRequest.attributes.getTemplateUri(templateName, webRequest.request)
 
 		GroovyPageTemplate t = groovyPagesTemplateRenderer.findAndCacheTemplate(
-			webRequest, pageScope, templateName, contextPath, pluginName, uri)
+			pageScope, templateName, contextPath, pluginName, uri)
 		if (!t) {
 			throwTagError("Template not found for name [$templateName] and path [$uri]")
 		}

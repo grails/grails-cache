@@ -44,11 +44,11 @@ grails.project.dependency.resolution = {
 	}
 
 	plugins {
-		build(":tomcat:7.0.52.1") {
+		build(":tomcat:7.0.54") {
 			export = false
 		}
 
-    runtime(":hibernate:3.6.10.13") {
+    runtime(":hibernate:3.6.10.16") {
 			export = false
 		}
 
@@ -56,7 +56,7 @@ grails.project.dependency.resolution = {
 				export = false
 		}
 
-    compile ':scaffolding:2.0.1', { export = false }
+    compile ':scaffolding:2.1.2', { export = false }
 
     test(':functional-test:2.0.0') {
 			export = false
