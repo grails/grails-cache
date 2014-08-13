@@ -196,28 +196,26 @@ public class GrailsAnnotationCacheOperationSource implements CacheOperationSourc
 	}
 
 	protected Collection<CacheOperation> findCacheOperations(Class<?> clazz) {
-		return determineCacheOperations(clazz);
-	}
-
-	protected Collection<CacheOperation> findCacheOperations(Method method) {
-		return determineCacheOperations(method);
-	}
-
-	/**
-	 * Determine the cache operation(s) for the given method or class.
-	 * <p>This implementation delegates to configured
-	 * {@link CacheAnnotationParser}s for parsing known annotations into
-	 * Spring's metadata attribute class.
-	 * <p>Can be overridden to support custom annotations that carry
-	 * caching metadata.
-	 * @param ae the annotated method or class
-	 * @return the configured caching operations, or {@code null} if none found
-	 */
-	protected Collection<CacheOperation> determineCacheOperations(AnnotatedElement ae) {
 		Collection<CacheOperation> ops = null;
 
 		for (CacheAnnotationParser annotationParser : annotationParsers) {
-			Collection<CacheOperation> annOps = annotationParser.parseCacheAnnotations(ae);
+			Collection<CacheOperation> annOps = annotationParser.parseCacheAnnotations(clazz);
+			if (annOps != null) {
+				if (ops == null) {
+					ops = new ArrayList<CacheOperation>();
+				}
+				ops.addAll(annOps);
+			}
+		}
+
+		return ops;
+	}
+
+	protected Collection<CacheOperation> findCacheOperations(Method method) {
+		Collection<CacheOperation> ops = null;
+
+		for (CacheAnnotationParser annotationParser : annotationParsers) {
+			Collection<CacheOperation> annOps = annotationParser.parseCacheAnnotations(method);
 			if (annOps != null) {
 				if (ops == null) {
 					ops = new ArrayList<CacheOperation>();
