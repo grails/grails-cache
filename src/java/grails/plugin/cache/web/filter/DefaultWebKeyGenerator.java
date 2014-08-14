@@ -35,6 +35,7 @@ public class DefaultWebKeyGenerator implements WebKeyGenerator {
 		String uri = WebUtils.getForwardURI(request);
 
 		StringBuilder key = new StringBuilder();
+		key.append(request.getServerName().toLowerCase()).append(':');
 		key.append(request.getMethod().toUpperCase());
 
 		String format = WebUtils.getFormatFromURI(uri);
