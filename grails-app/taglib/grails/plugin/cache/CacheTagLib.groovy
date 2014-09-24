@@ -25,6 +25,7 @@ class CacheTagLib {
 
 	static namespace = 'cache'
 
+	def grailsApplication
 	def grailsCacheManager
 	def groovyPagesTemplateRenderer
 
@@ -41,7 +42,7 @@ class CacheTagLib {
 			return
 		}
 
-		def cache = grailsCacheManager.getCache(attrs.cache ?: 'grailsBlocksCache')
+      def cache = grailsCacheManager.getCache(attrs.cache ?: 'grailsBlocksCache')
 		def bodyClosure = ClassUtils.getPropertyOrFieldValue(body, 'bodyClosure')
 		def closureClass = bodyClosure.getClass()
 		def key = closureClass.getName()
@@ -86,7 +87,7 @@ class CacheTagLib {
 			key += ':' + attrs.key
 		}
 
-		def cache = grailsCacheManager.getCache(attrs.cache ?: 'grailsTemplatesCache')
+      def cache = grailsCacheManager.getCache(attrs.cache ?: 'grailsTemplatesCache')
 		def content = cache.get(key)
 		if (content == null) {
 			content = cloneIfNecessary(g.render(attrs))

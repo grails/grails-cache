@@ -25,9 +25,10 @@ import org.slf4j.LoggerFactory
  */
 class ConfigBuilder extends BuilderSupport {
 
-	protected static final List CACHE_PARAM_NAMES = ['env', 'name']
+	protected static final List CACHE_PARAM_NAMES = ['env', 'name', 'maxCapacity']
 
 	List<String> cacheNames = []
+	def cacheNamesWithCapacity = [:]
 
 	protected Map<String, Object> _current
 	protected List<String> _stack = []
@@ -165,11 +166,16 @@ class ConfigBuilder extends BuilderSupport {
 				continue
 			}
 			String name = data.name
+			Integer capacity = data.maxCapacity
 			if (!name) {
 				_log.warn 'ignoring cache specified with no name'
 				continue
 			}
 			cacheNames << name
+
+			if(name && capacity) {
+				cacheNamesWithCapacity.put(name, capacity)
+			}
 		}
 	}
 }

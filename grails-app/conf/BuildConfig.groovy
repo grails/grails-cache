@@ -29,7 +29,7 @@ grails.project.dependency.resolution = {
 	}
 
 	dependencies {
-
+    compile "com.googlecode.concurrentlinkedhashmap:concurrentlinkedhashmap-lru:1.4"
     compile "org.javassist:javassist:3.17.1-GA"
 
 		test 'org.codehaus.gpars:gpars:1.0.0', {
