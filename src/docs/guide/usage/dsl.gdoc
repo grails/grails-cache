@@ -49,6 +49,22 @@ grails.cache.config = {
 
 This configuration results in the same caches as the simpler one.
 
+If you want to limit the number of cache entries you have to change the default cache manager to @'GrailsConcurrentLinkedMapCacheManager'@. To specify the limit you can add the @maxCapacity@ parameter to the cache config. Default value for @maxCapacity@ is 10000.
+
+{code}
+grails.cache.config = {
+   cacheManager 'GrailsConcurrentLinkedMapCacheManager'
+   cache {
+      maxCapacity = 5000
+      name 'message'
+   }
+   cache {
+      maxCapacity = 6000
+      name 'maps'
+   }
+}
+{code}
+
 h4. Order
 
 You can configure your cache definitions to be loaded before or after others by setting the @order@ attribute. Configurations with higher numbers are loaded later, so these can override previously-configured values, although there is no support for removing caches or cache attributes, only adding or overriding:

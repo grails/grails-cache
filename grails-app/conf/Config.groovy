@@ -15,20 +15,17 @@ log4j = {
 
 // for tests
 grails.cache.config = {
-    cacheManager = "GrailsConcurrentLinkedMapCacheManager"
 	cache {
-        maxCapacity = 10000
 		name 'fromConfigGroovy1'
 	}
 	cache {
-        maxCapacity = 10000
 		name 'fromConfigGroovy2'
 	}
 }
 
 // Uncomment and edit the following lines to start using Grails encoding & escaping improvements
 
-/* remove this line 
+/* remove this line
 // GSP settings
 grails {
     views {
