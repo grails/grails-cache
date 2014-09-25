@@ -25,7 +25,6 @@ class CacheTagLib {
 
 	static namespace = 'cache'
 
-	def grailsApplication
 	def grailsCacheManager
 	def groovyPagesTemplateRenderer
 
