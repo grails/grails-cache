@@ -17,6 +17,7 @@ import grails.plugin.cache.CacheConfigArtefactHandler
 import grails.plugin.cache.ConfigLoader
 import grails.plugin.cache.CustomCacheKeyGenerator
 import grails.plugin.cache.GrailsConcurrentMapCacheManager
+import grails.plugin.cache.GrailsConcurrentLinkedMapCacheManager
 import grails.plugin.cache.web.filter.DefaultWebKeyGenerator
 import grails.plugin.cache.web.filter.ExpressionEvaluator
 import grails.plugin.cache.web.filter.NoOpFilter
@@ -138,7 +139,14 @@ class CacheGrailsPlugin {
 		// and adds the 'cacheOperationSource' alias
 		cacheBeanPostProcessor(CacheBeanPostProcessor)
 
-		grailsCacheManager(GrailsConcurrentMapCacheManager)
+		// Selects cache manager from config
+		if(cacheConfig.cacheManager.equals("GrailsConcurrentLinkedMapCacheManager")) {
+			grailsCacheManager(GrailsConcurrentLinkedMapCacheManager)
+		}
+		else {
+			grailsCacheManager(GrailsConcurrentMapCacheManager)
+		}
+		
 
 		grailsCacheConfigLoader(ConfigLoader)
 

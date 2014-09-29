@@ -52,12 +52,14 @@ class ConfigLoader {
 	void reload(List<ConfigObject> configs, ApplicationContext ctx) {
 
 		def configuredCacheNames = [] as LinkedHashSet
+		def configuredCacheNamesWithCapacity = [:]
 		for (ConfigObject co : configs) {
 			ConfigBuilder builder = new ConfigBuilder()
 			if (co.config instanceof Closure) {
 				builder.parse co.config
 			}
 			configuredCacheNames.addAll builder.cacheNames
+			configuredCacheNamesWithCapacity << builder.cacheNamesWithCapacity
 		}
 
 		GrailsCacheManager cacheManager = ctx.grailsCacheManager
@@ -69,7 +71,11 @@ class ConfigLoader {
 		}
 
 		for (String cacheName in configuredCacheNames) {
-			cacheManager.getCache cacheName
+			Integer capacity = configuredCacheNamesWithCapacity.get(cacheName)
+			if(cacheManager instanceof GrailsConcurrentLinkedMapCacheManager && capacity) {
+				cacheManager.getCache(cacheName, capacity)
+			}
+			cacheManager.getCache(cacheName)
 		}
 	}
 
