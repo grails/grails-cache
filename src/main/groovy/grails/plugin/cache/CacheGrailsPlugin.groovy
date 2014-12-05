@@ -32,9 +32,10 @@ import org.springframework.core.Ordered
 import org.springframework.web.filter.DelegatingFilterProxy
 import javassist.util.proxy.*;
 import groovy.util.logging.*
+import org.springframework.boot.context.embedded.*
 
 @Commons
-class CacheGrailsPlugin {
+class CacheGrailsPlugin extends grails.plugins.Plugin {
 
 	static {
 		ProxyFactory.classLoaderProvider = new ProxyFactory.ClassLoaderProvider() {
@@ -56,7 +57,7 @@ class CacheGrailsPlugin {
 
 	def title = 'Cache Plugin'
 	def author = 'Jeff Brown'
-	def authorEmail = 'jbrown@vmware.com'
+	def authorEmail = 'jbrown@pivotal.io'
 	def description = 'Grails Cache Plugin'
 	def documentation = 'http://grails-plugins.github.com/grails-cache/'
 
@@ -76,42 +77,7 @@ class CacheGrailsPlugin {
 		'src/docs/**'
 	]
 
-	def getWebXmlFilterOrder() {
-		def FilterManager = getClass().getClassLoader().loadClass('grails.plugin.webxml.FilterManager')
-		[grailsCacheFilter: FilterManager.URL_MAPPING_POSITION + 1000]
-	}
-
-	def doWithWebDescriptor = {xml ->
-		if (!isEnabled(application)) {
-			return
-		}
-
-		def filters = xml.filter
-		def lastFilter = filters[filters.size() - 1]
-		lastFilter + {
-			filter {
-				'filter-name'('grailsCacheFilter')
-				'filter-class'(DelegatingFilterProxy.name)
-				'init-param' {
-					'param-name'('targetFilterLifecycle')
-					'param-value'('true')
-				}
-			}
-		}
-
-		def filterMappings = xml.'filter-mapping'
-		def lastMapping = filterMappings[filterMappings.size() - 1]
-		lastMapping + {
-			'filter-mapping' {
-				'filter-name'('grailsCacheFilter')
-				'url-pattern'('*.dispatch')
-				'dispatcher'('FORWARD')
-				'dispatcher'('INCLUDE')
-			}
-		}
-	}
-
-	def doWithSpring = {
+	Closure doWithSpring() { {->
 		if (!isEnabled(application)) {
 			log.warn 'Cache plugin is disabled'
 			grailsCacheFilter(NoOpFilter)
@@ -151,19 +117,24 @@ class CacheGrailsPlugin {
 
 		grailsCacheConfigLoader(ConfigLoader)
 
+		grailsCacheFilter(FilterRegistrationBean) {
+			filter = bean(MemoryPageFragmentCachingFilter) {
+				cacheManager =         ref('grailsCacheManager')
+				cacheOperationSource = ref('cacheOperationSource')
+				keyGenerator =         ref('webCacheKeyGenerator')
+				expressionEvaluator =  ref('webExpressionEvaluator')				
+			}
+			urlPatterns = "*"
+			dispatcherTypes = EnumSet.of(javax.servlet.FORWARD, javax.servlet.INCLUDE)
+		}
+
 		webCacheKeyGenerator(DefaultWebKeyGenerator)
 
 		webExpressionEvaluator(ExpressionEvaluator)
+	}}
 
-		grailsCacheFilter(MemoryPageFragmentCachingFilter) {
-			cacheManager =         ref('grailsCacheManager')
-			cacheOperationSource = ref('cacheOperationSource')
-			keyGenerator =         ref('webCacheKeyGenerator')
-			expressionEvaluator =  ref('webExpressionEvaluator')
-		}
-	}
-
-	def doWithApplicationContext = { ctx ->
+	void doWithApplicationContext() { 
+		def ctx = applicationContext
 		reloadCaches ctx
 
 		def cacheConfig = ctx.grailsApplication.config.grails.cache
@@ -177,9 +148,9 @@ class CacheGrailsPlugin {
 		}
 	}
 
-	def onChange = { event ->
+	void onChange(Map<String, Object> event) { 
 
-		def application = event.application
+		def application = grailsApplication
 		if (!isEnabled(application)) {
 			return
 		}
@@ -190,16 +161,16 @@ class CacheGrailsPlugin {
 		}
 
 		if (application.isControllerClass(source) || application.isServiceClass(source)) {
-			event.ctx.cacheOperationSource.reset()
+			applicationContext.cacheOperationSource.reset()
 			log.debug 'Reset GrailsAnnotationCacheOperationSource cache'
 		}
 		else if (application.isCacheConfigClass(source)) {
-			reloadCaches event.ctx
+			reloadCaches applicationContext
 		}
 	}
 
-	def onConfigChange = { event ->
-		reloadCaches event.ctx
+	void onConfigChange(Map<String, Object> event) { 
+		reloadCaches applicationContext
 	}
 
 	private void reloadCaches(ctx) {
