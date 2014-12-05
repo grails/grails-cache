@@ -3,7 +3,7 @@ package grails.plugin.cache.web.filter
 import grails.plugin.cache.SerializableByteArrayOutputStream
 import grails.plugin.cache.web.GenericResponseWrapper
 import spock.lang.Specification
-import org.codehaus.groovy.grails.plugins.testing.*
+import org.grails.plugins.testing.*
 
 /**
  * Created by graemerocher on 09/05/14.

@@ -1,10 +1,12 @@
 package com.demo
 
-import functionaltestplugin.FunctionalTestCase
+// import functionaltestplugin.FunctionalTestCase
+import grails.test.mixin.integration.*
 
-class CacheTagFunctionalTests extends FunctionalTestCase {
+@Integration
+class CacheTagFunctionalTests {
 
-    protected void setUp() {
+    void setUp() {
         super.setUp()
 
         get '/demo/clearBlocksCache'

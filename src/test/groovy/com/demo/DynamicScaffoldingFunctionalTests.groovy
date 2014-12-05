@@ -1,8 +1,9 @@
 package com.demo
 
-import functionaltestplugin.FunctionalTestCase
+import grails.test.mixin.integration.*
 
-class DynamicScaffoldingFunctionalTests extends FunctionalTestCase {
+@Integration
+class DynamicScaffoldingFunctionalTests {
 
     void testDynamicScaffolding() {
         get '/person/index'

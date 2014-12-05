@@ -15,12 +15,12 @@
 package grails.plugin.cache
 
 import grails.test.mixin.TestMixin
-import grails.test.mixin.integration.IntegrationTestMixin
+import grails.test.mixin.integration.*
 import static org.junit.Assert.*
 /**
  * @author Burt Beckwith
  */
-@TestMixin(IntegrationTestMixin)
+@Integration
 class ConfigLoaderTests {
 
 	def grailsApplication

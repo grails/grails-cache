@@ -1,8 +1,9 @@
 package com.demo
 
-import functionaltestplugin.FunctionalTestCase
+import grails.test.mixin.integration.*
 
-class CachingServiceFunctionalTests extends FunctionalTestCase {
+@Integration
+class CachingServiceFunctionalTests  {
 
 	void testCachingServiceWithSameMethodParams() {
 		get '/demo/basicCachingServiceInvocationCount'
