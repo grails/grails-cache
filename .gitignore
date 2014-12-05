@@ -16,6 +16,8 @@ target-eclipse/
 /docs
 plugin.xml
 target
+build
+.gradle
 web-app/WEB-INF/tld
 grails-app/conf/ApplicationResources.groovy
 grails-app/conf/BootStrap.groovy

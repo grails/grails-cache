@@ -12,6 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package grails.plugin.cache
+
 import grails.plugin.cache.CacheBeanPostProcessor
 import grails.plugin.cache.CacheConfigArtefactHandler
 import grails.plugin.cache.ConfigLoader
@@ -23,14 +26,14 @@ import grails.plugin.cache.web.filter.ExpressionEvaluator
 import grails.plugin.cache.web.filter.NoOpFilter
 import grails.plugin.cache.web.filter.simple.MemoryPageFragmentCachingFilter
 
-import org.codehaus.groovy.grails.commons.GrailsApplication
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import grails.core.GrailsApplication
 import org.springframework.cache.Cache
 import org.springframework.core.Ordered
 import org.springframework.web.filter.DelegatingFilterProxy
 import javassist.util.proxy.*;
+import groovy.logging.Commons
 
+@Commons
 class CacheGrailsPlugin {
 
 	static {
@@ -41,10 +44,8 @@ class CacheGrailsPlugin {
 		};
 	}
 
-	private final Logger log = LoggerFactory.getLogger('grails.plugin.cache.CacheGrailsPlugin')
-
-	def version = '1.1.9-SNAPSHOT'
-	def grailsVersion = '2.3 > *'
+	def version = '2.0.0-SNAPSHOT'
+	def grailsVersion = '3.0 > *'
 	def observe = ['controllers', 'services']
 	def loadAfter = ['controllers', 'services']
 	def artefacts = [CacheConfigArtefactHandler]

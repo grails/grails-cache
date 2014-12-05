@@ -1,0 +1,88 @@
+ext {
+  grailsVersion = "3.0.0.BUILD-SNAPSHOT"
+  isJava8Compatible = org.gradle.api.JavaVersion.current().isJava8Compatible()
+}
+
+buildscript {
+    ext {
+      grailsVersion = "3.0.0.BUILD-SNAPSHOT"
+    }
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "http://repo.grails.org/grails/core" }
+        maven { url "http://repo.spring.io/libs-release" }
+    }
+    dependencies {
+        classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+    }
+}
+
+version "3.0.0-SNAPSHOT"
+group "org.grails.plugins"
+
+apply plugin: "grails-plugin"
+apply plugin: "maven"
+apply plugin: 'maven-publish'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+  maven { url "http://repo.grails.org/grails/core" }
+}
+
+dependencies {
+  provided "org.grails:grails-dependencies:$grailsVersion"
+  provided "org.grails:grails-web-boot:$grailsVersion"
+  provided "org.grails:grails-dependencies:$grailsVersion"
+  provided 'javax.servlet:javax.servlet-api:3.1.0'
+
+
+  compile "com.googlecode.concurrentlinkedhashmap:concurrentlinkedhashmap-lru:1.4"
+  compile "org.javassist:javassist:3.17.1-GA"
+  
+  testCompile "org.grails:grails-plugin-testing:$grailsVersion"
+
+  console "org.grails:grails-console:$grailsVersion"
+}
+
+eclipse {
+    classpath {
+        plusConfigurations += [configurations.provided]
+    }
+}
+
+idea {
+    module {
+        scopes.PROVIDED.plus += [configurations.provided]
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifactId project.name
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            artifact source:"${sourceSets.main.output.classesDir}/META-INF/grails-plugin.xml", 
+                     classifier:"plugin", 
+                     extension:'xml'
+        }
+    }
+
+    repositories {
+        maven {
+            credentials {
+                username project.properties.get('grailsPluginsUsername')
+                password project.properties.get('grailsPluginsPassword')
+            }
+            url "https://repo.grails.org/grails/libs-snapshots-local/"
+        }
+    }
+}
+
+
