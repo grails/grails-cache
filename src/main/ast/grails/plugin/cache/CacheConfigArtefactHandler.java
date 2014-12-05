@@ -17,9 +17,8 @@ package grails.plugin.cache;
 import groovy.lang.GroovySystem;
 import groovy.lang.MetaClass;
 
-import org.codehaus.groovy.grails.commons.AbstractInjectableGrailsClass;
-import org.codehaus.groovy.grails.commons.ArtefactHandlerAdapter;
-import org.codehaus.groovy.grails.commons.InjectableGrailsClass;
+import grails.core.*;
+import org.grails.core.*;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 

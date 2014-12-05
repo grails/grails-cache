@@ -20,10 +20,10 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.codehaus.groovy.grails.commons.ControllerArtefactHandler;
-import org.codehaus.groovy.grails.commons.GrailsControllerClass;
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap;
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest;
+import org.grails.core.artefact.ControllerArtefactHandler;
+import grails.core.GrailsControllerClass;
+import grails.web.servlet.mvc.GrailsParameterMap;
+import org.grails.web.servlet.mvc.GrailsWebRequest;
 import org.springframework.util.StringUtils;
 
 /**

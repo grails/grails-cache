@@ -14,7 +14,7 @@
  */
 package grails.plugin.cache;
 
-import org.codehaus.groovy.grails.plugins.GrailsVersionUtils;
+import grails.plugins.GrailsVersionUtils;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.core.SpringVersion;

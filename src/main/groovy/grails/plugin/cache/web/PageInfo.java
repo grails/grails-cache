@@ -34,10 +34,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.codehaus.groovy.grails.plugins.web.api.ControllersApi;
-import org.codehaus.groovy.grails.web.servlet.GrailsFlashScope;
-import org.codehaus.groovy.grails.web.servlet.HttpHeaders;
-import org.codehaus.groovy.grails.commons.*;
+import org.grails.plugins.web.controllers.api.ControllersApi;
+import org.grails.web.servlet.GrailsFlashScope;
+import grails.web.http.HttpHeaders;
+import grails.util.GrailsClassUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.PointcutAdvisor;
 import org.springframework.aop.TargetSource;

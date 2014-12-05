@@ -61,6 +61,13 @@ idea {
     }
 }
 
+jar {
+  exclude "TestCacheConfig**"
+  exclude "application.groovy"
+  exclude "com/demo/**/**"
+  exclude "demo/**"
+}
+
 publishing {
     publications {
         maven(MavenPublication) {

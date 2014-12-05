@@ -16,9 +16,9 @@ package grails.plugin.cache
 
 import grails.plugin.cache.util.ClassUtils
 
-import org.codehaus.groovy.grails.web.pages.GroovyPageTemplate
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
-import org.codehaus.groovy.grails.web.util.StreamCharBuffer
+import org.grails.web.pages.GroovyPageTemplate
+import org.grails.web.servlet.mvc.GrailsWebRequest
+import org.grails.buffer.StreamCharBuffer
 import org.springframework.web.context.request.RequestContextHolder
 
 class CacheTagLib {

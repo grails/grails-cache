@@ -14,6 +14,7 @@
  */
 package grails.plugin.cache.web.filter;
 
+import org.codehaus.groovy.runtime.*;
 import grails.plugin.cache.GrailsAnnotationCacheOperationSource;
 import grails.plugin.cache.SerializableByteArrayOutputStream;
 import grails.plugin.cache.Timer;
@@ -43,13 +44,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.codehaus.groovy.grails.plugins.web.api.RequestMimeTypesApi;
-import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes;
-import org.codehaus.groovy.grails.web.servlet.HttpHeaders;
-import org.codehaus.groovy.grails.web.servlet.WrappedResponseHolder;
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap;
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest;
-import org.codehaus.groovy.grails.web.util.WebUtils;
+import org.grails.plugins.web.api.RequestMimeTypesApi;
+import grails.web.util.GrailsApplicationAttributes;
+import grails.web.http.HttpHeaders;
+import org.grails.web.servlet.WrappedResponseHolder;
+import grails.web.servlet.mvc.GrailsParameterMap;
+import org.grails.web.servlet.mvc.GrailsWebRequest;
+import org.grails.web.util.WebUtils;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.cache.Cache;
 import org.springframework.cache.Cache.ValueWrapper;
@@ -545,8 +546,8 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 		}
 		log.debug("    controller = {}", cacheParameters.getControllerName());
 		log.debug("    action = {}", cacheParameters.getActionName());
-		RequestMimeTypesApi requestMimeTypesApi = getBean("requestMimeTypesApi");
-		log.debug("    format = {}", requestMimeTypesApi.getFormat(request));
+
+		log.debug("    format = {}", InvokerHelper.invokeMethod(request, "getFormat", null));
 		log.debug("    params = {}", cacheParameters.getParams());
 	}
 

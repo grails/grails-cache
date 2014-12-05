@@ -90,6 +90,15 @@ public class GrailsConcurrentLinkedMapCache implements GrailsCache {
       return value == null ? null : new GrailsValueWrapper(fromStoreValue(value), null);
    }
 
+   @Override
+  public <T> T get(Object key, Class<T> type) {
+    Object value = getNativeCache().get(key);
+    if (value != null && type != null && !type.isInstance(value)) {
+      throw new IllegalStateException("Cached value is not of required type [" + type.getName() + "]: " + value);
+    }
+    return (T) value;
+  }   
+
    @SuppressWarnings("unchecked")
    public Collection<Object> getAllKeys() {
       return getNativeCache().keySet();

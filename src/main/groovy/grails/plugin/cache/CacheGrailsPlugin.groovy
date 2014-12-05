@@ -31,7 +31,7 @@ import org.springframework.cache.Cache
 import org.springframework.core.Ordered
 import org.springframework.web.filter.DelegatingFilterProxy
 import javassist.util.proxy.*;
-import groovy.logging.Commons
+import groovy.util.logging.*
 
 @Commons
 class CacheGrailsPlugin {

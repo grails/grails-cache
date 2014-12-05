@@ -16,7 +16,7 @@ package grails.plugin.cache.web.filter;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.codehaus.groovy.grails.web.util.WebUtils;
+import org.grails.web.util.WebUtils;
 import org.springframework.util.StringUtils;
 
 /**
