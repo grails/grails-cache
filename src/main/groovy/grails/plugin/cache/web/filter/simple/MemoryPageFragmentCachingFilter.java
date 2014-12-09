@@ -28,21 +28,6 @@ import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
  */
 public class MemoryPageFragmentCachingFilter extends PageFragmentCachingFilter {
 
-//	@Override
-//	protected void replaceCacheWithDecoratedCache(Cache cache, BlockingCache blocking) {
-//		// TODO
-//		getNativeCacheManager().replaceCacheWithDecoratedCache(
-//				(Ehcache)cache.getNativeCache(), (Ehcache)blocking.getNativeCache());
-//	}
-
-//	@SuppressWarnings({ "cast", "unchecked" })
-//	@Override
-//	protected BlockingCache createBlockingCache(Cache c) {
-//		ConcurrentMapCache cache = (ConcurrentMapCache)c;
-//		return new MemoryBlockingCache(cache.getName(),
-//				(ConcurrentMap<Object, Object>)cache.getNativeCache(), cache.isAllowNullValues());
-//	}
-
 	@Override
 	protected int getTimeToLive(ValueWrapper wrapper) {
 		// not applicable

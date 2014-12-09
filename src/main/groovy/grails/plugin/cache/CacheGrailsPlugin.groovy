@@ -27,6 +27,7 @@ import grails.plugin.cache.web.filter.NoOpFilter
 import grails.plugin.cache.web.filter.simple.MemoryPageFragmentCachingFilter
 
 import grails.core.GrailsApplication
+import grails.plugins.Plugin
 import org.springframework.cache.Cache
 import org.springframework.core.Ordered
 import org.springframework.web.filter.DelegatingFilterProxy
@@ -34,8 +35,10 @@ import javassist.util.proxy.*;
 import groovy.util.logging.*
 import org.springframework.boot.context.embedded.*
 
+import javax.servlet.DispatcherType
+
 @Commons
-class CacheGrailsPlugin extends grails.plugins.Plugin {
+class CacheGrailsPlugin extends Plugin {
 
 	static {
 		ProxyFactory.classLoaderProvider = new ProxyFactory.ClassLoaderProvider() {
@@ -60,24 +63,21 @@ class CacheGrailsPlugin extends grails.plugins.Plugin {
 	def authorEmail = 'jbrown@pivotal.io'
 	def description = 'Grails Cache Plugin'
 	def documentation = 'http://grails-plugins.github.com/grails-cache/'
-
+	def profiles = ['web']
 	def license = 'APACHE'
 	def organization = [name: 'SpringSource', url: 'http://www.springsource.org/']
 	def developers = [[name: 'Burt Beckwith', email: 'beckwithb@vmware.com']]
 	def issueManagement = [system: 'JIRA', url: 'http://jira.grails.org/browse/GPCACHE']
 	def scm = [url: 'https://github.com/grails-plugins/grails-cache']
 
+	// resources that should be loaded by the plugin once installed in the application
 	def pluginExcludes = [
 		'**/com/demo/**',
-		'grails-app/conf/TestCacheConfig.groovy',
-		'grails-app/views/**',
-		'grails-app/i18n/**',
-		'web-app/**',
-		'docs/**',
-		'src/docs/**'
+		'TestCacheConfig**'
 	]
 
 	Closure doWithSpring() { {->
+		def application = grailsApplication
 		if (!isEnabled(application)) {
 			log.warn 'Cache plugin is disabled'
 			grailsCacheFilter(NoOpFilter)
@@ -125,7 +125,7 @@ class CacheGrailsPlugin extends grails.plugins.Plugin {
 				expressionEvaluator =  ref('webExpressionEvaluator')				
 			}
 			urlPatterns = "*"
-			dispatcherTypes = EnumSet.of(javax.servlet.FORWARD, javax.servlet.INCLUDE)
+			dispatcherTypes = EnumSet.of(DispatcherType.FORWARD, DispatcherType.INCLUDE)
 		}
 
 		webCacheKeyGenerator(DefaultWebKeyGenerator)

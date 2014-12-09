@@ -14,7 +14,7 @@
  */
 package grails.plugin.cache
 
-import org.codehaus.groovy.grails.commons.GrailsApplication
+import grails.core.GrailsApplication
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationContext
@@ -37,7 +37,7 @@ class ConfigLoader {
 	 * @param ctx the application context
 	 */
 	void reload(ApplicationContext ctx) {
-		def application = ctx.grailsApplication
+		def application = ctx.getBean(GrailsApplication)
 		List<ConfigObject> configs = loadOrderedConfigs(application)
 		reload configs, ctx
 	}
@@ -89,7 +89,7 @@ class ConfigLoader {
 
 		List<ConfigObject> configs = []
 		def cacheConfig
-		for (configClass in application.cacheConfigClasses) {
+		for (configClass in application.getArtefacts(CacheConfigArtefactHandler.TYPE)) {
 			def config = slurper.parse(configClass.clazz)
 			cacheConfig = config.config
 			if ((cacheConfig instanceof Closure) && processConfig(config, configClass)) {

@@ -14,6 +14,7 @@
  */
 package grails.plugin.cache;
 
+import grails.core.GrailsApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.MutablePropertyValues;
@@ -52,7 +53,7 @@ public class CacheBeanPostProcessor implements BeanDefinitionRegistryPostProcess
 			props = new MutablePropertyValues();
 			beanDef.setPropertyValues(props);
 		}
-		props.addPropertyValue("grailsApplication", new RuntimeBeanReference("grailsApplication", true));
+		props.addPropertyValue(GrailsApplication.APPLICATION_ID, new RuntimeBeanReference(GrailsApplication.APPLICATION_ID));
 
 		log.debug("updated {}", beanDef);
 	}

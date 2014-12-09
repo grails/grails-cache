@@ -1,0 +1,1 @@
+grails.core.ArtefactHandler=grails.plugin.cache.CacheConfigArtefactHandler
