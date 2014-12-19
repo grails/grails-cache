@@ -3,6 +3,11 @@ ext {
   isJava8Compatible = org.gradle.api.JavaVersion.current().isJava8Compatible()
 }
 
+if(System.getenv('TRAVIS_BRANCH')) {
+    project.setProperty('grailsPluginsUsername', System.getenv("GRAILS_CENTRAL_USERNAME"))
+    project.setProperty('grailsPluginsPassword', System.getenv("GRAILS_CENTRAL_PASSWORD"))
+}
+
 buildscript {
     ext {
       grailsVersion = "3.0.0.BUILD-SNAPSHOT"
