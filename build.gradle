@@ -3,11 +3,6 @@ ext {
   isJava8Compatible = org.gradle.api.JavaVersion.current().isJava8Compatible()
 }
 
-if(System.getenv('TRAVIS_BRANCH')) {
-    project.properties.put('grailsPluginsUsername', System.getenv("GRAILS_CENTRAL_USERNAME"))
-    project.properties.put('grailsPluginsPassword', System.getenv("GRAILS_CENTRAL_PASSWORD"))
-}
-
 buildscript {
     ext {
       grailsVersion = "3.0.0.BUILD-SNAPSHOT"
@@ -92,10 +87,11 @@ publishing {
     repositories {
         maven {
             credentials {
-                def user = project.properties.get('grailsPluginsUsername')
-                println "USER IS ${System.getenv('GRAILS_CENTRAL_USERNAME')}"
+                def user = System.getenv('GRAILS_CENTRAL_USERNAME') ?: project.properties.get('grailsPluginsUsername')
+                def pass = System.getenv("GRAILS_CENTRAL_PASSWORD") ?: project.properties.get('grailsPluginsPassword')
+
                 username user
-                password project.properties.get('grailsPluginsPassword')
+                password pass
             }
             url "https://repo.grails.org/grails/libs-snapshots-local/"
         }
