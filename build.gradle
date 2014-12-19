@@ -10,8 +10,9 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
-        maven { url "http://repo.grails.org/grails/core" }
-        maven { url "http://repo.spring.io/libs-release" }
+        maven { url "https://repo.grails.org/grails/core" }
+        maven { url "https://repo.grails.org/grails/libs-snapshots-local" }        
+        maven { url "https://repo.spring.io/libs-release" }
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
@@ -22,6 +23,7 @@ version "3.0.0-SNAPSHOT"
 group "org.grails.plugins"
 
 apply plugin: "grails-plugin"
+apply plugin: "grails-doc"
 apply plugin: "maven"
 apply plugin: 'maven-publish'
 apply plugin: 'eclipse'
