@@ -92,7 +92,9 @@ publishing {
     repositories {
         maven {
             credentials {
-                username project.properties.get('grailsPluginsUsername')
+                def user = project.properties.get('grailsPluginsUsername')
+                println "USER IS $user"
+                username user
                 password project.properties.get('grailsPluginsPassword')
             }
             url "https://repo.grails.org/grails/libs-snapshots-local/"
