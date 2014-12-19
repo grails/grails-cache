@@ -93,7 +93,7 @@ publishing {
         maven {
             credentials {
                 def user = project.properties.get('grailsPluginsUsername')
-                println "USER IS $user"
+                println "USER IS ${System.getenv('GRAILS_CENTRAL_USERNAME')}"
                 username user
                 password project.properties.get('grailsPluginsPassword')
             }
