@@ -4,8 +4,8 @@ ext {
 }
 
 if(System.getenv('TRAVIS_BRANCH')) {
-    project.setProperty('grailsPluginsUsername', System.getenv("GRAILS_CENTRAL_USERNAME"))
-    project.setProperty('grailsPluginsPassword', System.getenv("GRAILS_CENTRAL_PASSWORD"))
+    project.properties.put('grailsPluginsUsername', System.getenv("GRAILS_CENTRAL_USERNAME"))
+    project.properties.put('grailsPluginsPassword', System.getenv("GRAILS_CENTRAL_PASSWORD"))
 }
 
 buildscript {
