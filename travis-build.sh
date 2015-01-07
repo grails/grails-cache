@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 rm -rf *.zip
-#./gradlew clean test install publish docs
+./gradlew clean test install publish docs
 
 filename=$(find build/libs -name "*.jar" | head -1)
 filename=$(basename $filename)
