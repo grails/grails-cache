@@ -3,6 +3,7 @@ jdk:
 - openjdk7
 before_script:
 - rm -rf target
+- go get github.com/aktau/github-release
 script: ./travis-build.sh
 env:
   global:

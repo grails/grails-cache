@@ -5,6 +5,7 @@ rm -rf *.zip
 
 filename=$(find build/libs -name "*.jar" | head -1)
 filename=$(basename $filename)
+github-release -h
 
 if [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then
   git config --global user.name "$GIT_NAME"
