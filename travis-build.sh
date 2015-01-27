@@ -38,7 +38,6 @@ if [[ -n $TRAVIS_TAG ]] || [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST
 
     # If there is a tag present then this becomes the latest
     if [[ -n $TRAVIS_TAG ]]; then
-        git rm -rf latest/
         mkdir -p latest
         cp -r ../build/docs/manual/. ./latest/
         git add latest/*
