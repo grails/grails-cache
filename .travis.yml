@@ -3,7 +3,6 @@ jdk:
 - openjdk7
 before_script:
 - rm -rf target
-- go get github.com/aktau/github-release
 script: ./travis-build.sh
 env:
   global:
@@ -12,3 +11,6 @@ env:
   - secure: UdGSraXB6ypFDv46lBaxQtKQU99DjXC0Sem6C/0DN2fTF8RmtHUHrn+rxfIQXUdyDFbvZB9AkmVITFF3XcZo9f1ZmMPie2ds9D/THNU/1mje9ObM8TCBE5ggDWAyZ4AXtuzu9w7hhE13S3XuMy/16a2aKV4rdwmtaF+/8GLD4tc=
   - secure: UQbuFF7aDursnjU5LCk2orfhkkbmSfg6X1BL4fXYFWPzvbxKDyzP0Wxvjqi1hyWZ1Nn8amBC0b40CxAW/nVL65f2hJa8VcVr1d+LNDhOGMXX1aNJ4i9UnNtop0z3YFtFWYYtWnUHKSiLZ1djKrw68ME2a/TCaZSqHFQ5HqyUutQ=
   - secure: AzCaIVDxF4vbFtLz5CU1DGLfMgm8OXZdH1fZGNxiXOLJ2EdnbHGLnvranB82a5O1JEL8oZq9W9IGMs2tDleNNsE5HIGMnL4Q8apWiUGmHvCqR5vAq8fGYZxkC0rQYIgR+TQNjSHEYovxPHftwALuTG1scV+P/4+/0GaautAa+Y4=
+  - secure: CTh0vAxF6iTnaUuVeAg3ZS70ttsBY5MWdOcYeNayr054fjDO/RgC03pCRKE/LavZvyI2DkRh5PE3pLgE+kVrq+AmIbzw4Ff1pS3ou1o+wGjfyQ6brC2VHGRKCwRa8azN5wwDsRtbzEZGYvvhhaxwIPLUeir7RtACkaekXYGOa8M=
+  - secure: Y/KMDcwUjGQm21Niawbbdt7+knn06Ptgm4u1rRIyseZpTvQ9HknEJpC6g96X9JpOgA+xfjkEn/sWpAWhAjVkFW7rcA8yY+/dF7wnzRa/6XMbsBZp+hltOyCzqtwc10l5f7rWRw6/0b4Hc9sbibii6tSv1CGbFxWWFrKr6Om7iNE=
+  - secure: etxc5m6hFCQPmMu3Oxjxr3QG8Ifnb01s45T37kvf5hGBAU7DvSOtsRP3LaHRkjgE+D/wz5j1bct4Epgl7FPvVRuwUGse0wJXX8XjNZjyd6Uz4q9hjaL7ibKYAyLDr6Be/TmHBqfVyWTB+ZXthgow66qeKFXrUDjHsVpJf2Osjns=
