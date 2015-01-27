@@ -62,13 +62,13 @@ class CacheGrailsPlugin extends Plugin {
 	def author = 'Jeff Brown'
 	def authorEmail = 'jbrown@pivotal.io'
 	def description = 'Grails Cache Plugin'
-	def documentation = 'http://grails-plugins.github.com/grails-cache/'
+	def documentation = 'http://grails3-plugins.github.com/cache/latest'
 	def profiles = ['web']
 	def license = 'APACHE'
 	def organization = [name: 'SpringSource', url: 'http://www.springsource.org/']
 	def developers = [[name: 'Burt Beckwith', email: 'beckwithb@vmware.com']]
 	def issueManagement = [system: 'JIRA', url: 'http://jira.grails.org/browse/GPCACHE']
-	def scm = [url: 'https://github.com/grails-plugins/grails-cache']
+	def scm = [url: 'https://github.com/grails3-plugins/cache']
 
 	// resources that should be loaded by the plugin once installed in the application
 	def pluginExcludes = [
