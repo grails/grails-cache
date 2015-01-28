@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>2.2 Cache DSL 3.0.0.M2</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/introduction.html"><strong>1</strong><span>Introduction To The Cache Plugin</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/usage.html"><strong>2</strong><span>Usage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/cacheTags.html"><strong>3</strong><span>GSP Cache Tags</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/grailsCacheAdminService.html"><strong>4</strong><span>Grails Cache Admin Service</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/implementation.html"><strong>5</strong><span>Implementation Details</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p></p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction To The Cache Plugin</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../../guide/cacheTags.html"><strong>3</strong><span>GSP Cache Tags</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>2.2 Cache DSL - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> </p>
+
+                    <p><strong>Version:</strong> 3.0.0.M2</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h2 id="dsl">2.2 Cache DSL</h2>
+The cache implementation used by this plugin is very simple, so there aren't many configuration options (compared to the Ehcache implementation for example, where you have fine-grained control over features like overflowing to disk, time-to-live settings, maximum size of caches, etc.) So there aren't many supported options in the cache configuration DSL, although each plugin's DSL parser is lenient and just logs warnings if you specify options that aren't understood. This lets you share configurations between applications that use different plugins.<p class="paragraph"/><blockquote class="warning">
+Since there is no way to configure "time to live" with this plugin, all cached items have no timeout and remain cached until either the JVM restarts (since the backing store is in-memory) or the cache is partially or fully cleared (by calling a method or action annotated with &#64;CacheEvict or programmatically).
+</blockquote><p class="paragraph"/>You specify the cache configuration in <code>Config.groovy</code> under the <code>grails.cache.config</code> key, for example<p class="paragraph"/><div class="code"><pre>grails.cache.config = &#123;
+   cache &#123;
+      name 'message'
+   &#125;
+   cache &#123;
+      name 'maps'
+   &#125;
+&#125;</pre></div><p class="paragraph"/>or in a &#42;CacheConfig.groovy file in the <code>grails-app/conf</code> directory under the <code>config</code> key, for example<p class="paragraph"/><div class="code"><pre>config = &#123;
+   cache &#123;
+      name 'message'
+   &#125;
+   cache &#123;
+      name 'maps'
+   &#125;
+&#125;</pre></div><p class="paragraph"/>Both of these will create two caches, one with name "message" and one with name "maps". You can also use attributes from other DSLs and they will be ignored, for example:<p class="paragraph"/><div class="code"><pre>grails.cache.config = &#123;
+   cache &#123;
+      name 'message'
+      eternal <span class="java&#45;keyword">false</span>
+      overflowToDisk <span class="java&#45;keyword">true</span>
+      maxElementsInMemory 10000
+      maxElementsOnDisk 10000000
+   &#125;
+   cache &#123;
+      name 'maps'
+   &#125;
+&#125;</pre></div><p class="paragraph"/>This configuration results in the same caches as the simpler one.<p class="paragraph"/>If you want to limit the number of cache entries you have to change the default cache manager to <code>'GrailsConcurrentLinkedMapCacheManager'</code>. To specify the limit you can add the <code>maxCapacity</code> parameter to the cache config. Default value for <code>maxCapacity</code> is 10000.<p class="paragraph"/><div class="code"><pre>grails.cache.config = &#123;
+   cacheManager 'GrailsConcurrentLinkedMapCacheManager'
+   cache &#123;
+      maxCapacity = 5000
+      name 'message'
+   &#125;
+   cache &#123;
+      maxCapacity = 6000
+      name 'maps'
+   &#125;
+&#125;</pre></div><p class="paragraph"/><h4>Order</h4><p class="paragraph"/>You can configure your cache definitions to be loaded before or after others by setting the <code>order</code> attribute. Configurations with higher numbers are loaded later, so these can override previously-configured values, although there is no support for removing caches or cache attributes, only adding or overriding:<p class="paragraph"/><div class="code"><pre>order = 2000<p class="paragraph"/>config = &#123;
+   cache &#123;
+      name 'message'
+   &#125;
+   cache &#123;
+      name 'maps'
+   &#125;
+&#125;</pre></div>
+
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction To The Cache Plugin</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../../guide/cacheTags.html"><strong>3</strong><span>GSP Cache Tags</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Tags</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../../ref/Tags/block.html">block</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../../ref/Tags/render.html">render</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

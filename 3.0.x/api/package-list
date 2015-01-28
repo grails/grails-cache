@@ -1,0 +1,6 @@
+grails.plugin.cache
+grails.plugin.cache.compiler
+grails.plugin.cache.util
+grails.plugin.cache.web
+grails.plugin.cache.web.filter
+grails.plugin.cache.web.filter.simple

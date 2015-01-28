@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>cache 3.0.0.M2</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass(el) {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/introduction.html"><strong>1</strong><span>Introduction To The Cache Plugin</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/usage.html"><strong>2</strong><span>Usage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/cacheTags.html"><strong>3</strong><span>GSP Cache Tags</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/grailsCacheAdminService.html"><strong>4</strong><span>Grails Cache Admin Service</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/implementation.html"><strong>5</strong><span>Implementation Details</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p></p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="reference corner-all">
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                <h1>render</h1><p class="paragraph"/><h2>Description</h2><p class="paragraph"/>Renders a GSP template and caches the result so that the next time the same template is rendered it doesn't have to be evaluated again.  Optionally, a key may be provided which can be helpful if the cached content is different per user, for example.<p class="paragraph"/>This tag behaves just like the <code>g:render</code> tag provided by Grails except this one caches the rendered result so the template doesn't have to be re-evaluated each time it is rendered.<p class="paragraph"/>By default the key used in the cache is the path to the template.  If the same template is rendered multiple times with a different model, an explicit key should be provided, otherwise the separate invocations (with different models) will share the same cache entry.<p class="paragraph"/><div class="code"><pre><span class="xml&#45;tag">&#60;cache:render template=<span class="xml&#45;quote">"myTemplate"</span> model=<span class="xml&#45;quote">"&#91;user: currentUser&#93;"</span> key=<span class="xml&#45;quote">"$&#123;currentUser.id&#125;"</span>/&#62;</span></pre></div><p class="paragraph"/>Note that the key's namespace is confined to a particular template.  This means that if there are 2 separate GSP templates cached with the same key value, the 2 will not collide with each other.  Each cached GSP template has its own set of keys.<p class="paragraph"/><h2>Examples</h2><p class="paragraph"/><div class="code"><pre><span class="xml&#45;tag">&#60;cache:render template=<span class="xml&#45;quote">"myTemplate"</span> model=<span class="xml&#45;quote">"&#91;name: 'Some Value'&#93;"</span>/&#62;</span></pre></div><p class="paragraph"/><div class="code"><pre><span class="xml&#45;tag">&#60;cache:render template=<span class="xml&#45;quote">"myTemplate"</span> model=<span class="xml&#45;quote">"&#91;name: 'Some Value'&#93;"</span> key=<span class="xml&#45;quote">"$&#123;currentUser.id&#125;"</span>/&#62;</span></pre></div><p class="paragraph"/><h3>Attributes</h3>
+<ul class="star">
+<li><code>template</code> (required) - The name of the template to apply</li>
+<li><code>key</code> (optional) - An optional key that may be provided to allow for different instances of the rendered template to be held in the cache, presumably with different content.</li>
+<li><code>contextPath</code> (optional) - the context path to use (relative to the application context path). Defaults to "" or path to the plugin for a plugin view or template.</li>
+<li><code>bean</code> (optional) - The bean to apply the template against</li>
+<li><code>model</code> (optional) - The model to apply the template against as a <code>java.util.Map</code></li>
+<li><code>collection</code> (optional) - A collection of model objects to apply the template to</li>
+<li><code>var</code> (optional) - The variable name of the bean to be referenced in the template</li>
+<li><code>plugin</code> (optional) - The plugin to look for the template in</li>
+</ul><p class="paragraph"/>See the documentation for the core <code>g.render</code> tag for details on each of the optional attributes.
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                    <div class="menu-block">
+                        <h1 class="menu-title" onclick="toggleRef(nextElement(this))">Tags</h1>
+                        <div class="menu-sub selected">
+                            
+                            
+                            <div class="menu-item"><a href="../../ref/Tags/block.html">block</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../../ref/Tags/render.html">render</a>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+
+<script type="text/javascript" src="../../js/docs.js"></script>
+
+</body>
+</html>
