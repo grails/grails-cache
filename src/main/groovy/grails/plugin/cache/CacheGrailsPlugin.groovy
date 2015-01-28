@@ -48,7 +48,6 @@ class CacheGrailsPlugin extends Plugin {
 		};
 	}
 
-	def version = '2.0.0-SNAPSHOT'
 	def grailsVersion = '3.0 > *'
 	def observe = ['controllers', 'services']
 	def loadAfter = ['controllers', 'services']
