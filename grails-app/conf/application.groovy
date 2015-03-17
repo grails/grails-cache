@@ -26,3 +26,5 @@ hibernate {
     cache.use_query_cache = false
     cache.provider_class = 'org.hibernate.cache.EhCacheProvider'
 }
+
+spring.groovy.template.'check-template-location' = false
