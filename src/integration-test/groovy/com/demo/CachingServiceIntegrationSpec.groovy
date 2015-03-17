@@ -4,7 +4,7 @@ import grails.test.mixin.integration.*
 import geb.spock.GebSpec
 
 @Integration
-class CachingServiceIntegrationSpec  {
+class CachingServiceIntegrationSpec extends GebSpec {
 
 	void 'test caching service with method params'() {
 		when:
