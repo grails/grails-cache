@@ -1,4 +1,5 @@
 DefaultPackage
+cache
 com.demo
 grails.plugin.cache
 grails.plugin.cache.compiler
