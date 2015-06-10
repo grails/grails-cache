@@ -35,14 +35,14 @@ class CacheTagFunctionalTests {
     }
 
     void testBlockTagWithTTL() {
-        def ttlTime = 10
-        get "/demo/blockCache?counter=5&ttl=${ttlTime}"
+        def ttlTime = 10 // seconds
+        get "/demo/blockCacheTTL?counter=5&ttl=${ttlTime}"
         assertStatus 200
         assertContentContains 'First block counter 6'
         assertContentContains 'Second block counter 7'
         assertContentContains 'Third block counter 8'
 
-        get "/demo/blockCache?counter=42&ttl=${ttlTime}"
+        get "/demo/blockCacheTTL?counter=42&ttl=${ttlTime}"
         assertStatus 200
         assertContentContains 'First block counter 6'
         assertContentContains 'Second block counter 7'
@@ -50,7 +50,7 @@ class CacheTagFunctionalTests {
 
         TimeUnit.SECONDS.sleep(ttlTime)
 
-        get "/demo/blockCache?counter=42&ttl=${ttlTime}"
+        get "/demo/blockCacheTTL?counter=42&ttl=${ttlTime}"
         assertStatus 200
         assertContentContains 'First block counter 43'
         assertContentContains 'Second block counter 44'
@@ -128,5 +128,48 @@ class CacheTagFunctionalTests {
         assertContentContains 'Third invocation: Counter value: 7'
         assertContentContains 'Fourth invocation: Counter value: 7'
         assertContentContains 'Fifth invocation: Counter value: 5'
+    }
+
+    void testRenderTagWithTTL() {
+        def ttlTime = 10 // seconds
+        get "/demo/renderTagTTL?counter=1&ttl=${ttlTime}"
+        assertStatus 200
+
+        assertContentContains 'First invocation: Counter value: 1'
+        assertContentContains 'Second invocation: Counter value: 1'
+        assertContentContains 'Third invocation: Counter value: 3'
+        assertContentContains 'Fourth invocation: Counter value: 3'
+        assertContentContains 'Fifth invocation: Counter value: 1'
+
+        get "/demo/renderTagTTL?counter=5&ttl=${ttlTime}"
+        assertStatus 200
+
+        assertContentContains 'First invocation: Counter value: 1'
+        assertContentContains 'Second invocation: Counter value: 1'
+        assertContentContains 'Third invocation: Counter value: 3'
+        assertContentContains 'Fourth invocation: Counter value: 3'
+        assertContentContains 'Fifth invocation: Counter value: 1'
+
+        TimeUnit.SECONDS.sleep(ttlTime)
+
+        get "/demo/renderTagTTL?counter=5&ttl=${ttlTime}"
+        assertStatus 200
+
+        assertContentContains 'First invocation: Counter value: 5'
+        assertContentContains 'Second invocation: Counter value: 5'
+        assertContentContains 'Third invocation: Counter value: 7'
+        assertContentContains 'Fourth invocation: Counter value: 7'
+        assertContentContains 'Fifth invocation: Counter value: 5'
+
+        get "/demo/renderTagTTL?counter=1&ttl=${ttlTime}"
+        assertStatus 200
+
+        assertContentContains 'First invocation: Counter value: 5'
+        assertContentContains 'Second invocation: Counter value: 5'
+        assertContentContains 'Third invocation: Counter value: 7'
+        assertContentContains 'Fourth invocation: Counter value: 7'
+        assertContentContains 'Fifth invocation: Counter value: 5'
+
+
     }
 }

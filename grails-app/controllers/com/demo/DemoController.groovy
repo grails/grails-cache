@@ -60,4 +60,12 @@ class DemoController {
 	def renderTag(int counter) {
 		[counter: counter]
 	}
+
+	def blockCacheTTL(int counter, int ttl) {
+		[counter: counter, ttl: ttl]
+	}
+
+	def renderTagTTL(int counter, int ttl) {
+		[counter: counter, ttl: ttl]
+	}
 }
