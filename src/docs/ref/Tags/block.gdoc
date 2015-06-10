@@ -20,6 +20,13 @@ h2. Examples
 </cache:block>
 {code}
 
+{code:xml}
+<cache:block key="${currentUser.id}" ttl="${60*60*24*7}">
+    <!-- Any valid markup may be included here, including dynamic expressions, invoking other tags, etc.... -->
+</cache:block>
+{code}
+
 h3. Attributes
 
 * @key@ (optional) - An optional key that may be provided to allow for different instances of the block to be held in the cache, presumably with different content.
+* @ttl@ (optional) - An optional ttl (seconds) may be provided to allow the blocks to automatically evict a specified number of seconds after first insertion.
