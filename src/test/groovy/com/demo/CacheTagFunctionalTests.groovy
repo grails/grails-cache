@@ -3,6 +3,8 @@ package com.demo
 // import functionaltestplugin.FunctionalTestCase
 import grails.test.mixin.integration.*
 
+import java.util.concurrent.TimeUnit
+
 @Integration
 class CacheTagFunctionalTests {
 
@@ -30,6 +32,30 @@ class CacheTagFunctionalTests {
         assertContentContains 'First block counter 6'
         assertContentContains 'Second block counter 7'
         assertContentContains 'Third block counter 8'
+    }
+
+    void testBlockTagWithTTL() {
+        def ttlTime = 10
+        get "/demo/blockCache?counter=5&ttl=${ttlTime}"
+        assertStatus 200
+        assertContentContains 'First block counter 6'
+        assertContentContains 'Second block counter 7'
+        assertContentContains 'Third block counter 8'
+
+        get "/demo/blockCache?counter=42&ttl=${ttlTime}"
+        assertStatus 200
+        assertContentContains 'First block counter 6'
+        assertContentContains 'Second block counter 7'
+        assertContentContains 'Third block counter 8'
+
+        TimeUnit.SECONDS.sleep(ttlTime)
+
+        get "/demo/blockCache?counter=42&ttl=${ttlTime}"
+        assertStatus 200
+        assertContentContains 'First block counter 43'
+        assertContentContains 'Second block counter 44'
+        assertContentContains 'Third block counter 45'
+        // Add test for edge case where the ttl changes between requests?
     }
 
     void testClearingBlocksCache() {
