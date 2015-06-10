@@ -45,12 +45,18 @@ class CacheTagLib {
 		def bodyClosure = ClassUtils.getPropertyOrFieldValue(body, 'bodyClosure')
 		def closureClass = bodyClosure.getClass()
 		def key = closureClass.getName()
+		def expired = false
+
 		if (attrs.key) {
 			key += ':' + attrs.key
 		}
 
+		if (attrs.ttl) {
+			expired = honorTTL(key, attrs.ttl)
+		}
+
 		def content = cache.get(key)
-		if (content == null) {
+		if (content == null || expired) {
 			content = cloneIfNecessary(body())
 			cache.put(key, content)
 		}
@@ -122,5 +128,27 @@ class CacheTagLib {
 			}
 		}
 		content
+	}
+
+	/**
+	 * updates the ttl and returns whether the content is expired
+	 * @param key
+	 * @param ttl in seconds comes form the view
+	 * @return whether the cache has expired based on ttl
+	 */
+	protected honorTTL(key, ttl) {
+		def cache = grailsCacheManager.getCache("TagLibTTLCache")
+		def ttlKey = key + ":ttl"
+		def ttlInMilliseconds = (ttl * 1000).toLong()
+		def cacheInsertionTime = cache.get(ttlKey).toLong()
+		def currentTime = System.currentTimeMillis()
+
+		def expired = (currentTime - cacheInsertionTime) > ttlInMilliseconds
+
+		if (expired) {
+			cache.put(ttlKey, currentTime)
+		}
+
+		return expired
 	}
 }
