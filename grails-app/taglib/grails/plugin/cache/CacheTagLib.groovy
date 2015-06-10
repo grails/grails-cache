@@ -133,17 +133,25 @@ class CacheTagLib {
 	 * updates the ttl and returns whether the content is expired
 	 * @param key
 	 * @param ttl in seconds comes form the view
-	 * @return whether the cache has expired based on ttl
+	 * @return boolean whether we wrote the a new ttl in or not
 	 */
-	protected honorTTL(key, ttl) {
+	protected Boolean honorTTL(String key, Long ttl) {
 		def cache = grailsCacheManager.getCache("TagLibTTLCache")
-		def ttlKey = key + ":ttl"
-		def ttlInMilliseconds = ttl * 1000
-		def valueInCache = cache.get(ttlKey)
-		def cacheInsertionTime = valueInCache ? valueInCache.get().toLong() : 0
-		def currentTime = System.currentTimeMillis()
+		String ttlKey = key + ":ttl"
+		Long ttlInMilliseconds = ttl * 1000
+		Long currentTime = System.currentTimeMillis()
+		Boolean expired
+		def valueInCache
+		Long cacheInsertionTime
 
-		Boolean expired = valueInCache && ((currentTime - cacheInsertionTime) > ttlInMilliseconds)
+		try {
+			valueInCache = cache.get(ttlKey)
+			cacheInsertionTime = valueInCache ? valueInCache.get().toLong() : 0
+			expired = valueInCache && ((currentTime - cacheInsertionTime) > ttlInMilliseconds)
+		} catch (Exception e) {
+			cache.put(ttlKey, currentTime)
+			return true // we overwrote the cache key
+		}
 
 		if (expired || !valueInCache) {
 			cache.put(ttlKey, currentTime)
