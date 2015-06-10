@@ -86,14 +86,20 @@ class CacheTagLib {
 			return
 		}
 
+		def cache = grailsCacheManager.getCache(attrs.cache ?: 'grailsTemplatesCache')
 		def key = calculateFullKey(attrs.template, attrs.contextPath, attrs.plugin)
+		def expired = false
+
 		if (attrs.key) {
 			key += ':' + attrs.key
 		}
 
-		def cache = grailsCacheManager.getCache(attrs.cache ?: 'grailsTemplatesCache')
+		if (attrs.ttl) {
+			expired = honorTTL(key, attrs.ttl.toLong())
+		}
+
 		def content = cache.get(key)
-		if (content == null) {
+		if (content == null || expired) {
 			content = cloneIfNecessary(g.render(attrs))
 			cache.put(key, content)
 		}
