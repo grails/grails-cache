@@ -52,15 +52,14 @@ class CacheTagLib {
 		}
 
 		if (attrs.ttl) {
-			expired = honorTTL(key, attrs.ttl)
+			expired = honorTTL(key, attrs.ttl.toLong())
 		}
 
 		def content = cache.get(key)
 		if (content == null || expired) {
 			content = cloneIfNecessary(body())
 			cache.put(key, content)
-		}
-		else {
+		} else {
 			content = content.get()
 		}
 
@@ -139,13 +138,14 @@ class CacheTagLib {
 	protected honorTTL(key, ttl) {
 		def cache = grailsCacheManager.getCache("TagLibTTLCache")
 		def ttlKey = key + ":ttl"
-		def ttlInMilliseconds = (ttl * 1000).toLong()
-		def cacheInsertionTime = cache.get(ttlKey).toLong()
+		def ttlInMilliseconds = ttl * 1000
+		def valueInCache = cache.get(ttlKey)
+		def cacheInsertionTime = valueInCache ? valueInCache.get().toLong() : 0
 		def currentTime = System.currentTimeMillis()
 
-		def expired = (currentTime - cacheInsertionTime) > ttlInMilliseconds
+		Boolean expired = valueInCache && ((currentTime - cacheInsertionTime) > ttlInMilliseconds)
 
-		if (expired) {
+		if (expired || !valueInCache) {
 			cache.put(ttlKey, currentTime)
 		}
 
