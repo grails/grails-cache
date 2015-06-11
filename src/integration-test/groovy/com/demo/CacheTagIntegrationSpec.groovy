@@ -177,12 +177,6 @@ class CacheTagIntegrationSpec extends GebSpec {
         def ttlSeconds = 10
 
         when:
-        go '/demo/clearTemplatesCache'
-
-        then:
-        $().text().contains 'cleared templates cache'
-
-        when:
         go "/demo/renderTagTTL?counter=1&ttl=${ttlSeconds}"
 
         then:
