@@ -44,13 +44,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.grails.plugins.web.api.RequestMimeTypesApi;
-import grails.web.util.GrailsApplicationAttributes;
 import grails.web.http.HttpHeaders;
 import org.grails.web.mapping.mvc.UrlMappingsHandlerMapping;
 import org.grails.web.servlet.WrappedResponseHolder;
 import grails.web.servlet.mvc.GrailsParameterMap;
 import org.grails.web.servlet.mvc.GrailsWebRequest;
+import org.grails.web.util.GrailsApplicationAttributes;
 import org.grails.web.util.WebUtils;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +67,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.servlet.HandlerExecutionChain;
 
 /**
  * A simple page fragment {@link CachingFilter} suitable for most uses.
@@ -872,7 +870,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 
 	/**
 	 * Dependency injection for ExpressionEvaluator.
-	 * @param source
+	 * @param evaluator
 	 */
 	public void setExpressionEvaluator(ExpressionEvaluator evaluator) {
 		expressionEvaluator = evaluator;
@@ -880,7 +878,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 
 	/**
 	 * Dependency injection for WebKeyGenerator.
-	 * @param source
+	 * @param generator
 	 */
 	public void setKeyGenerator(WebKeyGenerator generator) {
 		keyGenerator = generator;

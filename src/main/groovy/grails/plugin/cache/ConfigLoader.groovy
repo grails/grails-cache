@@ -116,7 +116,7 @@ class ConfigLoader {
 		configs
 	}
 
-	protected boolean processConfig(ConfigObject config, CacheConfigGrailsClass configClass) {
+	protected boolean processConfig(Map config, CacheConfigGrailsClass configClass) {
 		if (config.config instanceof Closure) {
 			def order = config.order
 			if (!(order instanceof Number)) {

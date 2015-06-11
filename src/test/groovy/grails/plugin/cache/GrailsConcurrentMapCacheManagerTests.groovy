@@ -15,14 +15,16 @@
 package grails.plugin.cache
 
 import groovyx.gpars.GParsPool
+import org.junit.Test
 
 /**
  * @author Burt Beckwith
  */
-class GrailsConcurrentMapCacheManagerTests extends GroovyTestCase {
+class GrailsConcurrentMapCacheManagerTests {
 
 	private GrailsConcurrentMapCacheManager manager = new GrailsConcurrentMapCacheManager()
 
+	@Test
 	void testGetCacheNames() {
 		'groovy'.each { assert manager.getCache(it) }
 		assert 5 == manager.cacheNames.size()
@@ -31,6 +33,7 @@ class GrailsConcurrentMapCacheManagerTests extends GroovyTestCase {
 		assert manager.cacheMap.values().every { it instanceof GrailsConcurrentMapCache }
 	}
 
+	@Test
 	void testGetCache() {
 
 		String key = 'foo123'
@@ -41,6 +44,7 @@ class GrailsConcurrentMapCacheManagerTests extends GroovyTestCase {
 		assert manager.cacheExists(key)
 	}
 
+	@Test
 	void testCacheExists() {
 		String key = 'foo'
 		assert !manager.cacheExists(key)
@@ -48,6 +52,7 @@ class GrailsConcurrentMapCacheManagerTests extends GroovyTestCase {
 		assert manager.cacheExists(key)
 	}
 
+	@Test
 	void testDestroyCache() {
 
 		String key = 'foo1234'
@@ -59,7 +64,8 @@ class GrailsConcurrentMapCacheManagerTests extends GroovyTestCase {
 		assert manager.destroyCache(key)
 		assert !manager.cacheExists(key)
 	}
-		
+
+	@Test
 	void testCacheCreationParallelAccess() {
 		assert !manager.cacheExists('testCache')
 
@@ -74,6 +80,7 @@ class GrailsConcurrentMapCacheManagerTests extends GroovyTestCase {
 		}
 	}
 
+	@Test
 	void testCacheGetParallelAccess() {
 		manager.getCache('testCache')
 
