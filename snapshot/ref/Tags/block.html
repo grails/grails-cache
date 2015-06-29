@@ -68,9 +68,12 @@ function addJsClass(el) {
     <span class="xml&#45;comment">&#60;!&#45;&#45; Any valid markup may be included here, including dynamic expressions, invoking other tags, etc.... &#45;&#45;&#62;</span>
 <span class="xml&#45;tag">&#60;/cache:block&#62;</span></pre></div><p class="paragraph"/><div class="code"><pre><span class="xml&#45;tag">&#60;cache:block key=<span class="xml&#45;quote">"$&#123;currentUser.id&#125;"</span>&#62;</span>
     <span class="xml&#45;comment">&#60;!&#45;&#45; Any valid markup may be included here, including dynamic expressions, invoking other tags, etc.... &#45;&#45;&#62;</span>
+<span class="xml&#45;tag">&#60;/cache:block&#62;</span></pre></div><p class="paragraph"/><div class="code"><pre><span class="xml&#45;tag">&#60;cache:block key=<span class="xml&#45;quote">"$&#123;currentUser.id&#125;"</span> ttl=<span class="xml&#45;quote">"$&#123;60&#42;60&#42;24&#42;7&#125;"</span>&#62;</span>
+    <span class="xml&#45;comment">&#60;!&#45;&#45; Any valid markup may be included here, including dynamic expressions, invoking other tags, etc.... &#45;&#45;&#62;</span>
 <span class="xml&#45;tag">&#60;/cache:block&#62;</span></pre></div><p class="paragraph"/><h3>Attributes</h3>
 <ul class="star">
 <li><code>key</code> (optional) - An optional key that may be provided to allow for different instances of the block to be held in the cache, presumably with different content.</li>
+<li><code>ttl</code> (optional) - An optional ttl (seconds) may be provided to allow the blocks to automatically evict a specified number of seconds after first insertion.</li>
 </ul><p class="paragraph"/>
             </div>
         </td>
