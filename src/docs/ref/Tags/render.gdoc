@@ -24,6 +24,9 @@ h2. Examples
 <cache:render template="myTemplate" model="[name: 'Some Value']" key="${currentUser.id}"/>
 {code}
 
+{code:xml}
+<cache:render template="myTemplate" model="[name: 'Some Value']" key="${currentUser.id}" ttl="${60*60*24*7}" />
+{code}
 h3. Attributes
 
 * @template@ (required) - The name of the template to apply
@@ -34,5 +37,6 @@ h3. Attributes
 * @collection@ (optional) - A collection of model objects to apply the template to
 * @var@ (optional) - The variable name of the bean to be referenced in the template
 * @plugin@ (optional) - The plugin to look for the template in
+* @ttl@ (optional) - An optional ttl (seconds) may be provided to allow the blocks to automatically evict a specified number of seconds after first insertion.
 
 See the documentation for the core @g.render@ tag for details on each of the optional attributes.
