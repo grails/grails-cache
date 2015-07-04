@@ -34,7 +34,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.grails.plugins.web.controllers.api.ControllersApi;
 import org.grails.web.servlet.GrailsFlashScope;
 import grails.web.http.HttpHeaders;
 import grails.util.GrailsClassUtils;
@@ -411,9 +410,6 @@ public class PageInfo implements Serializable {
 				continue;
 			}
 			else if (value instanceof HttpServletResponse) {
-				continue;
-			}
-			else if (value instanceof ControllersApi) {
 				continue;
 			}
 			else if (value instanceof PointcutAdvisor || value instanceof PointcutAdvisor[]) {

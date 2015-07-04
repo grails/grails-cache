@@ -16,7 +16,7 @@ package grails.plugin.cache
 
 import grails.plugin.cache.util.ClassUtils
 
-import org.grails.web.pages.GroovyPageTemplate
+import org.grails.gsp.GroovyPageTemplate
 import org.grails.web.servlet.mvc.GrailsWebRequest
 import org.grails.buffer.StreamCharBuffer
 import org.springframework.web.context.request.RequestContextHolder
@@ -45,16 +45,21 @@ class CacheTagLib {
 		def bodyClosure = ClassUtils.getPropertyOrFieldValue(body, 'bodyClosure')
 		def closureClass = bodyClosure.getClass()
 		def key = closureClass.getName()
+		def expired = false
+
 		if (attrs.key) {
 			key += ':' + attrs.key
 		}
 
+		if (attrs.ttl) {
+			expired = honorTTL(key, attrs.ttl.toLong())
+		}
+
 		def content = cache.get(key)
-		if (content == null) {
+		if (content == null || expired) {
 			content = cloneIfNecessary(body())
 			cache.put(key, content)
-		}
-		else {
+		} else {
 			content = content.get()
 		}
 
@@ -81,14 +86,20 @@ class CacheTagLib {
 			return
 		}
 
+		def cache = grailsCacheManager.getCache(attrs.cache ?: 'grailsTemplatesCache')
 		def key = calculateFullKey(attrs.template, attrs.contextPath, attrs.plugin)
+		def expired = false
+
 		if (attrs.key) {
 			key += ':' + attrs.key
 		}
 
-		def cache = grailsCacheManager.getCache(attrs.cache ?: 'grailsTemplatesCache')
+		if (attrs.ttl) {
+			expired = honorTTL(key, attrs.ttl.toLong())
+		}
+
 		def content = cache.get(key)
-		if (content == null) {
+		if (content == null || expired) {
 			content = cloneIfNecessary(g.render(attrs))
 			cache.put(key, content)
 		}
@@ -122,5 +133,36 @@ class CacheTagLib {
 			}
 		}
 		content
+	}
+
+	/**
+	 * updates the ttl and returns whether the content is expired
+	 * @param key
+	 * @param ttl in seconds comes form the view
+	 * @return boolean whether we wrote the a new ttl in or not
+	 */
+	protected Boolean honorTTL(String key, Long ttl) {
+		def cache = grailsCacheManager.getCache("TagLibTTLCache")
+		String ttlKey = key + ":ttl"
+		Long ttlInMilliseconds = ttl * 1000
+		Long currentTime = System.currentTimeMillis()
+		Boolean expired
+		def valueInCache
+		Long cacheInsertionTime
+
+		try {
+			valueInCache = cache.get(ttlKey)
+			cacheInsertionTime = valueInCache ? valueInCache.get().toLong() : 0
+			expired = valueInCache && ((currentTime - cacheInsertionTime) > ttlInMilliseconds)
+		} catch (Exception e) {
+			cache.put(ttlKey, currentTime)
+			return true // we overwrote the cache key
+		}
+
+		if (expired || !valueInCache) {
+			cache.put(ttlKey, currentTime)
+		}
+
+		return expired
 	}
 }
