@@ -321,7 +321,9 @@ public class PageInfo implements Serializable {
 	public String getHeader(String headerName) {
 		for (Header<? extends Serializable> header : responseHeaders) {
 			if (header.getName().equals(headerName)) {
-				return (String)header.getValue();
+				if(header.getValue() != null) {
+					return header.getValue().toString();
+				}
 			}
 		}
 		return null;
