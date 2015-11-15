@@ -12,7 +12,7 @@ import grails.plugin.cache.Cacheable
 
 class MessageService {
 
-   @Cacheable('message')
+   @Cacheable('message', key='#title')
    Message getMessage(String title) {
       println 'Fetching message'
       Message.findByTitle(title)
