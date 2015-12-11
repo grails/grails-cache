@@ -141,9 +141,9 @@ public class PageInfo implements Serializable {
 	 * servers SHOULD NOT send Expires dates more than one year in the future.
 	 *
 	 * @param ttlSeconds
-	 *           accepts 0, which means eternal. If the time is 0 or > one year,
+	 *           accepts 0, which means eternal. If the time is 0 or greater than one year,
 	 *           it is set to one year in accordance with the RFC.
-	 *           <p/>
+	 *           <p></p>
 	 *           Note: PageInfo does not hold a reference to the Element
 	 *           and therefore does not know what the Element ttl is. It would
 	 *           normally make most sense to set the TTL to the same as the
@@ -160,8 +160,11 @@ public class PageInfo implements Serializable {
 	}
 
 	/**
+	 *
 	 * @param ungzipped the bytes to be gzipped
 	 * @return gzipped bytes
+	 * @throws IOException
+	 * @throws AlreadyGzippedException
 	 */
 	protected byte[] gzip(byte[] ungzipped) throws IOException, AlreadyGzippedException {
 		if (isGzipped(ungzipped)) {
@@ -192,9 +195,9 @@ public class PageInfo implements Serializable {
 	 * Checks the first two bytes of the candidate byte array for the magic
 	 * number 0x677a. This magic number was obtained from /usr/share/file/magic.
 	 * The line for gzip is:
-	 * <p/>
+	 * <p></p>
 	 * <code>
-	 * >>14    beshort 0x677a          (gzipped)
+	 * 14    beshort 0x677a          (gzipped)
 	 * </code>
 	 *
 	 * @param candidate the byte array to check
@@ -230,6 +233,7 @@ public class PageInfo implements Serializable {
 
 	/**
 	 * Returns the cookies of the response.
+	 * @return List of cookies
 	 */
 	public List<SerializableCookie> getSerializableCookies() {
 		return serializableCookies;
@@ -237,6 +241,7 @@ public class PageInfo implements Serializable {
 
 	/**
 	 * Returns the status code of the response.
+	 * @return status code
 	 */
 	public int getStatusCode() {
 		return statusCode;
@@ -245,6 +250,7 @@ public class PageInfo implements Serializable {
 	/**
 	 * @return the ungzipped version of the body. This gunzipped on demand when
 	 *         storedGzipped, otherwise the ungzipped body is returned.
+	 * @throws IOException IOException
 	 */
 	public byte[] getUngzippedBody() throws IOException {
 		return storeGzipped ? ungzip(gzippedBody) : ungzippedBody;
@@ -256,7 +262,7 @@ public class PageInfo implements Serializable {
 	 *
 	 * @param gzipped the gzipped content
 	 * @return an ungzipped byte[]
-	 * @throws IOException
+	 * @throws IOException IOException
 	 */
 	protected byte[] ungzip(final byte[] gzipped) throws IOException {
 		GZIPInputStream inputStream = new GZIPInputStream(new ByteArrayInputStream(gzipped));

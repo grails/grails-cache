@@ -86,6 +86,9 @@ class CacheTagLib {
 			return
 		}
 
+		//Make this empty string to save error later in grails gsp core
+		attrs.plugin = attrs.plugin ?: ''
+
 		def cache = grailsCacheManager.getCache(attrs.cache ?: 'grailsTemplatesCache')
 		def key = calculateFullKey(attrs.template, attrs.contextPath, attrs.plugin)
 		def expired = false
@@ -112,9 +115,11 @@ class CacheTagLib {
 	protected String calculateFullKey(String templateName, String contextPath, String pluginName) {
 		GrailsWebRequest webRequest = RequestContextHolder.currentRequestAttributes()
 		String uri = webRequest.attributes.getTemplateUri(templateName, webRequest.request)
+		def artefact = grailsApplication.getArtefactByLogicalPropertyName("Controller", controllerName)
+		def controller = grailsApplication.mainContext.getBean(artefact?.clazz?.name)
 
 		GroovyPageTemplate t = groovyPagesTemplateRenderer.findAndCacheTemplate(
-			webRequest, pageScope, templateName, contextPath, pluginName, uri)
+				controller, webRequest, pageScope, templateName, contextPath, pluginName, uri)
 		if (!t) {
 			throwTagError("Template not found for name [$templateName] and path [$uri]")
 		}

@@ -241,7 +241,7 @@ public class GrailsAnnotationCacheOperationSource implements CacheOperationSourc
 
 	/**
 	 * Dependency injection for whether to only consider public methods
-	 * @param allow
+	 * @param allow allow public only
 	 */
 	public void setAllowPublicMethodsOnly(boolean allow) {
 		publicMethodsOnly = allow;

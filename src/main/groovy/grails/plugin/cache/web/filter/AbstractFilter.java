@@ -79,14 +79,14 @@ public abstract class AbstractFilter extends GenericFilterBean {
 	 * parameter to the request. This parameter is normally added to make
 	 * RequestDispatcher include and forwards work.
 	 *
-	 * @param httpRequest the request
+	 * @param request the request
 	 * @return true if NO_FILTER is not set.
 	 */
 	protected boolean filterNotDisabled(final HttpServletRequest request) {
 		return request.getAttribute(NO_FILTER) == null;
 	}
 
-	/**
+	/*
 	 * This method should throw IOExceptions, not wrap them.
 	 */
 	protected void logThrowable(final Throwable throwable, final HttpServletRequest httpRequest)
@@ -161,11 +161,11 @@ public abstract class AbstractFilter extends GenericFilterBean {
 	 * Determine whether the user agent accepts GZIP encoding. This feature is
 	 * part of HTTP1.1. If a browser accepts GZIP encoding it will advertise this
 	 * by including in its HTTP header:
-	 * <p/>
+	 *
 	 * <code>
 	 * Accept-Encoding: gzip
 	 * </code>
-	 * <p/>
+	 *
 	 * Requests which do not accept GZIP encoding fall into the following
 	 * categories:
 	 * <ul>
@@ -181,7 +181,7 @@ public abstract class AbstractFilter extends GenericFilterBean {
 	 * As of September 2004, about 34% of requests coming from the Internet did
 	 * not accept GZIP encoding.
 	 *
-	 * @param request
+	 * @param request request
 	 * @return true, if the User Agent request accepts GZIP encoding
 	 */
 	protected boolean acceptsGzipEncoding(HttpServletRequest request) {
@@ -198,7 +198,7 @@ public abstract class AbstractFilter extends GenericFilterBean {
 
 	/**
 	 * Dependency injection for the cache manager.
-	 * @param cacheManager the manager
+	 * @param manager the manager
 	 */
 	public void setCacheManager(CacheManager manager) {
 		cacheManager = manager;
@@ -206,7 +206,7 @@ public abstract class AbstractFilter extends GenericFilterBean {
 
 	/**
 	 * Dependency injection for the native cache manager.
-	 * @param nativeCacheManager the manager
+	 * @param manager the manager
 	 */
 	public void setNativeCacheManager(Object manager) {
 		nativeCacheManager = manager;
