@@ -40,8 +40,8 @@ public class GrailsConcurrentLinkedMapCache implements GrailsCache {
     * Create a new GrailsConcurrentLinkedMapCache with the specified name 
     * and capacity
     * @param name the name of the cache
-    * @param capaccity of the map
-    * @param allow null values (default is true)
+    * @param capacity of the map
+    * @param allowNullValues null values (default is true)
     */
    public GrailsConcurrentLinkedMapCache(String name, long capacity, boolean allowNullValues) {
       this.name = name;
@@ -56,7 +56,7 @@ public class GrailsConcurrentLinkedMapCache implements GrailsCache {
     * Create a new GrailsConcurrentLinkedMapCache with the specified name 
     * and capacity
     * @param name the name of the cache
-    * @param capaccity of the map
+    * @param capacity of the map
     */
    public GrailsConcurrentLinkedMapCache(String name, long capacity) {
       this(name, capacity, true);

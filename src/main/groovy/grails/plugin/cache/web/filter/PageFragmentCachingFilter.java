@@ -69,24 +69,25 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 
 /**
- * A simple page fragment {@link CachingFilter} suitable for most uses.
- * <p/>
+ * A simple page fragment CachingFilter suitable for most uses.
+ *
  * The meaning of <i>page fragment</i> is:
  * <ul>
  * <li>An include into an outer page.
  * <li>A content type suitable for suitable for inclusion into the outer page.
  * e.g. text or text/html
  * </ul>
- * For full page see {@link SimplePageCachingFilter}.
+ * For full page see SimplePageCachingFilter.
  * <h3>Keys</h3> Pages are cached based on their key. The key for this cache is
  * the URI followed by the query string. An example is
- * <code>/admin/SomePage.jsp?id=1234&name=Beagle</code>.
- * <p/>
+ * <code>/admin/SomePage.jsp?id=1234&amp;name=Beagle</code>.
+ * <p>
  * This key technique is suitable for a wide range of uses. It is independent of
  * hostname and port number, so will work well in situations where there are
  * multiple domains which get the same content, or where users access based on
  * different port numbers.
- * <p/>
+ * </p>
+ *
  * A problem can occur with tracking software, where unique ids are inserted
  * into request query strings. Because each request generates a unique key,
  * there will never be a cache hit. For these situations it is better to parse
@@ -94,15 +95,17 @@ import org.springframework.web.context.request.RequestContextHolder;
  * {@link #calculateKey(javax.servlet.http.HttpServletRequest)} with an
  * implementation that takes account of only the significant ones.
  * <h3>Configuring Caching with ehcache</h3> A cache entry in ehcache.xml should
- * be configured with the name {@link #NAME}.
- * <p/>
+ * be configured with the name.
+ *
+ * <p>
  * Cache attributes including expiry are configured per cache name. To specify a
  * different behaviour simply subclass, specify a new name and create a separate
  * cache entry for it.
+ * </p>
  * <h3>Gzipping</h3> Page fragments should never be gzipped.
- * <p/>
+ * <p>
  * Page fragments are stored in the cache ungzipped.
- *
+ * </p>
  * Based on net.sf.ehcache.constructs.web.filter.SimplePageFragmentCachingFilter,
  * grails.plugin.springcache.web.GrailsFragmentCachingFilter, and
  * org.springframework.cache.interceptor.CacheAspectSupport
@@ -420,16 +423,16 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 
 	/**
 	 * Writes the response from a PageInfo object.
-	 * <p/>
+	 *
 	 * Headers are set last so that there is an opportunity to override
 	 *
 	 * 1 - only set status, contentType, cookies, etc. if this is the "main"
 	 * request and not an include. 2 - send a status code 304 if appropriate.
 	 *
-	 * @param request
-	 * @param response
-	 * @param pageInfo
-	 * @throws IOException
+	 * @param request request
+	 * @param response response
+	 * @param pageInfo pageInfo
+	 * @throws IOException IOException
 	 */
 	protected void writeResponse(final HttpServletRequest request, final HttpServletResponse response,
 			final PageInfo pageInfo) throws IOException {
@@ -473,8 +476,8 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 
 	/**
 	 * Set the headers in the response object, excluding the Gzip header
-	 * @param pageInfo
-	 * @param response
+	 * @param pageInfo page Info
+	 * @param response repsonse
 	 */
 	protected void setHeaders(final PageInfo pageInfo, final HttpServletResponse response) {
 
@@ -824,7 +827,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 		return cUpdates;
 	}
 
-	/**
+	/*
 	 * Assembles a response from a cached page include. These responses are never
 	 * gzipped The content length should not be set in the response, because it
 	 * is a fragment of a page. Don't write any headers at all.
@@ -862,7 +865,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 
 	/**
 	 * Dependency injection for GrailsAnnotationCacheOperationSource.
-	 * @param source
+	 * @param source Source
 	 */
 	public void setCacheOperationSource(GrailsAnnotationCacheOperationSource source) {
 		cacheOperationSource = source;
@@ -870,7 +873,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 
 	/**
 	 * Dependency injection for ExpressionEvaluator.
-	 * @param evaluator
+	 * @param evaluator Evaluator
 	 */
 	public void setExpressionEvaluator(ExpressionEvaluator evaluator) {
 		expressionEvaluator = evaluator;
@@ -878,7 +881,7 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 
 	/**
 	 * Dependency injection for WebKeyGenerator.
-	 * @param generator
+	 * @param generator Generator
 	 */
 	public void setKeyGenerator(WebKeyGenerator generator) {
 		keyGenerator = generator;

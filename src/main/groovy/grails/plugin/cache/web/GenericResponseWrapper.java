@@ -40,12 +40,13 @@ import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
  * Provides a wrapper for {@link javax.servlet.http.HttpServletResponseWrapper}.
- * <p/>
+ * <p>
  * It is used to wrap the real Response so that we can modify it after that the
  * target of the request has delivered its response.
- * <p/>
+ * </p>
+ * <p>
  * It uses the Wrapper pattern.
- *
+ * </p>
  * Based on net.sf.ehcache.constructs.web.GenericResponseWrapper.
  *
  * @author Greg Luck
@@ -77,6 +78,8 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper implement
 
 	/**
 	 * Creates a GenericResponseWrapper
+	 * @param response Response
+	 * @param outputStream OutputStream
 	 */
 	public GenericResponseWrapper(final HttpServletResponse response, final SerializableOutputStream outputStream) {
 		super(response);
@@ -138,7 +141,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper implement
 	 *
 	 * @param code the status code
 	 * @param string the error message
-	 * @throws IOException
+	 * @throws IOException IOException
 	 */
 	@Override
 	public void sendError(int code, String string) throws IOException {
@@ -151,7 +154,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper implement
 	 * and the error is sent raw Also, the content is not cached.
 	 *
 	 * @param code the status code
-	 * @throws IOException
+	 * @throws IOException IOException
 	 */
 	@Override
 	public void sendError(int code) throws IOException {
@@ -164,7 +167,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper implement
 	 * bypassed and the error is sent raw. Also, the content is not cached.
 	 *
 	 * @param string the URL to redirect to
-	 * @throws IOException
+	 * @throws IOException IOException
 	 */
 	@Override
 	public void sendRedirect(String string) throws IOException {
@@ -344,6 +347,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper implement
 
 	/**
 	 * Flushes all the streams for this response.
+	 * @throws IOException IOException
 	 */
 	public void flush() throws IOException {
 		if (writer != null) {

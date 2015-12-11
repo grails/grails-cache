@@ -72,7 +72,7 @@ public class Header<T extends Serializable> implements Serializable {
 			return type;
 		}
 
-		/**
+		/*
 		 * Determines the {@link Type} of the Header. Throws
 		 * IllegalArgumentException if the specified class does not match any of
 		 * the Types
