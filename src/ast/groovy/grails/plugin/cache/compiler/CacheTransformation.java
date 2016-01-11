@@ -14,6 +14,7 @@
  */
 package grails.plugin.cache.compiler;
 
+import grails.plugin.cache.CacheOperation;
 import grails.util.CollectionUtils;
 
 import java.util.Map;
@@ -53,6 +54,7 @@ public class CacheTransformation implements ASTTransformation {
 		final AnnotationNode springCacheAnnotationNode = getCorrespondingSpringAnnotation(
 				grailsCacheAnnotationNode);
 		annotatedNode.addAnnotation(springCacheAnnotationNode);
+		annotatedNode.addAnnotation(new AnnotationNode(new ClassNode(CacheOperation.class)));
 	}
 
 	protected AnnotationNode getCorrespondingSpringAnnotation(final AnnotationNode grailsCacheAnnotationNode) {

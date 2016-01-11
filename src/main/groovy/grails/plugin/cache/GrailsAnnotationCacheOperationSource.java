@@ -94,6 +94,10 @@ public class GrailsAnnotationCacheOperationSource implements CacheOperationSourc
 	}
 
 	public Collection<CacheOperation> getCacheOperations(Method method, Class<?> targetClass) {
+		// minimum requirement check
+		if( method.getAnnotation(grails.plugin.cache.CacheOperation.class) == null && targetClass.getAnnotation(grails.plugin.cache.CacheOperation.class) == null) {
+			return NULL_CACHING_ATTRIBUTE;
+		}
 
 		// exclude controllers when called directly
 
