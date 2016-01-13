@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>2.3 Annotations 3.0.1</title>
+    <title>2.3 Annotations 3.0.2</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -77,7 +77,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> </p>
 
-                    <p><strong>Version:</strong> 3.0.1</p>
+                    <p><strong>Version:</strong> 3.0.2</p>
 
                     
                 </div>
@@ -88,7 +88,7 @@ function addJsClass() {
 
 <h2 id="annotations">2.3 Annotations</h2>
 The <a href="../api/grails/plugin/cache/Cacheable.html" class="api">Cacheable</a> and <a href="../api/grails/plugin/cache/CacheEvict.html" class="api">CacheEvict</a> annotations provided by the plugin have counterparts with the same names provided by Spring. See the <a href="http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/cache.html" target="blank">Spring documentation</a> for their usage and allowed syntax.<p class="paragraph"/><h4>Service method caching</h4><p class="paragraph"/>Given this simple service, you can see that the <code>getMessage</code> method is configured to cache the results in the <code>"message"</code> cache. The <code>title</code> parameter will be used as the cache key; if there were multiple parameters they would be combined into the key, and you can always specify the key using the Spring SpEL support. The <code>save</code> method is configured as one that evicts elements from the cache. There is no need to clear the entire cache in this case; instead any previously cached item with the same <code>title</code> attribute will be replaced with the current <code>Message</code> instance.<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">package</span> com.yourcompany<p class="paragraph"/><span class="java&#45;keyword">import</span> grails.plugin.cache.CacheEvict
-<span class="java&#45;keyword">import</span> grails.plugin.cache.Cacheable<p class="paragraph"/>class MessageService &#123;<p class="paragraph"/>   @Cacheable('message')
+<span class="java&#45;keyword">import</span> grails.plugin.cache.Cacheable<p class="paragraph"/>class MessageService &#123;<p class="paragraph"/>   @Cacheable('message', key='&#35;title')
    Message getMessage(<span class="java&#45;object">String</span> title) &#123;
       println 'Fetching message'
       Message.findByTitle(title)
