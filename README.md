@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/grails3-plugins/cache.svg)](https://travis-ci.org/grails3-plugins/cache)
+[![Build Status](https://travis-ci.org/grails-plugins/grails-cache.svg)](https://travis-ci.org/grails-plugins/grails-cache)
 
 Grails Cache Plugin
 ============
