@@ -1,4 +1,7 @@
 <html>
+<head>
+    <meta name="layout" content="cache"/>
+</head>
 <body>
     <cache:block>
         First block counter ${++counter}
