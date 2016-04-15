@@ -1,4 +1,7 @@
 <html>
+<head>
+    <meta name="layout" content="cache"/>
+</head>
 <body>
 
 First invocation: <cache:render template="counterTemplate" model="[counter: counter]" key="ttl:1" ttl="$ttl"/><br/>
