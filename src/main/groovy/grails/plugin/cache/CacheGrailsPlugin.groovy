@@ -72,7 +72,8 @@ class CacheGrailsPlugin extends Plugin {
 	// resources that should be loaded by the plugin once installed in the application
 	def pluginExcludes = [
 		'**/com/demo/**',
-		'TestCacheConfig**'
+		'TestCacheConfig**',
+		'grails-app/views/**'
 	]
 
 	Closure doWithSpring() { {->
