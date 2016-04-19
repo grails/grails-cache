@@ -16,7 +16,7 @@ plugins {
     id "com.jfrog.bintray" version "1.4"
 }
 
-version "3.0.3.BUILD-SNAPSHOT"
+version "3.0.3"
 group "org.grails.plugins"
 
 apply plugin: 'maven-publish'
@@ -27,8 +27,8 @@ apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-gsp"
 apply plugin: "org.grails.grails-doc"
 // Used for publishing to central repository, remove if not needed
-apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/grailsCentralPublishing.gradle'
-apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/bintrayPublishing.gradle'
+apply from: 'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/grailsCentralPublishing.gradle'
+apply from: 'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/bintrayPublishing.gradle'
 
 ext {
     grailsVersion = project.grailsVersion
@@ -66,7 +66,7 @@ dependencies {
     compile "org.javassist:javassist:3.17.1-GA"
 
     testCompile "org.grails:grails-plugin-testing"
-    testCompile "org.grails.plugins:geb:1.0.0.BUILD-SNAPSHOT"
+    testCompile "org.grails.plugins:geb:1.0.1"
 
     console "org.grails:grails-console"
 
@@ -78,8 +78,8 @@ task wrapper(type: Wrapper) {
 }
 
 jar {
-  exclude "TestCacheConfig**"
-  exclude "application.groovy"
-  exclude "com/demo/**/**"
-  exclude "demo/**"
+    exclude "TestCacheConfig**"
+    exclude "application.groovy"
+    exclude "com/demo/**/**"
+    exclude "demo/**"
 }
