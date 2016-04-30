@@ -104,8 +104,10 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper implement
                               else {
                                   outputStream.write((byte[])arg);
                               }
+                              break;
                           case 3:
                               outputStream.write((byte[])args[0], (Integer)args[1], (Integer)args[2]);
+                              break;
                       }
                       return null;
                   }
