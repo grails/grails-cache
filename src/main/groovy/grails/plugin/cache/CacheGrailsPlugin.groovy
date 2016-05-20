@@ -118,7 +118,7 @@ class CacheGrailsPlugin extends Plugin {
                     keyGenerator = ref('webCacheKeyGenerator')
                     expressionEvaluator = ref('webExpressionEvaluator')
                 }
-                urlPatterns = "*"
+                urlPatterns = "/*"
                 dispatcherTypes = EnumSet.of(DispatcherType.FORWARD, DispatcherType.INCLUDE)
             }
 
