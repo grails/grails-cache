@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *	  http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,13 +15,15 @@
 package grails.plugin.cache
 
 import grails.plugin.cache.util.ClassUtils
-
+import groovy.util.logging.Slf4j
+import org.grails.buffer.StreamCharBuffer
 import org.grails.gsp.GroovyPageTemplate
 import org.grails.web.servlet.mvc.GrailsWebRequest
-import org.grails.buffer.StreamCharBuffer
 import org.springframework.web.context.request.RequestContextHolder
 
+@Slf4j
 class CacheTagLib {
+
 
 	static namespace = 'cache'
 
@@ -41,29 +43,34 @@ class CacheTagLib {
 			return
 		}
 
-		def cache = grailsCacheManager.getCache(attrs.cache ?: 'grailsBlocksCache')
-		def bodyClosure = ClassUtils.getPropertyOrFieldValue(body, 'bodyClosure')
-		def closureClass = bodyClosure.getClass()
-		def key = closureClass.getName()
-		def expired = false
+		try {
+			def cache = grailsCacheManager.getCache(attrs.cache ?: 'grailsBlocksCache')
+			def bodyClosure = ClassUtils.getPropertyOrFieldValue(body, 'bodyClosure')
+			def closureClass = bodyClosure.getClass()
+			def key = closureClass.getName()
+			def expired = false
 
-		if (attrs.key) {
-			key += ':' + attrs.key
+			if (attrs.key) {
+				key += ':' + attrs.key
+			}
+
+			if (attrs.ttl) {
+				expired = honorTTL(key, attrs.ttl.toLong())
+			}
+
+			def content = cache.get(key)
+			if (content == null || expired) {
+				content = cloneIfNecessary(body())
+				cache.put(key, content)
+			} else {
+				content = content.get()
+			}
+
+			out << content
+		} catch (RuntimeException e) {
+			log.error("Cache block experienced an error, ignoring cache and outputting the body content instead.", e)
+			out << body()
 		}
-
-		if (attrs.ttl) {
-			expired = honorTTL(key, attrs.ttl.toLong())
-		}
-
-		def content = cache.get(key)
-		if (content == null || expired) {
-			content = cloneIfNecessary(body())
-			cache.put(key, content)
-		} else {
-			content = content.get()
-		}
-
-		out << content
 	}
 
 	/**
@@ -82,34 +89,38 @@ class CacheTagLib {
 	 */
 	def render = { attrs ->
 		if (!grailsCacheManager) {
-			out <<  g.render(attrs)
+			out << g.render(attrs)
 			return
 		}
 
-		//Make this empty string to save error later in grails gsp core
-		attrs.plugin = attrs.plugin ?: ''
+		try {
+			//Make this empty string to save error later in grails gsp core
+			attrs.plugin = attrs.plugin ?: ''
 
-		def cache = grailsCacheManager.getCache(attrs.cache ?: 'grailsTemplatesCache')
-		def key = calculateFullKey(attrs.template, attrs.contextPath, attrs.plugin)
-		def expired = false
+			def cache = grailsCacheManager.getCache(attrs.cache ?: 'grailsTemplatesCache')
+			def key = calculateFullKey(attrs.template, attrs.contextPath, attrs.plugin)
+			def expired = false
 
-		if (attrs.key) {
-			key += ':' + attrs.key
-		}
+			if (attrs.key) {
+				key += ':' + attrs.key
+			}
 
-		if (attrs.ttl) {
-			expired = honorTTL(key, attrs.ttl.toLong())
-		}
+			if (attrs.ttl) {
+				expired = honorTTL(key, attrs.ttl.toLong())
+			}
 
-		def content = cache.get(key)
-		if (content == null || expired) {
-			content = cloneIfNecessary(g.render(attrs))
-			cache.put(key, content)
+			def content = cache.get(key)
+			if (content == null || expired) {
+				content = cloneIfNecessary(g.render(attrs))
+				cache.put(key, content)
+			} else {
+				content = content.get()
+			}
+			out << content
+		} catch (RuntimeException e) {
+			log.error("Cache render experienced an error, ignoring cache and outputting the template un-cached.", e)
+			out << cloneIfNecessary(g.render(attrs))
 		}
-		else {
-			content = content.get()
-		}
-		out << content
 	}
 
 	protected String calculateFullKey(String templateName, String contextPath, String pluginName) {
@@ -127,12 +138,11 @@ class CacheTagLib {
 		t.metaInfo.pageClass.name
 	}
 
-	protected cloneIfNecessary(content) {
+	protected static cloneIfNecessary(content) {
 		if (content instanceof StreamCharBuffer) {
 			if (content instanceof Cloneable) {
 				content = content.clone()
-			}
-			else {
+			} else {
 				// pre Grails 2.3
 				content = content.toString()
 			}

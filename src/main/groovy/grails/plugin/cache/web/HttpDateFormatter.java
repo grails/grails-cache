@@ -62,7 +62,7 @@ public class HttpDateFormatter implements Serializable {
 
 	/**
 	 * Constructs a new formatter.
-	 * <p></p>
+	 * <p>&nbsp;</p>
 	 * Note that this class is not thread-safe for use by multiple threads, as
 	 * SimpleDateFormat is not. Each thread should create their own instance of
 	 * this class.

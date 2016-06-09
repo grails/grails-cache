@@ -20,6 +20,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import grails.util.Holders;
 import org.grails.core.artefact.ControllerArtefactHandler;
 import grails.core.GrailsControllerClass;
 import grails.web.servlet.mvc.GrailsParameterMap;
@@ -78,7 +79,7 @@ public class ContentCacheParameters {
 	}
 
 	protected void initController() {
-		controllerClass = (GrailsControllerClass) GrailsWebRequest.lookupApplication().getArtefactForFeature(
+		controllerClass = (GrailsControllerClass) Holders.findApplication().getArtefactForFeature(
 				ControllerArtefactHandler.TYPE, '/' + getControllerName());
 	}
 
