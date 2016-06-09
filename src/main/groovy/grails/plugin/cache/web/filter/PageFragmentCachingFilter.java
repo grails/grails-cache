@@ -523,36 +523,28 @@ public abstract class PageFragmentCachingFilter extends AbstractFilter {
 	}
 
 	protected void initContext() {
-		synchronized (this.getClass()) {
-			GrailsWebRequest requestAttributes = (GrailsWebRequest) RequestContextHolder.getRequestAttributes();
-			contextHolder.get().push(new ContentCacheParameters(requestAttributes));
-		}
+		GrailsWebRequest requestAttributes = (GrailsWebRequest) RequestContextHolder.getRequestAttributes();
+		contextHolder.get().push(new ContentCacheParameters(requestAttributes));
 	}
 
 	protected ContentCacheParameters getContext() {
-		synchronized (this.getClass()) {
-			return contextHolder.get().peek();
-		}
+		return contextHolder.get().peek();
 	}
 
 	protected void destroyContext() {
-		synchronized (this.getClass()) {
-			try {
-				contextHolder.get().pop();
-				if (contextHolder.get().empty()) {
-					contextHolder.remove();
-				}
-			} catch (EmptyStackException e) {
-				log.error("Empty stack exception in destroyContext", e);
+		try {
+			contextHolder.get().pop();
+			if (contextHolder.get().empty()) {
+				contextHolder.remove();
 			}
+		} catch (EmptyStackException e) {
+			log.error("Empty stack exception in destroyContext", e);
 		}
 	}
 
 	@Override
 	public void destroy() {
-		synchronized (this.getClass()) {
-			contextHolder.remove();
-		}
+		contextHolder.remove();
 	}
 
 	protected String getCachedUri(HttpServletRequest request) {
