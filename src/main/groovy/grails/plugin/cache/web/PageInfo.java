@@ -83,15 +83,14 @@ public class PageInfo implements Serializable {
 	/**
 	 * Creates a PageInfo object representing the "page".
 	 *
-	 * @param statusCode
-	 * @param contentType
-	 * @param cookies
-	 * @param body
+	 * @param statusCode Status Code
+	 * @param contentType Content Type
+	 * @param cookies Cookies
+	 * @param body Body
 	 * @param storeGzipped set this to false for images and page fragments which should never
 	 * @param timeToLiveSeconds the time to Live in seconds. 0 means maximum, which is one year per RFC2616.
-	 * @param headers
-	 * @param cookies
-	 * @param requestAttributes
+	 * @param headers Headers
+	 * @param requestAttributes request attributes
 	 * @throws AlreadyGzippedException
 	 */
 	public PageInfo(final int statusCode, final String contentType, final byte[] body,
@@ -143,7 +142,7 @@ public class PageInfo implements Serializable {
 	 * @param ttlSeconds
 	 *           accepts 0, which means eternal. If the time is 0 or greater than one year,
 	 *           it is set to one year in accordance with the RFC.
-	 *           <p></p>
+	 *           <p>&nbsp;</p>
 	 *           Note: PageInfo does not hold a reference to the Element
 	 *           and therefore does not know what the Element ttl is. It would
 	 *           normally make most sense to set the TTL to the same as the
@@ -163,8 +162,8 @@ public class PageInfo implements Serializable {
 	 *
 	 * @param ungzipped the bytes to be gzipped
 	 * @return gzipped bytes
-	 * @throws IOException
-	 * @throws AlreadyGzippedException
+	 * @throws IOException io exception
+	 * @throws AlreadyGzippedException already gzipped
 	 */
 	protected byte[] gzip(byte[] ungzipped) throws IOException, AlreadyGzippedException {
 		if (isGzipped(ungzipped)) {
@@ -195,7 +194,7 @@ public class PageInfo implements Serializable {
 	 * Checks the first two bytes of the candidate byte array for the magic
 	 * number 0x677a. This magic number was obtained from /usr/share/file/magic.
 	 * The line for gzip is:
-	 * <p></p>
+	 * <p>&nbsp;</p>
 	 * <code>
 	 * 14    beshort 0x677a          (gzipped)
 	 * </code>
@@ -366,7 +365,9 @@ public class PageInfo implements Serializable {
 	 * Returns true if the page's etag header indicates it is the same as the
 	 * copy held by the client as indicated by the request's if-none-match
 	 * header.
-	 */
+	 * @param request the request
+	 * @return boolean if match found
+     */
 	public boolean isMatch(HttpServletRequest request) {
 		String ifNoneMatch = request.getHeader(HttpHeaders.IF_NONE_MATCH);
 		String etag = getHeader(HttpHeaders.ETAG);
@@ -374,7 +375,7 @@ public class PageInfo implements Serializable {
 			return false;
 		}
 
-		return ifNoneMatch == etag;
+		return ifNoneMatch.equals(etag);
 	}
 
 	public Map<String, Object> getCacheDirectives() {
