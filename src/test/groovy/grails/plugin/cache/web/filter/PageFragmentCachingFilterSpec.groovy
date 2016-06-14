@@ -71,8 +71,8 @@ class PageFragmentCachingFilterSpec extends Specification {
 		1 * grailsAnnotationCacheOperationSource.getCacheOperations(_ as Method, _, true) >> [cacheType]
 		1 * expressionEvaluator.createEvaluationContext(_, _, _, _) >> evalContext
 		3 * keyGenerator.generate(_) >> "key"
-		1 * contentCacheParameters.getControllerName() >> "mock"
-		1 * contentCacheParameters.getActionName() >> "cacheMethod"
+//		1 * contentCacheParameters.getControllerName() >> "mock"
+//		1 * contentCacheParameters.getActionName() >> "cacheMethod"
 
 		where:
 		cacheType << [new CachePutOperation(name: 'CachePutOperation'), new CacheableOperation(name: 'CacheableOperation')]
@@ -159,7 +159,7 @@ class PageFragmentCachingFilterSpec extends Specification {
 		1 * grailsApplication.getArtefactForFeature('Controller', '/test')
 		1 * contentCacheParameters.getMethod() >> MockController.getMethod('cacheMethod')
 		1 * grailsAnnotationCacheOperationSource.getCacheOperations(_ as Method, _, true) >> []
-		1 * contentCacheParameters.toString()
+//		1 * contentCacheParameters.toString()
 		1 * contentCacheParameters.getControllerClass()
 		0 * _._
 	}
