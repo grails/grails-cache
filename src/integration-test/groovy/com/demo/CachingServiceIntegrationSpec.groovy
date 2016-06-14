@@ -12,87 +12,87 @@ class CachingServiceIntegrationSpec extends GebSpec {
 		go '/demo/basicCachingServiceInvocationCount'
 
 		then:
-		$().text().contains 'Basic Caching Service Invocation Count Is 0.'
+		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 0.'
 
 		when:
 		go '/demo/basicCachingServiceInvocation2Count'
 
 		then:
-		$().text().contains 'Basic Caching Service Invocation Count Is 100.'
+		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 100.'
 
 		when:
 		// first retrieval. no cache. service method is invoked for each call.
 		go '/demo/basicCachingService'
 
 		then:
-		$().text().contains 'Value From Service Is "Hello World!"'
+		browser.driver.pageSource.contains 'Value From Service Is "Hello World!"'
 
 		when:
 		go '/demo/basicCachingServiceInvocationCount'
 
 		then:
-		$().text().contains 'Basic Caching Service Invocation Count Is 1.'
+		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 1.'
 
 		when:
 		go '/demo/basicCaching2Service'
 
 		then:
-		$().text().contains 'Value From Service Is "Hello World 2!"'
+		browser.driver.pageSource.contains 'Value From Service Is "Hello World 2!"'
 
 		when:
 		go '/demo/basicCachingServiceInvocation2Count'
 
 		then:
-		$().text().contains 'Basic Caching Service Invocation Count Is 101.'
+		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 101.'
 
 		when:
 		// there's should be no change because it took the value from cache. and both service methods don't get mixed up
 		go '/demo/basicCachingService'
 
 		then:
-		$().text().contains 'Value From Service Is "Hello World!"'
+		browser.driver.pageSource.contains 'Value From Service Is "Hello World!"'
 
 		when:
 		go '/demo/basicCachingServiceInvocationCount'
 
 		then:
-		$().text().contains 'Basic Caching Service Invocation Count Is 1.'
+		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 1.'
 
 		when:
 		go '/demo/basicCaching2Service'
 
 		then:
-		$().text().contains 'Value From Service Is "Hello World 2!"'
+		browser.driver.pageSource.contains 'Value From Service Is "Hello World 2!"'
 
 		when:
 		go '/demo/basicCachingServiceInvocation2Count'
 
 		then:
-		$().text().contains 'Basic Caching Service Invocation Count Is 101.'
+		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 101.'
 
 		when:
 		go '/demo/basicCaching2Service'
 
 		then:
-		$().text().contains 'Value From Service Is "Hello World 2!"'
+		browser.driver.pageSource.contains 'Value From Service Is "Hello World 2!"'
 
 		when:
 		go '/demo/basicCachingServiceInvocation2Count'
 
 		then:
-		$().text().contains 'Basic Caching Service Invocation Count Is 101.'
+		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 101.'
 
 		when:
 		go '/demo/basicCachingService'
 
 		then:
-		$().text().contains 'Value From Service Is "Hello World!"'
+		browser.driver.pageSource.contains 'Value From Service Is "Hello World!"'
 
 		when:
 		go '/demo/basicCachingServiceInvocationCount'
 
 		then:
-		$().text().contains 'Basic Caching Service Invocation Count Is 1.'
+		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 1.'
 
 		when:
 		// reset
@@ -100,13 +100,13 @@ class CachingServiceIntegrationSpec extends GebSpec {
 		go '/demo/basicCachingServiceInvocationCount'
 
 		then:
-		$().text().contains 'Basic Caching Service Invocation Count Is 0.'
+		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 0.'
 
 		when:
 		go '/demo/basicCachingServiceInvocation2Count'
 
 		then:
-		$().text().contains 'Basic Caching Service Invocation Count Is 100.'
+		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 100.'
 	}
 
 	void 'test basic caching service'() {
@@ -114,37 +114,37 @@ class CachingServiceIntegrationSpec extends GebSpec {
 		go '/demo/basicCachingServiceInvocationCount'
 
 		then:
-		$().text().contains 'Basic Caching Service Invocation Count Is 0.'
+		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 0.'
 
 		when:
 		go '/demo/basicCachingServiceInvocationCount'
 
 		then:
-		$().text().contains 'Basic Caching Service Invocation Count Is 0.'
+		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 0.'
 
 		when:
 		go '/demo/basicCachingService'
 
 		then:
-		$().text().contains 'Value From Service Is "Hello World!"'
+		browser.driver.pageSource.contains 'Value From Service Is "Hello World!"'
 
 		when:
 		go '/demo/basicCachingServiceInvocationCount'
 
 		then:
-		$().text().contains 'Basic Caching Service Invocation Count Is 1.'
+		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 1.'
 
 		when:
 		go '/demo/basicCachingService'
 
 		then:
-		$().text().contains 'Value From Service Is "Hello World!"'
+		browser.driver.pageSource.contains 'Value From Service Is "Hello World!"'
 
 		when:
 		go '/demo/basicCachingServiceInvocationCount'
 
 		then:
-		$().text().contains 'Basic Caching Service Invocation Count Is 1.'
+		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 1.'
 	}
 
 	@NotYetImplemented

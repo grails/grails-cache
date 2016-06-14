@@ -15,13 +15,13 @@ class CacheTagIntegrationSpec extends GebSpec {
         go '/demo/clearBlocksCache'
 
         then:
-        $().text().contains 'cleared blocks cache'
+        browser.driver.pageSource.contains 'cleared blocks cache'
 
         when:
         go '/demo/clearTemplatesCache'
 
         then:
-        $().text().contains 'cleared templates cache'
+        browser.driver.pageSource.contains 'cleared templates cache'
     }
 
     void 'test block tag'() {
@@ -47,7 +47,7 @@ class CacheTagIntegrationSpec extends GebSpec {
         go '/demo/clearBlocksCache'
 
         then:
-        $().text().contains 'cleared blocks cache'
+        browser.driver.pageSource.contains 'cleared blocks cache'
 
         when:
         go '/demo/blockCache?counter=100'
@@ -69,7 +69,7 @@ class CacheTagIntegrationSpec extends GebSpec {
         go '/demo/clearBlocksCache'
 
         then:
-        $().text().contains 'cleared blocks cache'
+        browser.driver.pageSource.contains 'cleared blocks cache'
 
         when:
         go '/demo/blockCache?counter=50'
@@ -150,7 +150,7 @@ class CacheTagIntegrationSpec extends GebSpec {
         go '/demo/clearTemplatesCache'
 
         then:
-        $().text().contains 'cleared templates cache'
+        browser.driver.pageSource.contains 'cleared templates cache'
 
         when:
         go '/demo/renderTag?counter=5'
