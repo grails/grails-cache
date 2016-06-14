@@ -1,4 +1,4 @@
-/* Copyright 2012-2013 SpringSource.
+/* Copyright 2012-201 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ import org.codehaus.groovy.transform.GroovyASTTransformationClass;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-@GroovyASTTransformationClass("grails.plugin.cache.compiler.CacheTransformation")
+@GroovyASTTransformationClass("org.grails.plugin.cache.compiler.CacheableTransformation")
 public @interface Cacheable {
 
     /**

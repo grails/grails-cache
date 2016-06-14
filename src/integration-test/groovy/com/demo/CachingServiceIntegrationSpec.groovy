@@ -1,7 +1,8 @@
 package com.demo
 
-import grails.test.mixin.integration.*
 import geb.spock.GebSpec
+import grails.test.mixin.integration.Integration
+import groovy.transform.NotYetImplemented
 
 @Integration
 class CachingServiceIntegrationSpec extends GebSpec {
@@ -146,6 +147,7 @@ class CachingServiceIntegrationSpec extends GebSpec {
 		$().text().contains 'Basic Caching Service Invocation Count Is 1.'
 	}
 
+	@NotYetImplemented
 	void 'test basic cache put service'() {
 		when:
 		go '/demo/cacheGet?key=band'

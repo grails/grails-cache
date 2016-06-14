@@ -1,4 +1,4 @@
-/* Copyright 2012-2013 SpringSource.
+/* Copyright 2012-2016 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,6 @@ package grails.plugin.cache.compiler;
 
 import grails.plugin.cache.CacheOperation;
 import grails.util.CollectionUtils;
-
-import java.util.Map;
-
 import org.codehaus.groovy.ast.ASTNode;
 import org.codehaus.groovy.ast.AnnotatedNode;
 import org.codehaus.groovy.ast.AnnotationNode;
@@ -29,6 +26,8 @@ import org.codehaus.groovy.control.SourceUnit;
 import org.codehaus.groovy.transform.ASTTransformation;
 import org.codehaus.groovy.transform.GroovyASTTransformation;
 
+import java.util.Map;
+
 /**
  * @author Jeff Brown
  */
@@ -37,7 +36,6 @@ public class CacheTransformation implements ASTTransformation {
 
    @SuppressWarnings("unchecked")
    protected static final Map<ClassNode, ClassNode> GRAILS_ANNOTATION_CLASS_NODE_TO_SPRING_ANNOTATION_CLASS_NODE = CollectionUtils.<ClassNode, ClassNode>newMap(
-   		new ClassNode(grails.plugin.cache.Cacheable.class),  new ClassNode(org.springframework.cache.annotation.Cacheable.class),
    		new ClassNode(grails.plugin.cache.CachePut.class),   new ClassNode(org.springframework.cache.annotation.CachePut.class),
    		new ClassNode(grails.plugin.cache.CacheEvict.class), new ClassNode(org.springframework.cache.annotation.CacheEvict.class));
 

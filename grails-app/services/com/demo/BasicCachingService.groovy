@@ -3,7 +3,9 @@ package com.demo
 import grails.plugin.cache.CacheEvict
 import grails.plugin.cache.CachePut
 import grails.plugin.cache.Cacheable
+import groovy.transform.CompileStatic
 
+@CompileStatic
 class BasicCachingService {
 
 	static transactional = false
