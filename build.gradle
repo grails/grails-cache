@@ -76,3 +76,12 @@ jar {
 assets {
     packagePlugin = true
 }
+grailsPublish {
+    githubSlug = 'grails-plugins/grails-cache'
+    license {
+        name = 'Apache-2.0'
+    }
+    title = "Cache Plugin"
+    desc = "Grails Cache Plugin"
+    developers = [jeffbrown: "Jeff Scott Brown"]
+}
