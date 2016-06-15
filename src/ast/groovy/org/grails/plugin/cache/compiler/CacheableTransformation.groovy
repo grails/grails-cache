@@ -16,7 +16,6 @@
 package org.grails.plugin.cache.compiler
 
 import grails.compiler.ast.GrailsArtefactClassInjector
-import grails.util.Holders
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.codehaus.groovy.ast.*
@@ -94,11 +93,6 @@ public class CacheableTransformation implements ASTTransformation {
 
         VariableExpression cacheManagerVariableExpression = new VariableExpression(GRAILS_CACHE_MANAGER_PROPERTY_NAME)
 
-        Expression getApplicationContextExpression = new StaticMethodCallExpression(ClassHelper.make(Holders), 'getApplicationContext', new ArgumentListExpression())
-
-        Expression appContextVariableExpression = new VariableExpression('$_cache_applicationContext')
-        DeclarationExpression declareAppContextExpression = new DeclarationExpression(appContextVariableExpression, Token.newSymbol(Types.EQUALS, 0, 0), getApplicationContextExpression)
-
         Expression getCacheMethodCallExpression = new MethodCallExpression(cacheManagerVariableExpression, 'getCache', new ArgumentListExpression(cacheNameExpression))
 
         Expression cacheVariableExpression = new VariableExpression('$_cache_cacheVariable')
@@ -161,7 +155,6 @@ public class CacheableTransformation implements ASTTransformation {
         Statement ifCacheManager = new IfStatement(new BooleanExpression(cacheManagerVariableExpression), new EmptyStatement(), new ReturnStatement(callOriginalMethod))
         updatedMethodCode.addStatement(ifCacheManager)
         updatedMethodCode.addStatement(new ExpressionStatement(declareCacheExpression))
-        updatedMethodCode.addStatement(new ExpressionStatement(declareAppContextExpression))
         updatedMethodCode.addStatement(new ExpressionStatement(declareMethodReferenceExpression))
         updatedMethodCode.addStatement(new ExpressionStatement(cacheKeyDeclaration))
 
