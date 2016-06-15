@@ -45,8 +45,14 @@ public class CacheableTransformation implements ASTTransformation {
 
     public static final ClassNode COMPILE_STATIC_TYPE = ClassHelper.make(CompileStatic)
     public static final ClassNode TYPE_CHECKED_TYPE = ClassHelper.make(TypeChecked)
+
     public static final String GRAILS_CACHE_MANAGER_PROPERTY_NAME = 'grailsCacheManager'
     public static final String CUSTOM_CACHE_KEY_GENERATOR_PROPERTY_NAME = 'customCacheKeyGenerator'
+    public static final String CACHE_VALUE_WRAPPER_LOCAL_VARIABLE_NAME = '$_cache_valueWrapper'
+    public static final String CACHE_CACHE_KEY_LOCAL_VARIABLE_NAME = '$_cache_cacheKey'
+    public static final String CACHE_CACHE_VARIABLE_LOCAL_VARIABLE_NAME = '$_cache_cacheVariable'
+    public static final String CACHE_METHOD_REFERENCE_LOCAL_VARIABLE_NAME = '$_cache_methodReference'
+    public static final String CACHE_ORIGINAL_METHOD_RETURN_VALUE_LOCAL_VARIABLE_NAME = '$_cache_originalMethodReturnValue'
 
     @Override
     public void visit(final ASTNode[] astNodes, final SourceUnit sourceUnit) {
@@ -88,16 +94,61 @@ public class CacheableTransformation implements ASTTransformation {
     }
 
     protected void configureCachingForMethod(ClassNode declaringClass, AnnotationNode cacheAnnotationOnMethod, MethodNode methodToCache, SourceUnit sourceUnit) {
+        Expression expressionToCallOriginalMethod = moveOriginalCodeToNewMethod(sourceUnit, declaringClass, methodToCache)
 
-        Expression cacheNameExpression = (ConstantExpression) cacheAnnotationOnMethod.getMember('value')
+        BlockStatement cachingCode = new BlockStatement()
 
+        addCodeToExecuteIfCacheManagerIsNull(expressionToCallOriginalMethod, cachingCode)
+        addCodeToRetrieveCache(cacheAnnotationOnMethod, cachingCode)
+        addCodeToInitializeCacheKey(declaringClass, methodToCache, cachingCode)
+        addCodeToRetrieveWrapperFromCache(cachingCode)
+
+        Expression valueWrapperVariableExpression = new VariableExpression(CACHE_VALUE_WRAPPER_LOCAL_VARIABLE_NAME)
+        BlockStatement wrapperNotNullBlock = getCodeToExecuteIfWrapperExistsInCache()
+        BlockStatement wrapperIsNullBlock = getCodeToExecuteIfWrapperIsNull(expressionToCallOriginalMethod)
+
+        Statement ifValueWrapperStatement = new IfStatement(new BooleanExpression(valueWrapperVariableExpression), wrapperNotNullBlock, wrapperIsNullBlock)
+        cachingCode.addStatement(ifValueWrapperStatement)
+
+        methodToCache.code = cachingCode
+    }
+
+    protected BlockStatement getCodeToExecuteIfWrapperExistsInCache() {
+        BlockStatement wrapperNotNullBlock = new BlockStatement()
+        Expression valueWrapperVariableExpression = new VariableExpression(CACHE_VALUE_WRAPPER_LOCAL_VARIABLE_NAME)
+        Expression getValueFromWrapperMethodCallExpression = new MethodCallExpression(valueWrapperVariableExpression, 'get', new ArgumentListExpression())
+        wrapperNotNullBlock.addStatement(new ReturnStatement(getValueFromWrapperMethodCallExpression))
+        wrapperNotNullBlock
+    }
+
+    protected void addCodeToRetrieveWrapperFromCache(BlockStatement codeBlock) {
+        VariableExpression cacheKeyVariableExpression = new VariableExpression(CACHE_CACHE_KEY_LOCAL_VARIABLE_NAME)
+        Expression cacheVariableExpression = new VariableExpression(CACHE_CACHE_VARIABLE_LOCAL_VARIABLE_NAME)
+        Expression getValueWrapperMethodCallExpression = new MethodCallExpression(cacheVariableExpression, 'get', cacheKeyVariableExpression)
+        Expression valueWrapperVariableExpression = new VariableExpression(CACHE_VALUE_WRAPPER_LOCAL_VARIABLE_NAME)
+        Expression declareValueWrapperExpression = new DeclarationExpression(valueWrapperVariableExpression, Token.newSymbol(Types.EQUALS, 0, 0), getValueWrapperMethodCallExpression)
+
+        codeBlock.addStatement(new ExpressionStatement(declareValueWrapperExpression))
+    }
+
+    protected void addCodeToExecuteIfCacheManagerIsNull(MethodCallExpression expressionToCallOriginalMethod, BlockStatement codeBlock) {
         VariableExpression cacheManagerVariableExpression = new VariableExpression(GRAILS_CACHE_MANAGER_PROPERTY_NAME)
+        Statement ifCacheManager = new IfStatement(new BooleanExpression(cacheManagerVariableExpression), new EmptyStatement(), new ReturnStatement(expressionToCallOriginalMethod))
 
+        codeBlock.addStatement(ifCacheManager)
+    }
+
+    protected void addCodeToRetrieveCache(AnnotationNode cacheAnnotationOnMethod, BlockStatement codeBlock) {
+        VariableExpression cacheManagerVariableExpression = new VariableExpression(GRAILS_CACHE_MANAGER_PROPERTY_NAME)
+        Expression cacheVariableExpression = new VariableExpression(CACHE_CACHE_VARIABLE_LOCAL_VARIABLE_NAME)
+        Expression cacheNameExpression = (ConstantExpression) cacheAnnotationOnMethod.getMember('value')
         Expression getCacheMethodCallExpression = new MethodCallExpression(cacheManagerVariableExpression, 'getCache', new ArgumentListExpression(cacheNameExpression))
-
-        Expression cacheVariableExpression = new VariableExpression('$_cache_cacheVariable')
         Expression declareCacheExpression = new DeclarationExpression(cacheVariableExpression, Token.newSymbol(Types.EQUALS, 0, 0), getCacheMethodCallExpression)
 
+        codeBlock.addStatement(new ExpressionStatement(declareCacheExpression))
+    }
+
+    protected void addCodeToInitializeCacheKey(ClassNode declaringClass, MethodNode methodToCache, BlockStatement codeBlock) {
         ClassExpression classExpression = new ClassExpression(declaringClass)
         ArgumentListExpression args = new ArgumentListExpression()
         args.addExpression(new ConstantExpression(methodToCache.getName()))
@@ -109,9 +160,10 @@ public class CacheableTransformation implements ASTTransformation {
         }
         ArrayExpression getDeclaredMethodArgs = new ArrayExpression(ClassHelper.make(Class), parameterTypes)
         args.addExpression(getDeclaredMethodArgs)
+
         MethodCallExpression getDeclaredMethodExpression = new MethodCallExpression(classExpression, 'getDeclaredMethod', args)
 
-        VariableExpression methodReferenceVariableExpression = new VariableExpression('$_cache_methodReference')
+        VariableExpression methodReferenceVariableExpression = new VariableExpression(CACHE_METHOD_REFERENCE_LOCAL_VARIABLE_NAME)
         DeclarationExpression declareMethodReferenceExpression = new DeclarationExpression(methodReferenceVariableExpression, Token.newSymbol(Types.EQUALS, 0, 0), getDeclaredMethodExpression)
 
         ArgumentListExpression generateKeyArgs = new ArgumentListExpression()
@@ -126,23 +178,20 @@ public class CacheableTransformation implements ASTTransformation {
         generateKeyArgs.addExpression(generateArgs)
         Expression cacheKeyExpression = new MethodCallExpression(new VariableExpression(CUSTOM_CACHE_KEY_GENERATOR_PROPERTY_NAME), 'generate', generateKeyArgs)
 
-        VariableExpression cacheKeyVariableExpression = new VariableExpression('$_cache_cacheKey')
+        VariableExpression cacheKeyVariableExpression = new VariableExpression(CACHE_CACHE_KEY_LOCAL_VARIABLE_NAME)
         DeclarationExpression cacheKeyDeclaration = new DeclarationExpression(cacheKeyVariableExpression, Token.newSymbol(Types.EQUALS, 0, 0), cacheKeyExpression)
 
-        Expression getValueWrapperMethodCallExpression = new MethodCallExpression(cacheVariableExpression, 'get', cacheKeyVariableExpression)
+        codeBlock.addStatement(new ExpressionStatement(declareMethodReferenceExpression))
+        codeBlock.addStatement(new ExpressionStatement(cacheKeyDeclaration))
+    }
 
-        Expression valueWrapperVariableExpression = new VariableExpression('$_cache_valueWrapper')
-        Expression declareValueWrapperExpression = new DeclarationExpression(valueWrapperVariableExpression, Token.newSymbol(Types.EQUALS, 0, 0), getValueWrapperMethodCallExpression)
-
-        BlockStatement wrapperNotNullBlock = new BlockStatement()
-        Expression getValueFromWrapperMethodCallExpression = new MethodCallExpression(valueWrapperVariableExpression, 'get', new ArgumentListExpression())
-        wrapperNotNullBlock.addStatement(new ReturnStatement(getValueFromWrapperMethodCallExpression))
-
+    protected BlockStatement getCodeToExecuteIfWrapperIsNull(MethodCallExpression expressionToCallOriginalMethod) {
         BlockStatement wrapperIsNullBlock = new BlockStatement()
 
-        Expression returnValueVariableExpression = new VariableExpression('$_cache_originalMethodReturnValue')
-        Expression callOriginalMethod = moveOriginalCodeToNewMethod(sourceUnit, declaringClass, methodToCache)
-        Expression initializeReturnValueExpression = new DeclarationExpression(returnValueVariableExpression, Token.newSymbol(Types.EQUALS, 0, 0), callOriginalMethod)
+        Expression cacheKeyVariableExpression = new VariableExpression(CACHE_CACHE_KEY_LOCAL_VARIABLE_NAME)
+        Expression cacheVariableExpression = new VariableExpression(CACHE_CACHE_VARIABLE_LOCAL_VARIABLE_NAME)
+        Expression returnValueVariableExpression = new VariableExpression(CACHE_ORIGINAL_METHOD_RETURN_VALUE_LOCAL_VARIABLE_NAME)
+        Expression initializeReturnValueExpression = new DeclarationExpression(returnValueVariableExpression, Token.newSymbol(Types.EQUALS, 0, 0), expressionToCallOriginalMethod)
         ArgumentListExpression putArgs = new ArgumentListExpression()
         putArgs.addExpression(cacheKeyVariableExpression)
         putArgs.addExpression(returnValueVariableExpression)
@@ -150,19 +199,7 @@ public class CacheableTransformation implements ASTTransformation {
         wrapperIsNullBlock.addStatement(new ExpressionStatement(initializeReturnValueExpression))
         wrapperIsNullBlock.addStatement(new ExpressionStatement(updateCache))
         wrapperIsNullBlock.addStatement(new ReturnStatement(returnValueVariableExpression))
-
-        BlockStatement updatedMethodCode = new BlockStatement()
-        Statement ifCacheManager = new IfStatement(new BooleanExpression(cacheManagerVariableExpression), new EmptyStatement(), new ReturnStatement(callOriginalMethod))
-        updatedMethodCode.addStatement(ifCacheManager)
-        updatedMethodCode.addStatement(new ExpressionStatement(declareCacheExpression))
-        updatedMethodCode.addStatement(new ExpressionStatement(declareMethodReferenceExpression))
-        updatedMethodCode.addStatement(new ExpressionStatement(cacheKeyDeclaration))
-
-        updatedMethodCode.addStatement(new ExpressionStatement(declareValueWrapperExpression))
-        Statement ifValueWrapperStatement = new IfStatement(new BooleanExpression(valueWrapperVariableExpression), wrapperNotNullBlock, wrapperIsNullBlock)
-        updatedMethodCode.addStatement(ifValueWrapperStatement)
-
-        methodToCache.code = updatedMethodCode
+        wrapperIsNullBlock
     }
 
     protected MethodCallExpression moveOriginalCodeToNewMethod(SourceUnit source, ClassNode classNode, MethodNode methodNode) {
