@@ -72,30 +72,19 @@ public class CacheableTransformation implements ASTTransformation {
         }
     }
 
-    protected void addAutowiredPropertiesToClass(ClassNode declaringClass) {
-        addCacheManagerToClass(declaringClass)
-        addCustomCacheKeyGeneratorToClass(declaringClass)
+    protected void addAutowiredPropertiesToClass(ClassNode classNode) {
+        addAutowiredPropertyToClass classNode, CacheManager, GRAILS_CACHE_MANAGER_PROPERTY_NAME
+        addAutowiredPropertyToClass classNode, KeyGenerator, CUSTOM_CACHE_KEY_GENERATOR_PROPERTY_NAME
     }
 
-    protected void addCacheManagerToClass(ClassNode classNode) {
-        if(!classNode.hasProperty(GRAILS_CACHE_MANAGER_PROPERTY_NAME)) {
-            FieldNode cacheManagerFieldNode = new FieldNode(GRAILS_CACHE_MANAGER_PROPERTY_NAME, Modifier.PRIVATE, ClassHelper.make(CacheManager), classNode, new EmptyExpression())
+    protected addAutowiredPropertyToClass(ClassNode classNode, Class propertyType, String propertyName) {
+        if(!classNode.hasProperty(propertyName)) {
+            FieldNode cacheManagerFieldNode = new FieldNode(propertyName, Modifier.PRIVATE, ClassHelper.make(propertyType), classNode, new EmptyExpression())
             AnnotationNode autowiredAnnotationNode = new AnnotationNode(ClassHelper.make(Autowired))
             autowiredAnnotationNode.setMember('required', new ConstantExpression(false))
             cacheManagerFieldNode.addAnnotation(autowiredAnnotationNode)
             PropertyNode cacheManagerPropertyNode = new PropertyNode(cacheManagerFieldNode, Modifier.PUBLIC, null, null)
             classNode.addProperty(cacheManagerPropertyNode)
-        }
-    }
-
-    protected void addCustomCacheKeyGeneratorToClass(ClassNode classNode) {
-        if(!classNode.hasProperty(CUSTOM_CACHE_KEY_GENERATOR_PROPERTY_NAME)) {
-            FieldNode keyGeneratorFieldNode = new FieldNode(CUSTOM_CACHE_KEY_GENERATOR_PROPERTY_NAME, Modifier.PRIVATE, ClassHelper.make(KeyGenerator), classNode, new EmptyExpression())
-            AnnotationNode autowiredAnnotationNode = new AnnotationNode(ClassHelper.make(Autowired))
-            autowiredAnnotationNode.setMember('required', new ConstantExpression(false))
-            keyGeneratorFieldNode.addAnnotation(autowiredAnnotationNode)
-            PropertyNode keyGeneratorPropertyNode = new PropertyNode(keyGeneratorFieldNode, Modifier.PUBLIC, null, null)
-            classNode.addProperty(keyGeneratorPropertyNode)
         }
     }
 
