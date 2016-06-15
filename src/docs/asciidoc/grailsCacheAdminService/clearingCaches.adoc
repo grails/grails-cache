@@ -1,6 +1,7 @@
-There are methods in GrailsCacheAdminService for clearing the caches used by the [block|tags] and [render|tags] tags.
+There are methods in GrailsCacheAdminService for clearing the caches used by the <<ref-tags-block,block>> and <<ref-tags-render,render>> tags.
 
-{code:java}
+[source,java]
+----
 class ReportingController {
 
     def grailsCacheAdminService
@@ -15,4 +16,4 @@ class ReportingController {
         ...
     }
 }
-{code}
+----

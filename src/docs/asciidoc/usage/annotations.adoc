@@ -1,0 +1,124 @@
+The link:api/grails/plugin/cache/Cacheable.html[Cacheable] and link:api/grails/plugin/cache/CacheEvict.html[CacheEvict] annotations provided by the plugin have counterparts with the same names provided by Spring. See the http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/cache.html[Spring documentation] for their usage and allowed syntax.
+
+
+== Service method caching
+
+
+Given this simple service, you can see that the `getMessage` method is configured to cache the results in the `"message"` cache. The `title` parameter will be used as the cache key; if there were multiple parameters they would be combined into the key, and you can always specify the key using the Spring SpEL support. The `save` method is configured as one that evicts elements from the cache. There is no need to clear the entire cache in this case; instead any previously cached item with the same `title` attribute will be replaced with the current `Message` instance.
+
+[source,groovy]
+----
+package com.yourcompany
+
+import grails.plugin.cache.CacheEvict
+import grails.plugin.cache.Cacheable
+
+class MessageService {
+
+   @Cacheable('message', key='#title')
+   Message getMessage(String title) {
+      println 'Fetching message'
+      Message.findByTitle(title)
+   }
+
+   @CachePut(value='message', key='#message.title')
+   void save(Message message) {
+      println "Saving message $message"
+      message.save()
+   }
+
+   @CacheEvict(value='message', key='#message.title')
+   void delete(Message message) {
+      println "Deleting message $message"
+      message.delete()
+   }
+}
+----
+
+Note that you could also use \`CacheEvict for the `save@ method, which would remove the old cached value but not cache the current value.
+
+This service works with the `Message` domain class:
+
+[source,groovy]
+----
+package com.yourcompany
+
+class Message implements Serializable {
+
+   private static final long serialVersionUID = 1
+
+   String title
+   String body
+
+   String toString() {
+      "$title: $body"
+   }
+}
+----
+
+Note that for in-memory cache implementations it's not required that the objects being cached implement `Serializable` but if you use an implementation that uses Java serialization (for example the Redis plugin, or the Ehcache plugin when you have configured clustered caching) you must implement `Serializable`.
+
+To test this out, be sure to define a `"message"` cache in `Config.groovy` and save and retrieve `Message` instances using the service. There are `println` statements but you can also turn on SQL logging to watch the database access that's needed to retrieve instances that aren't cached yet, and you shouldn't see database access for cached values.
+
+
+== Controller action caching
+
+
+In addition to caching Spring bean return values, you can also cache responses for web requests using the same annotations. Note that since caching is implemented only for methods (Spring creates a proxy for your cached class in the same way that it creates a transactional proxy to start, commit, and roll back transactions for transactional Grails services) so you cannot annotate action closures. This doesn't fail silently; your controller class will not compile since the annotations are only allowed on the class or on methods; since Closures are fields, the annotations aren't valid.
+
+For example, in this controller the `lookup` action will use the `"message"` cache, so the first time you call the action you will see the output from the `println` statement but subsequent calls won't execute and you'll see the cached response instead. When you call the `evict` action the entire cache will be cleared (because of the `allEntries=true` attribute):
+
+[source,groovy]
+----
+package com.yourcompany
+
+import grails.plugin.cache.CacheEvict
+import grails.plugin.cache.Cacheable
+
+class TestController {
+
+   @Cacheable('message')
+   def lookup() {
+      // perform some expensive operations
+      println "called 'lookup'"
+   }
+
+   @CacheEvict(value='message', allEntries=true)
+   def evict() {
+      println "called 'evict'"
+   }
+}
+----
+
+NOTE: Caching of dynamically scaffolded actions is not supported.  If the scaffolding templates are installed with `grails install-templates` and cache related annotations are added to methods in the controller template, those annotations will only be relevant to generated scaffolding, not dynamic scaffolding.
+
+
+== If you can't use annotations
+
+
+Annotations aren't required, they're just the most convenient approach for configuration. If you like you can define caching semantics in `grails-app/conf/spring/resources.groovy` (or `resources.xml` if you like XML). This is also useful if you want to apply caching but can't edit the code to add annotations (for example if you have compiled classes in a jar).
+
+This Spring BeanBuilder DSL code will configure the same behavior as the two annotations in the example service class:
+
+[source,groovy]
+----
+beans = {
+
+   xmlns cache: 'http://www.springframework.org/schema/cache'
+   xmlns aop: 'http://www.springframework.org/schema/aop'
+
+   cache.'advice'(id: 'messageServiceCacheAdvice',
+                  'cache-manager': 'grailsCacheManager') {
+      caching(cache: 'message') {
+         cacheable(method: 'getMessage')
+         'cache-evict'(method: 'save', key: '#message.title')
+      }
+   }
+
+   // apply the cacheable behavior to MessageService
+   aop.config {
+      advisor('advice-ref': 'messageServiceCacheAdvice',
+              pointcut: 'execution(* com.yourcompany.MessageService.*(..))')
+   }
+}
+----

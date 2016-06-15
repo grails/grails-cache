@@ -1,0 +1,76 @@
+= My Title
+:version: 4.0.0.BUILD-SNAPSHOT
+:source-highlighter: coderay
+:imagesdir: ./images
+
+[[introduction]]
+== Introduction To The Cache Plugin
+
+include::introduction.adoc[]
+
+[[changeLog]]
+=== Change log
+
+include::introduction/changeLog.adoc[]
+
+[[usage]]
+== Usage
+
+include::usage.adoc[]
+
+[[configuration]]
+=== Configuration
+
+include::usage/configuration.adoc[]
+
+[[dsl]]
+=== Cache DSL
+
+include::usage/dsl.adoc[]
+
+[[annotations]]
+=== Annotations
+
+include::usage/annotations.adoc[]
+
+[[cacheManager]]
+=== CacheManager
+
+include::usage/cacheManager.adoc[]
+
+[[cacheTags]]
+== GSP Cache Tags
+
+include::cacheTags.adoc[]
+
+[[grailsCacheAdminService]]
+== Grails Cache Admin Service
+
+include::grailsCacheAdminService.adoc[]
+
+[[clearingCaches]]
+=== Clearing Caches
+
+include::grailsCacheAdminService/clearingCaches.adoc[]
+
+[[implementation]]
+== Implementation Details
+
+include::implementation.adoc[]
+
+[[reference]]
+== Reference
+
+[[ref-tags]]
+=== Tags
+
+[[ref-tags-block]]
+==== block
+
+include::ref/Tags/block.adoc[]
+
+[[ref-tags-render]]
+==== render
+
+include::ref/Tags/render.adoc[]
+

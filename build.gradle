@@ -9,6 +9,7 @@ buildscript {
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
         classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.8.2"
+        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
     }
 }
 
@@ -26,7 +27,7 @@ apply plugin:"org.grails.grails-plugin"
 apply plugin:"org.grails.grails-plugin-publish"
 apply plugin:"org.grails.grails-gsp"
 apply plugin:"asset-pipeline"
-apply plugin: "org.grails.grails-doc"
+apply plugin: 'org.asciidoctor.convert'
 
 repositories {
     mavenLocal()
@@ -86,3 +87,17 @@ grailsPublish {
     desc = "Grails Cache Plugin"
     developers = [jeffbrown: "Jeff Scott Brown"]
 }
+asciidoctor {
+    attributes 'experimental'  : 'true',
+            'compat-mode'   : 'true',
+            'toc'           : 'left',
+            'icons'         : 'font',
+            'version'       : project.version,
+            'sourcedir'     : "${project.projectDir}/src/main/groovy"
+}
+task copyDocs(type:Copy, dependsOn:asciidoctor) {
+    from "${project.buildDir}/asciidoc/html5"
+    into "${buildDir}/docs/manual"
+}
+task docs(dependsOn:[groovydoc, copyDocs])
+groovydoc.destinationDir = new File("${buildDir}/docs/manual/api")

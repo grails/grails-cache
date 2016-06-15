@@ -1,12 +1,11 @@
 The cache implementation used by this plugin is very simple, so there aren't many configuration options (compared to the Ehcache implementation for example, where you have fine-grained control over features like overflowing to disk, time-to-live settings, maximum size of caches, etc.) So there aren't many supported options in the cache configuration DSL, although each plugin's DSL parser is lenient and just logs warnings if you specify options that aren't understood. This lets you share configurations between applications that use different plugins.
 
-{warning}
-Since there is no way to configure "time to live" with this plugin, all cached items have no timeout and remain cached until either the JVM restarts (since the backing store is in-memory) or the cache is partially or fully cleared (by calling a method or action annotated with \@CacheEvict or programmatically).
-{warning}
+WARNING: Since there is no way to configure "time to live" with this plugin, all cached items have no timeout and remain cached until either the JVM restarts (since the backing store is in-memory) or the cache is partially or fully cleared (by calling a method or action annotated with \@CacheEvict or programmatically).
 
-You specify the cache configuration in @Config.groovy@ under the @grails.cache.config@ key, for example
+You specify the cache configuration in `Config.groovy` under the `grails.cache.config` key, for example
 
-{code}
+[source,groovy]
+----
 grails.cache.config = {
    cache {
       name 'message'
@@ -15,11 +14,12 @@ grails.cache.config = {
       name 'maps'
    }
 }
-{code}
+----
 
-or in a \*CacheConfig.groovy file in the @grails-app/conf@ directory under the @config@ key, for example
+or in a \*CacheConfig.groovy file in the `grails-app/conf` directory under the `config` key, for example
 
-{code}
+[source,groovy]
+----
 config = {
    cache {
       name 'message'
@@ -28,11 +28,12 @@ config = {
       name 'maps'
    }
 }
-{code}
+----
 
 Both of these will create two caches, one with name "message" and one with name "maps". You can also use attributes from other DSLs and they will be ignored, for example:
 
-{code}
+[source,groovy]
+----
 grails.cache.config = {
    cache {
       name 'message'
@@ -45,13 +46,14 @@ grails.cache.config = {
       name 'maps'
    }
 }
-{code}
+----
 
 This configuration results in the same caches as the simpler one.
 
-If you want to limit the number of cache entries you have to change the default cache manager to @'GrailsConcurrentLinkedMapCacheManager'@. To specify the limit you can add the @maxCapacity@ parameter to the cache config. Default value for @maxCapacity@ is 10000.
+If you want to limit the number of cache entries you have to change the default cache manager to `'GrailsConcurrentLinkedMapCacheManager'`. To specify the limit you can add the `maxCapacity` parameter to the cache config. Default value for `maxCapacity` is 10000.
 
-{code}
+[source,groovy]
+----
 grails.cache.config = {
    cacheManager 'GrailsConcurrentLinkedMapCacheManager'
    cache {
@@ -63,13 +65,16 @@ grails.cache.config = {
       name 'maps'
    }
 }
-{code}
+----
 
-h4. Order
 
-You can configure your cache definitions to be loaded before or after others by setting the @order@ attribute. Configurations with higher numbers are loaded later, so these can override previously-configured values, although there is no support for removing caches or cache attributes, only adding or overriding:
+== Order
 
-{code}
+
+You can configure your cache definitions to be loaded before or after others by setting the `order` attribute. Configurations with higher numbers are loaded later, so these can override previously-configured values, although there is no support for removing caches or cache attributes, only adding or overriding:
+
+[source,groovy]
+----
 order = 2000
 
 config = {
@@ -80,4 +85,4 @@ config = {
       name 'maps'
    }
 }
-{code}
+----
