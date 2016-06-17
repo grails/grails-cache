@@ -14,14 +14,9 @@
  */
 package grails.plugin.cache;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 import org.codehaus.groovy.transform.GroovyASTTransformationClass;
+
+import java.lang.annotation.*;
 
 /**
  * Indicates that a method (or all methods on a class) trigger(s)
@@ -35,7 +30,7 @@ import org.codehaus.groovy.transform.GroovyASTTransformationClass;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-@GroovyASTTransformationClass("grails.plugin.cache.compiler.CacheTransformation")
+@GroovyASTTransformationClass("org.grails.plugin.cache.compiler.CachePutTransformation")
 public @interface CachePut {
 
 	/*
