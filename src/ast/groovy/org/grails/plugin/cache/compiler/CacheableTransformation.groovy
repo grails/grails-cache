@@ -29,7 +29,6 @@ import org.codehaus.groovy.transform.ASTTransformation
 import org.codehaus.groovy.transform.GroovyASTTransformation
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.CacheManager
-import org.springframework.cache.interceptor.KeyGenerator
 
 import java.lang.reflect.Modifier
 
@@ -47,7 +46,6 @@ public class CacheableTransformation implements ASTTransformation {
     public static final ClassNode TYPE_CHECKED_TYPE = ClassHelper.make(TypeChecked)
 
     public static final String GRAILS_CACHE_MANAGER_PROPERTY_NAME = 'grailsCacheManager'
-    public static final String CUSTOM_CACHE_KEY_GENERATOR_PROPERTY_NAME = 'customCacheKeyGenerator'
     public static final String CACHE_VALUE_WRAPPER_LOCAL_VARIABLE_NAME = '$_cache_valueWrapper'
     public static final String CACHE_CACHE_KEY_LOCAL_VARIABLE_NAME = '$_cache_cacheKey'
     public static final String CACHE_CACHE_VARIABLE_LOCAL_VARIABLE_NAME = '$_cache_cacheVariable'
@@ -78,7 +76,6 @@ public class CacheableTransformation implements ASTTransformation {
 
     protected void addAutowiredPropertiesToClass(ClassNode classNode) {
         addAutowiredPropertyToClass classNode, CacheManager, GRAILS_CACHE_MANAGER_PROPERTY_NAME
-        addAutowiredPropertyToClass classNode, KeyGenerator, CUSTOM_CACHE_KEY_GENERATOR_PROPERTY_NAME
     }
 
     protected addAutowiredPropertyToClass(ClassNode classNode, Class propertyType, String propertyName) {
