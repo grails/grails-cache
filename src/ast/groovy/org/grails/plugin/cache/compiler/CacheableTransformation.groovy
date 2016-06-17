@@ -51,7 +51,6 @@ public class CacheableTransformation implements ASTTransformation {
     public static final String CACHE_VALUE_WRAPPER_LOCAL_VARIABLE_NAME = '$_cache_valueWrapper'
     public static final String CACHE_CACHE_KEY_LOCAL_VARIABLE_NAME = '$_cache_cacheKey'
     public static final String CACHE_CACHE_VARIABLE_LOCAL_VARIABLE_NAME = '$_cache_cacheVariable'
-    public static final String CACHE_METHOD_REFERENCE_LOCAL_VARIABLE_NAME = '$_cache_methodReference'
     public static final String CACHE_ORIGINAL_METHOD_RETURN_VALUE_LOCAL_VARIABLE_NAME = '$_cache_originalMethodReturnValue'
 
     @Override
@@ -100,7 +99,7 @@ public class CacheableTransformation implements ASTTransformation {
 
         addCodeToExecuteIfCacheManagerIsNull(expressionToCallOriginalMethod, cachingCode)
         addCodeToRetrieveCache(cacheAnnotationOnMethod, cachingCode)
-        addCodeToInitializeCacheKey(declaringClass, methodToCache, cachingCode)
+        addCodeToInitializeCacheKey(declaringClass, methodToCache, cacheAnnotationOnMethod, cachingCode)
         addCodeToRetrieveWrapperFromCache(cachingCode)
 
         Expression valueWrapperVariableExpression = new VariableExpression(CACHE_VALUE_WRAPPER_LOCAL_VARIABLE_NAME)
@@ -148,40 +147,28 @@ public class CacheableTransformation implements ASTTransformation {
         codeBlock.addStatement(new ExpressionStatement(declareCacheExpression))
     }
 
-    protected void addCodeToInitializeCacheKey(ClassNode declaringClass, MethodNode methodToCache, BlockStatement codeBlock) {
-        ClassExpression classExpression = new ClassExpression(declaringClass)
-        ArgumentListExpression args = new ArgumentListExpression()
-        args.addExpression(new ConstantExpression(methodToCache.getName()))
+    protected void addCodeToInitializeCacheKey(ClassNode declaringClass, MethodNode methodToCache, AnnotationNode cacheAnnotationOnMethod, BlockStatement codeBlock) {
 
-        List<Expression> parameterTypes = new ArrayList<Expression>()
-        Parameter[] parameters = methodToCache.getParameters()
-        for (Parameter p : parameters) {
-            parameterTypes.add(new ClassExpression(p.type))
+
+        def declareMap = new DeclarationExpression(new VariableExpression('$$__map'), Token.newSymbol(Types.EQUALS, 0, 0), new ConstructorCallExpression(ClassHelper.make(LinkedHashMap), new ArgumentListExpression()))
+        codeBlock.addStatement(new ExpressionStatement(declareMap))
+        def parameters1 = methodToCache.getParameters()
+        for(Parameter p : parameters1) {
+            ArgumentListExpression putArgs = new ArgumentListExpression()
+            putArgs.addExpression(new ConstantExpression(p.getName()))
+            putArgs.addExpression(new VariableExpression(p.getName()))
+            MethodCallExpression mce = new MethodCallExpression(new VariableExpression('$$__map'), 'put', putArgs)
+            codeBlock.addStatement(new ExpressionStatement(mce))
         }
-        ArrayExpression getDeclaredMethodArgs = new ArrayExpression(ClassHelper.make(Class), parameterTypes)
-        args.addExpression(getDeclaredMethodArgs)
 
-        MethodCallExpression getDeclaredMethodExpression = new MethodCallExpression(classExpression, 'getDeclaredMethod', args)
-
-        VariableExpression methodReferenceVariableExpression = new VariableExpression(CACHE_METHOD_REFERENCE_LOCAL_VARIABLE_NAME)
-        DeclarationExpression declareMethodReferenceExpression = new DeclarationExpression(methodReferenceVariableExpression, Token.newSymbol(Types.EQUALS, 0, 0), getDeclaredMethodExpression)
-
-        ArgumentListExpression generateKeyArgs = new ArgumentListExpression()
-        generateKeyArgs.addExpression(new VariableExpression('this'))
-        generateKeyArgs.addExpression(methodReferenceVariableExpression)
-
-        List<Expression> parameterList = new ArrayList<Expression>()
-        for (Parameter p : parameters) {
-            parameterList.add(new VariableExpression(p.getName()))
-        }
-        ArrayExpression generateArgs = new ArrayExpression(ClassHelper.make(Object), parameterList)
-        generateKeyArgs.addExpression(generateArgs)
-        Expression cacheKeyExpression = new MethodCallExpression(new VariableExpression(CUSTOM_CACHE_KEY_GENERATOR_PROPERTY_NAME), 'generate', generateKeyArgs)
-
+        ArgumentListExpression createKeyArgs = new ArgumentListExpression()
+        createKeyArgs.addExpression(new ConstantExpression(declaringClass.getName()))
+        createKeyArgs.addExpression(new ConstantExpression(methodToCache.getName()))
+        createKeyArgs.addExpression(new VariableExpression('$$__map'))
+        createKeyArgs.addExpression(new CastExpression(ClassHelper.make(String),  new ConstantExpression(cacheAnnotationOnMethod.getMember('key')?.getText())))
+        def cacheKeyExpression = new StaticMethodCallExpression(ClassHelper.make(TemporaryKeyHelper), 'createKey', createKeyArgs)
         VariableExpression cacheKeyVariableExpression = new VariableExpression(CACHE_CACHE_KEY_LOCAL_VARIABLE_NAME)
         DeclarationExpression cacheKeyDeclaration = new DeclarationExpression(cacheKeyVariableExpression, Token.newSymbol(Types.EQUALS, 0, 0), cacheKeyExpression)
-
-        codeBlock.addStatement(new ExpressionStatement(declareMethodReferenceExpression))
         codeBlock.addStatement(new ExpressionStatement(cacheKeyDeclaration))
     }
 
