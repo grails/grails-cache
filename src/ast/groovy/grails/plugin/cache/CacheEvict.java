@@ -33,7 +33,7 @@ import org.codehaus.groovy.transform.GroovyASTTransformationClass;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-@GroovyASTTransformationClass("grails.plugin.cache.compiler.CacheTransformation")
+@GroovyASTTransformationClass("org.grails.plugin.cache.compiler.CacheEvictTransformation")
 public @interface CacheEvict {
 
 	/*
