@@ -44,7 +44,7 @@ public class CacheableTransformation extends AbstractCacheTransformation {
 
         addCodeToExecuteIfCacheManagerIsNull(expressionToCallOriginalMethod, cachingCode)
         addCodeToRetrieveCache(cacheAnnotationOnMethod, cachingCode)
-        addCodeToInitializeCacheKey(declaringClass, methodToCache, cacheAnnotationOnMethod, cachingCode)
+        addCodeToInitializeCacheKey(methodToCache, cacheAnnotationOnMethod, cachingCode)
         addCodeToRetrieveWrapperFromCache(cachingCode)
 
         Expression valueWrapperVariableExpression = new VariableExpression(CACHE_VALUE_WRAPPER_LOCAL_VARIABLE_NAME)

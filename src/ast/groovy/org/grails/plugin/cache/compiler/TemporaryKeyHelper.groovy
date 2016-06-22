@@ -12,13 +12,11 @@ import org.springframework.util.StringUtils
 @CompileStatic
 class TemporaryKeyHelper {
 
-    static createKey(String className, String methodName, Map methodParams, String spel) {
+    static createKey(Map methodParams, String spel) {
 
         List params = []
-        params << className
-        params << methodName
 
-        if(spel) {
+        if (spel) {
             def context = new StandardEvaluationContext()
             context.variables = methodParams
 
@@ -28,7 +26,9 @@ class TemporaryKeyHelper {
             def value = expression.getValue(context)
             params << value
         } else {
-            params << methodParams
+            if (methodParams) {
+                params << methodParams
+            }
         }
 
         new TemporaryGrailsCacheKey(params)
