@@ -44,7 +44,7 @@ class CachePutTransformation extends AbstractCacheTransformation {
 
         addCodeToExecuteIfCacheManagerIsNull(expressionToCallOriginalMethod, cachingCode)
         addCodeToRetrieveCache(cacheAnnotationOnMethod, cachingCode)
-        addCodeToInitializeCacheKey(methodToCache, cacheAnnotationOnMethod, cachingCode)
+        addCodeToInitializeCacheKey(declaringClass, methodToCache, cacheAnnotationOnMethod, cachingCode)
 
         Expression getReturnValue = new DeclarationExpression(new VariableExpression('$_cache_originalMethodReturnValue'), Token.newSymbol(Types.EQUALS, 0, 0), expressionToCallOriginalMethod)
         cachingCode.addStatement(new ExpressionStatement(getReturnValue))

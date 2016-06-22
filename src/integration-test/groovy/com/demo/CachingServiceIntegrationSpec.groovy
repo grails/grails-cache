@@ -36,13 +36,13 @@ class CachingServiceIntegrationSpec extends GebSpec {
 		go '/demo/basicCaching2Service'
 
 		then:
-		browser.driver.pageSource.contains 'Value From Service Is "Hello World!"'
+		browser.driver.pageSource.contains 'Value From Service Is "Hello World 2!"'
 
 		when:
 		go '/demo/basicCachingServiceInvocation2Count'
 
 		then:
-		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 100.'
+		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 101.'
 
 		when:
 		// there's should be no change because it took the value from cache. and both service methods don't get mixed up
@@ -61,25 +61,25 @@ class CachingServiceIntegrationSpec extends GebSpec {
 		go '/demo/basicCaching2Service'
 
 		then:
-		browser.driver.pageSource.contains 'Value From Service Is "Hello World!"'
+		browser.driver.pageSource.contains 'Value From Service Is "Hello World 2!"'
 
 		when:
 		go '/demo/basicCachingServiceInvocation2Count'
 
 		then:
-		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 100.'
+		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 101.'
 
 		when:
 		go '/demo/basicCaching2Service'
 
 		then:
-		browser.driver.pageSource.contains 'Value From Service Is "Hello World!"'
+		browser.driver.pageSource.contains 'Value From Service Is "Hello World 2!"'
 
 		when:
 		go '/demo/basicCachingServiceInvocation2Count'
 
 		then:
-		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 100.'
+		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 101.'
 
 		when:
 		go '/demo/basicCachingService'

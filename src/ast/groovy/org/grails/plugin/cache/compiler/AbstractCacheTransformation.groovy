@@ -139,7 +139,7 @@ abstract class AbstractCacheTransformation implements ASTTransformation  {
         codeBlock.addStatement(new ExpressionStatement(declareCacheExpression))
     }
 
-    protected void addCodeToInitializeCacheKey(MethodNode methodToCache, AnnotationNode cacheAnnotationOnMethod, BlockStatement codeBlock) {
+    protected void addCodeToInitializeCacheKey(ClassNode declaringClass, MethodNode methodToCache, AnnotationNode cacheAnnotationOnMethod, BlockStatement codeBlock) {
 
         def declareMap = new DeclarationExpression(new VariableExpression('$$__map'), Token.newSymbol(Types.EQUALS, 0, 0), new ConstructorCallExpression(ClassHelper.make(LinkedHashMap), new ArgumentListExpression()))
         codeBlock.addStatement(new ExpressionStatement(declareMap))
@@ -153,6 +153,9 @@ abstract class AbstractCacheTransformation implements ASTTransformation  {
         }
 
         ArgumentListExpression createKeyArgs = new ArgumentListExpression()
+        createKeyArgs.addExpression(new ConstantExpression(declaringClass.getName()))
+        createKeyArgs.addExpression(new ConstantExpression(methodToCache.getName()))
+        createKeyArgs.addExpression(new MethodCallExpression(new VariableExpression('this'), 'hashCode', new ArgumentListExpression()))
         createKeyArgs.addExpression(new VariableExpression('$$__map'))
         createKeyArgs.addExpression(new CastExpression(ClassHelper.make(String),  new ConstantExpression(cacheAnnotationOnMethod.getMember('key')?.getText())))
         def cacheKeyExpression = new StaticMethodCallExpression(ClassHelper.make(TemporaryKeyHelper), 'createKey', createKeyArgs)
