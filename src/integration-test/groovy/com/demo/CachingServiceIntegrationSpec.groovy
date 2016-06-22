@@ -2,7 +2,6 @@ package com.demo
 
 import geb.spock.GebSpec
 import grails.test.mixin.integration.Integration
-import groovy.transform.NotYetImplemented
 
 @Integration
 class CachingServiceIntegrationSpec extends GebSpec {
@@ -37,13 +36,13 @@ class CachingServiceIntegrationSpec extends GebSpec {
 		go '/demo/basicCaching2Service'
 
 		then:
-		browser.driver.pageSource.contains 'Value From Service Is "Hello World 2!"'
+		browser.driver.pageSource.contains 'Value From Service Is "Hello World!"'
 
 		when:
 		go '/demo/basicCachingServiceInvocation2Count'
 
 		then:
-		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 101.'
+		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 100.'
 
 		when:
 		// there's should be no change because it took the value from cache. and both service methods don't get mixed up
@@ -62,25 +61,25 @@ class CachingServiceIntegrationSpec extends GebSpec {
 		go '/demo/basicCaching2Service'
 
 		then:
-		browser.driver.pageSource.contains 'Value From Service Is "Hello World 2!"'
+		browser.driver.pageSource.contains 'Value From Service Is "Hello World!"'
 
 		when:
 		go '/demo/basicCachingServiceInvocation2Count'
 
 		then:
-		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 101.'
+		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 100.'
 
 		when:
 		go '/demo/basicCaching2Service'
 
 		then:
-		browser.driver.pageSource.contains 'Value From Service Is "Hello World 2!"'
+		browser.driver.pageSource.contains 'Value From Service Is "Hello World!"'
 
 		when:
 		go '/demo/basicCachingServiceInvocation2Count'
 
 		then:
-		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 101.'
+		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 100.'
 
 		when:
 		go '/demo/basicCachingService'
@@ -147,60 +146,59 @@ class CachingServiceIntegrationSpec extends GebSpec {
 		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 1.'
 	}
 
-	@NotYetImplemented
 	void 'test basic cache put service'() {
 		when:
 		go '/demo/cacheGet?key=band'
 
 		then:
-		$().text().contains 'Result: null'
+		browser.driver.pageSource.contains 'Result: null'
 
 		when:
 		go '/demo/cachePut?key=band&value=Thin+Lizzy'
 
 		then:
-		$().text().contains 'Result: ** Thin Lizzy **'
+		browser.driver.pageSource.contains 'Result: ** Thin Lizzy **'
 
 		when:
 		go '/demo/cacheGet?key=band'
 
 		then:
-		$().text().contains 'Result: ** Thin Lizzy'
+		browser.driver.pageSource.contains 'Result: ** Thin Lizzy'
 
 		when:
 		go '/demo/cacheGet?key=singer'
 
 		then:
-		$().text().contains 'Result: null'
+		browser.driver.pageSource.contains 'Result: null'
 
 		when:
 		go '/demo/cachePut?key=singer&value=Phil+Lynott'
 
 		then:
-		$().text().contains 'Result: ** Phil Lynott **'
+		browser.driver.pageSource.contains 'Result: ** Phil Lynott **'
 
 		when:
 		go '/demo/cacheGet?key=singer'
 
 		then:
-		$().text().contains 'Result: ** Phil Lynott'
+		browser.driver.pageSource.contains 'Result: ** Phil Lynott'
 
 		when:
 		go '/demo/cachePut?key=singer&value=John+Sykes'
 
 		then:
-		$().text().contains 'Result: ** John Sykes **'
+		browser.driver.pageSource.contains 'Result: ** John Sykes **'
 
 		when:
 		go '/demo/cacheGet?key=singer'
 
 		then:
-		$().text().contains 'Result: ** John Sykes'
+		browser.driver.pageSource.contains 'Result: ** John Sykes'
 
 		when:
 		go '/demo/cacheGet?key=band'
 
 		then:
-		$().text().contains 'Result: ** Thin Lizzy'
+		browser.driver.pageSource.contains 'Result: ** Thin Lizzy'
 	}
 }
