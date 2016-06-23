@@ -120,6 +120,7 @@ public class CustomCacheKeyGenerator implements KeyGenerator, GrailsCacheKeyGene
 				target.hashCode(), innerKeyGenerator.generate(target, method, params));
 	}
 
+	@Override
 	def generate(String className, String methodName, int objHashCode, Map methodParams, String spel) {
 
 		Object simpleKey

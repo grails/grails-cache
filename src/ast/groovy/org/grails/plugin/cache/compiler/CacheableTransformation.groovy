@@ -17,8 +17,10 @@ package org.grails.plugin.cache.compiler
 
 import groovy.transform.CompileStatic
 import org.codehaus.groovy.ast.AnnotationNode
+import org.codehaus.groovy.ast.ClassHelper
 import org.codehaus.groovy.ast.ClassNode
 import org.codehaus.groovy.ast.MethodNode
+import org.codehaus.groovy.ast.Parameter
 import org.codehaus.groovy.ast.expr.*
 import org.codehaus.groovy.ast.stmt.*
 import org.codehaus.groovy.control.CompilePhase
@@ -26,6 +28,7 @@ import org.codehaus.groovy.control.SourceUnit
 import org.codehaus.groovy.syntax.Token
 import org.codehaus.groovy.syntax.Types
 import org.codehaus.groovy.transform.GroovyASTTransformation
+import org.springframework.cache.Cache
 
 /**
  * @since 4.0.0
@@ -61,6 +64,8 @@ public class CacheableTransformation extends AbstractCacheTransformation {
         BlockStatement wrapperNotNullBlock = new BlockStatement()
         Expression valueWrapperVariableExpression = new VariableExpression(CACHE_VALUE_WRAPPER_LOCAL_VARIABLE_NAME)
         Expression getValueFromWrapperMethodCallExpression = new MethodCallExpression(valueWrapperVariableExpression, 'get', new ArgumentListExpression())
+        MethodNode valueWrapperGetMethod = ClassHelper.make(Cache.ValueWrapper).getMethod('get', new Parameter[0])
+        getValueFromWrapperMethodCallExpression.methodTarget = valueWrapperGetMethod
         wrapperNotNullBlock.addStatement(new ReturnStatement(getValueFromWrapperMethodCallExpression))
         wrapperNotNullBlock
     }
@@ -69,6 +74,9 @@ public class CacheableTransformation extends AbstractCacheTransformation {
         VariableExpression cacheKeyVariableExpression = new VariableExpression(CACHE_KEY_LOCAL_VARIABLE_NAME)
         Expression cacheVariableExpression = new VariableExpression(CACHE_VARIABLE_LOCAL_VARIABLE_NAME)
         Expression getValueWrapperMethodCallExpression = new MethodCallExpression(cacheVariableExpression, 'get', cacheKeyVariableExpression)
+
+        MethodNode cacheGetMethod = ClassHelper.make(Cache).getMethod('get', [new Parameter(OBJECT_TYPE, 'key')] as Parameter[])
+        getValueWrapperMethodCallExpression.methodTarget = cacheGetMethod
         Expression valueWrapperVariableExpression = new VariableExpression(CACHE_VALUE_WRAPPER_LOCAL_VARIABLE_NAME)
         Expression declareValueWrapperExpression = new DeclarationExpression(valueWrapperVariableExpression, Token.newSymbol(Types.EQUALS, 0, 0), getValueWrapperMethodCallExpression)
 
@@ -86,6 +94,8 @@ public class CacheableTransformation extends AbstractCacheTransformation {
         putArgs.addExpression(cacheKeyVariableExpression)
         putArgs.addExpression(returnValueVariableExpression)
         Expression updateCache = new MethodCallExpression(cacheVariableExpression, 'put', putArgs)
+        MethodNode cachePutMethod = ClassHelper.make(Cache).getMethod('put', [new Parameter(OBJECT_TYPE, 'key'), new Parameter(OBJECT_TYPE, 'value')] as Parameter[])
+        updateCache.methodTarget = cachePutMethod
         wrapperIsNullBlock.addStatement(new ExpressionStatement(initializeReturnValueExpression))
         wrapperIsNullBlock.addStatement(new ExpressionStatement(updateCache))
         wrapperIsNullBlock.addStatement(new ReturnStatement(returnValueVariableExpression))

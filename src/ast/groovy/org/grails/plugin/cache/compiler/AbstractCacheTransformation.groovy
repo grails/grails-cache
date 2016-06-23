@@ -37,15 +37,19 @@ import static org.grails.compiler.injection.GrailsASTUtils.processVariableScopes
 /**
  * @since 4.0.0
  */
-abstract class AbstractCacheTransformation implements ASTTransformation  {
+abstract class AbstractCacheTransformation implements ASTTransformation {
 
     public static final ClassNode COMPILE_STATIC_TYPE = ClassHelper.make(CompileStatic)
     public static final ClassNode TYPE_CHECKED_TYPE = ClassHelper.make(TypeChecked)
+    public static final ClassNode OBJECT_TYPE = ClassHelper.make(Object)
 
     public static final String GRAILS_CACHE_MANAGER_PROPERTY_NAME = 'grailsCacheManager'
     public static final String CACHE_KEY_LOCAL_VARIABLE_NAME = '$_cache_cacheKey'
     public static final String CACHE_VARIABLE_LOCAL_VARIABLE_NAME = '$_cache_cacheVariable'
     public static final String GRAILS_CACHE_KEY_GENERATOR_PROPERTY_NAME = 'customCacheKeyGenerator'
+    public static final ClassNode STRING_TYPE = ClassHelper.make(String)
+    public static final ClassNode INT_TYPE = ClassHelper.make(Integer.TYPE)
+    public static final ClassNode MAP_TYPE = ClassHelper.make(Map)
 
     @Override
     public void visit(final ASTNode[] astNodes, final SourceUnit sourceUnit) {
@@ -59,8 +63,8 @@ abstract class AbstractCacheTransformation implements ASTTransformation  {
         final AnnotationNode grailsCacheAnnotationNode = (AnnotationNode) firstNode;
         final AnnotatedNode annotatedNode = (AnnotatedNode) secondNode;
 
-        if(annotatedNode instanceof MethodNode) {
-            MethodNode methodNode = (MethodNode)annotatedNode
+        if (annotatedNode instanceof MethodNode) {
+            MethodNode methodNode = (MethodNode) annotatedNode
             ClassNode declaringClass = methodNode.getDeclaringClass()
             configureCachingForMethod(declaringClass, grailsCacheAnnotationNode, methodNode, sourceUnit)
             addAutowiredPropertyToClass declaringClass, CacheManager, GRAILS_CACHE_MANAGER_PROPERTY_NAME
@@ -70,10 +74,11 @@ abstract class AbstractCacheTransformation implements ASTTransformation  {
         }
     }
 
-    abstract protected void configureCachingForMethod(ClassNode declaringClass, AnnotationNode cacheAnnotationOnMethod, MethodNode methodToCache, SourceUnit sourceUnit)
+    abstract
+    protected void configureCachingForMethod(ClassNode declaringClass, AnnotationNode cacheAnnotationOnMethod, MethodNode methodToCache, SourceUnit sourceUnit)
 
     protected addAutowiredPropertyToClass(ClassNode classNode, Class propertyType, String propertyName) {
-        if(!classNode.hasProperty(propertyName)) {
+        if (!classNode.hasProperty(propertyName)) {
             FieldNode cacheManagerFieldNode = new FieldNode(propertyName, Modifier.PRIVATE, ClassHelper.make(propertyType), classNode, new EmptyExpression())
             AnnotationNode autowiredAnnotationNode = new AnnotationNode(ClassHelper.make(Autowired))
             autowiredAnnotationNode.setMember('required', new ConstantExpression(false))
@@ -125,6 +130,8 @@ abstract class AbstractCacheTransformation implements ASTTransformation  {
         Expression cacheVariableExpression = new VariableExpression(CACHE_VARIABLE_LOCAL_VARIABLE_NAME)
         Expression cacheNameExpression = (ConstantExpression) cacheAnnotationOnMethod.getMember('value')
         Expression getCacheMethodCallExpression = new MethodCallExpression(cacheManagerVariableExpression, 'getCache', new ArgumentListExpression(cacheNameExpression))
+        MethodNode getCacheMethod = ClassHelper.make(CacheManager).getMethod('getCache', [new Parameter(STRING_TYPE, 'name')] as Parameter[])
+        getCacheMethodCallExpression.methodTarget = getCacheMethod
         Expression declareCacheExpression = new DeclarationExpression(cacheVariableExpression, Token.newSymbol(Types.EQUALS, 0, 0), getCacheMethodCallExpression)
 
         codeBlock.addStatement(new ExpressionStatement(declareCacheExpression))
@@ -132,15 +139,19 @@ abstract class AbstractCacheTransformation implements ASTTransformation  {
 
     protected void addCodeToInitializeCacheKey(ClassNode declaringClass, MethodNode methodToCache, AnnotationNode cacheAnnotationOnMethod, BlockStatement codeBlock) {
         addAutowiredPropertyToClass declaringClass, GrailsCacheKeyGenerator, GRAILS_CACHE_KEY_GENERATOR_PROPERTY_NAME
-        def declareMap = new DeclarationExpression(new VariableExpression('$$__map'), Token.newSymbol(Types.EQUALS, 0, 0), new ConstructorCallExpression(ClassHelper.make(LinkedHashMap), new ArgumentListExpression()))
+        def declareMap = new DeclarationExpression(new VariableExpression('$$__map', MAP_TYPE), Token.newSymbol(Types.EQUALS, 0, 0), new ConstructorCallExpression(ClassHelper.make(LinkedHashMap), new ArgumentListExpression()))
         codeBlock.addStatement(new ExpressionStatement(declareMap))
         def parameters1 = methodToCache.getParameters()
-        for(Parameter p : parameters1) {
-            ArgumentListExpression putArgs = new ArgumentListExpression()
-            putArgs.addExpression(new ConstantExpression(p.getName()))
-            putArgs.addExpression(new VariableExpression(p.getName()))
-            MethodCallExpression mce = new MethodCallExpression(new VariableExpression('$$__map'), 'put', putArgs)
-            codeBlock.addStatement(new ExpressionStatement(mce))
+        if (parameters1) {
+            MethodNode mapPutMethod = MAP_TYPE.getMethod('put', [new Parameter(OBJECT_TYPE, 'key'), new Parameter(OBJECT_TYPE, 'value')] as Parameter[])
+            for (Parameter p : parameters1) {
+                ArgumentListExpression putArgs = new ArgumentListExpression()
+                putArgs.addExpression(new ConstantExpression(p.getName()))
+                putArgs.addExpression(new VariableExpression(p.getName()))
+                MethodCallExpression mce = new MethodCallExpression(new VariableExpression('$$__map'), 'put', putArgs)
+                mce.methodTarget = mapPutMethod
+                codeBlock.addStatement(new ExpressionStatement(mce))
+            }
         }
 
         ArgumentListExpression createKeyArgs = new ArgumentListExpression()
@@ -148,8 +159,15 @@ abstract class AbstractCacheTransformation implements ASTTransformation  {
         createKeyArgs.addExpression(new ConstantExpression(methodToCache.getName()))
         createKeyArgs.addExpression(new MethodCallExpression(new VariableExpression('this'), 'hashCode', new ArgumentListExpression()))
         createKeyArgs.addExpression(new VariableExpression('$$__map'))
-        createKeyArgs.addExpression(new CastExpression(ClassHelper.make(String),  new ConstantExpression(cacheAnnotationOnMethod.getMember('key')?.getText())))
-        def cacheKeyExpression = new MethodCallExpression(new VariableExpression(GRAILS_CACHE_KEY_GENERATOR_PROPERTY_NAME), 'generate', createKeyArgs)
+        createKeyArgs.addExpression(new CastExpression(STRING_TYPE, new ConstantExpression(cacheAnnotationOnMethod.getMember('key')?.getText())))
+        MethodCallExpression cacheKeyExpression = new MethodCallExpression(new VariableExpression(GRAILS_CACHE_KEY_GENERATOR_PROPERTY_NAME), 'generate', createKeyArgs)
+        MethodNode generateMethod = ClassHelper.make(GrailsCacheKeyGenerator).getMethod('generate', [new Parameter(STRING_TYPE, 'className'),
+                                                                                                     new Parameter(STRING_TYPE, 'methodName'),
+                                                                                                     new Parameter(INT_TYPE, 'objHashCode'),
+                                                                                                     new Parameter(MAP_TYPE, 'methodParams'),
+                                                                                                     new Parameter(STRING_TYPE, 'spel'),
+        ] as Parameter[])
+        cacheKeyExpression.methodTarget = generateMethod
         VariableExpression cacheKeyVariableExpression = new VariableExpression(CACHE_KEY_LOCAL_VARIABLE_NAME)
         DeclarationExpression cacheKeyDeclaration = new DeclarationExpression(cacheKeyVariableExpression, Token.newSymbol(Types.EQUALS, 0, 0), cacheKeyExpression)
         codeBlock.addStatement(new ExpressionStatement(cacheKeyDeclaration))
