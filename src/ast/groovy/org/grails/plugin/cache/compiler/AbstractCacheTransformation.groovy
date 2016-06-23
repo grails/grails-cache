@@ -16,6 +16,7 @@
 package org.grails.plugin.cache.compiler
 
 import grails.compiler.ast.GrailsArtefactClassInjector
+import grails.plugin.cache.GrailsCacheKeyGenerator
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.codehaus.groovy.ast.*
@@ -44,6 +45,7 @@ abstract class AbstractCacheTransformation implements ASTTransformation  {
     public static final String GRAILS_CACHE_MANAGER_PROPERTY_NAME = 'grailsCacheManager'
     public static final String CACHE_KEY_LOCAL_VARIABLE_NAME = '$_cache_cacheKey'
     public static final String CACHE_VARIABLE_LOCAL_VARIABLE_NAME = '$_cache_cacheVariable'
+    public static final String GRAILS_CACHE_KEY_GENERATOR_PROPERTY_NAME = 'customCacheKeyGenerator'
 
     @Override
     public void visit(final ASTNode[] astNodes, final SourceUnit sourceUnit) {
@@ -61,7 +63,7 @@ abstract class AbstractCacheTransformation implements ASTTransformation  {
             MethodNode methodNode = (MethodNode)annotatedNode
             ClassNode declaringClass = methodNode.getDeclaringClass()
             configureCachingForMethod(declaringClass, grailsCacheAnnotationNode, methodNode, sourceUnit)
-            addAutowiredPropertiesToClass(declaringClass)
+            addAutowiredPropertyToClass declaringClass, CacheManager, GRAILS_CACHE_MANAGER_PROPERTY_NAME
         } else {
             // TODO
             // still need to deal with annotation on a class...
@@ -69,17 +71,6 @@ abstract class AbstractCacheTransformation implements ASTTransformation  {
     }
 
     abstract protected void configureCachingForMethod(ClassNode declaringClass, AnnotationNode cacheAnnotationOnMethod, MethodNode methodToCache, SourceUnit sourceUnit)
-
-    protected void addAutowiredPropertiesToClass(ClassNode classNode) {
-        Map<Class, String> autowiredProperties = getAutowiredProperties()
-        autowiredProperties.each {Class c, String name ->
-            addAutowiredPropertyToClass(classNode, c, name)
-        }
-    }
-
-    protected Map<Class, String> getAutowiredProperties() {
-        [(CacheManager): GRAILS_CACHE_MANAGER_PROPERTY_NAME]
-    }
 
     protected addAutowiredPropertyToClass(ClassNode classNode, Class propertyType, String propertyName) {
         if(!classNode.hasProperty(propertyName)) {
@@ -140,7 +131,7 @@ abstract class AbstractCacheTransformation implements ASTTransformation  {
     }
 
     protected void addCodeToInitializeCacheKey(ClassNode declaringClass, MethodNode methodToCache, AnnotationNode cacheAnnotationOnMethod, BlockStatement codeBlock) {
-
+        addAutowiredPropertyToClass declaringClass, GrailsCacheKeyGenerator, GRAILS_CACHE_KEY_GENERATOR_PROPERTY_NAME
         def declareMap = new DeclarationExpression(new VariableExpression('$$__map'), Token.newSymbol(Types.EQUALS, 0, 0), new ConstructorCallExpression(ClassHelper.make(LinkedHashMap), new ArgumentListExpression()))
         codeBlock.addStatement(new ExpressionStatement(declareMap))
         def parameters1 = methodToCache.getParameters()
@@ -158,7 +149,7 @@ abstract class AbstractCacheTransformation implements ASTTransformation  {
         createKeyArgs.addExpression(new MethodCallExpression(new VariableExpression('this'), 'hashCode', new ArgumentListExpression()))
         createKeyArgs.addExpression(new VariableExpression('$$__map'))
         createKeyArgs.addExpression(new CastExpression(ClassHelper.make(String),  new ConstantExpression(cacheAnnotationOnMethod.getMember('key')?.getText())))
-        def cacheKeyExpression = new StaticMethodCallExpression(ClassHelper.make(TemporaryKeyHelper), 'createKey', createKeyArgs)
+        def cacheKeyExpression = new MethodCallExpression(new VariableExpression(GRAILS_CACHE_KEY_GENERATOR_PROPERTY_NAME), 'generate', createKeyArgs)
         VariableExpression cacheKeyVariableExpression = new VariableExpression(CACHE_KEY_LOCAL_VARIABLE_NAME)
         DeclarationExpression cacheKeyDeclaration = new DeclarationExpression(cacheKeyVariableExpression, Token.newSymbol(Types.EQUALS, 0, 0), cacheKeyExpression)
         codeBlock.addStatement(new ExpressionStatement(cacheKeyDeclaration))
