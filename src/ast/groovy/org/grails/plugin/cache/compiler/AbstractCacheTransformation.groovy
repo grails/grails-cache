@@ -37,6 +37,7 @@ import static org.grails.compiler.injection.GrailsASTUtils.processVariableScopes
 /**
  * @since 4.0.0
  */
+@CompileStatic
 abstract class AbstractCacheTransformation implements ASTTransformation {
 
     public static final ClassNode COMPILE_STATIC_TYPE = ClassHelper.make(CompileStatic)
