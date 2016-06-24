@@ -16,9 +16,7 @@
 package org.grails.plugin.cache.compiler
 
 import groovy.transform.CompileStatic
-import org.codehaus.groovy.ast.AnnotationNode
-import org.codehaus.groovy.ast.ClassNode
-import org.codehaus.groovy.ast.MethodNode
+import org.codehaus.groovy.ast.*
 import org.codehaus.groovy.ast.expr.*
 import org.codehaus.groovy.ast.stmt.BlockStatement
 import org.codehaus.groovy.ast.stmt.ExpressionStatement
@@ -28,6 +26,7 @@ import org.codehaus.groovy.control.SourceUnit
 import org.codehaus.groovy.syntax.Token
 import org.codehaus.groovy.syntax.Types
 import org.codehaus.groovy.transform.GroovyASTTransformation
+import org.springframework.cache.Cache
 
 /**
  * @since 4.0.0
@@ -52,6 +51,8 @@ class CachePutTransformation extends AbstractCacheTransformation {
         putArgs.addExpression(new VariableExpression(CACHE_KEY_LOCAL_VARIABLE_NAME))
         putArgs.addExpression(new VariableExpression('$_cache_originalMethodReturnValue'))
         Expression updateCacheExpression = new MethodCallExpression(new VariableExpression(CACHE_VARIABLE_LOCAL_VARIABLE_NAME), 'put', putArgs)
+        MethodNode cachePutMethod = ClassHelper.make(Cache).getMethod('put', [new Parameter(OBJECT_TYPE, 'key'), new Parameter(OBJECT_TYPE, 'value')] as Parameter[])
+        updateCacheExpression.methodTarget = cachePutMethod
         cachingCode.addStatement(new ExpressionStatement(updateCacheExpression))
         cachingCode.addStatement(new ReturnStatement(new VariableExpression('$_cache_originalMethodReturnValue')))
 
