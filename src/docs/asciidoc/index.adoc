@@ -8,11 +8,6 @@
 
 include::introduction.adoc[]
 
-[[changeLog]]
-=== Change log
-
-include::introduction/changeLog.adoc[]
-
 [[usage]]
 == Usage
 
@@ -73,4 +68,10 @@ include::ref/Tags/block.adoc[]
 ==== render
 
 include::ref/Tags/render.adoc[]
+
+[[changeLog]]
+=== Change log
+
+include::introduction/changeLog.adoc[]
+
 
