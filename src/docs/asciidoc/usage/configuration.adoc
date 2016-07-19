@@ -2,17 +2,21 @@
 ==== Config.groovy and artifact files
 
 
-The caching configuration can be specified in `Config.groovy` or \*CacheConfig.groovy files. Both approaches support `environments` blocks for environment-specific configuration, and you can specify the loading order, for example to support overriding values. One example of this might be a plugin that specifies a known load order, allowing you to choose a lower value in your file and override some or all of the plugin's configuration.
+The caching configuration can be specified in `*CacheConfig.groovy` files.
+This approach supports `environments` blocks for environment-specific
+configuration, and you can specify the loading order, for example to support
+overriding values. One example of this might be a plugin that specifies a known
+load order, allowing you to choose a lower value in your file and override some
+or all of the plugin's configuration.
 
-There are a few configuration options for the plugin; these are specified in `Config.groovy`.
+There are a few configuration options for the plugin; these are specified in
+`*CacheConfig.groovy`.
 
 [format="csv", options="header"]
 |===
 
 *Property*,*Default*,*Description*
 grails.cache.enabled,`true`,Whether to enable the plugin
-grails.cache.proxyTargetClass,`false`,From the Spring Javadoc: "By default, all proxies are created as JDK proxies. This may cause some problems if you are injecting objects as concrete classes rather than interfaces. To overcome this restriction you can set the `proxy-target-class` attribute to `true` which will result in class-based proxies being created."
-grails.cache.aopOrder,Ordered.LOWEST_PRECEDENCE,From the Spring docs: "Defines the order of the cache advice that is applied to beans annotated with \`Cacheable or \`CacheEvict. No specified ordering means that the AOP subsystem determines the order of the advice."
 grails.cache.clearAtStartup,`false`,Whether to clear all caches at startup
 grails.cache.keyGenerator,"customCacheKeyGenerator",Replace the key generator with your own. e.g. if your config is `grails.cache.keyGenerator="myCacheKeygen"`, you would declare something like this `myCacheKeygen(my.company.MyKeyGen)` in your resources.groovy. Note: MyKeyGen must implement KeyGenerator.
 grails.cache.cacheManager,"GrailsConcurrentMapCacheManager",Cache Manager to use. Default cache manager uses Spring Frameworks ConcurrentMapCache which might grow limitless. If you cannot predict how many cache entries you are going to generate use "GrailsConcurrentLinkedMapCacheManager" instead which uses com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap and limits by default to 10000 entries per cache.
