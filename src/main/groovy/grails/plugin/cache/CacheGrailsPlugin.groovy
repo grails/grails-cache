@@ -66,10 +66,6 @@ class CacheGrailsPlugin extends Plugin {
             def cacheConfig = application.config.grails.cache
             customCacheKeyGenerator(CustomCacheKeyGenerator)
 
-            // updates the AnnotationCacheOperationSource with a custom subclass
-            // and adds the 'cacheOperationSource' alias
-            cacheBeanPostProcessor(CacheBeanPostProcessor)
-
             // Selects cache manager from config
             if (cacheConfig.cacheManager.equals("GrailsConcurrentLinkedMapCacheManager")) {
                 grailsCacheManager(GrailsConcurrentLinkedMapCacheManager)
@@ -113,8 +109,6 @@ class CacheGrailsPlugin extends Plugin {
         }
 
         if (application.isControllerClass(source) || application.isServiceClass(source)) {
-            applicationContext.cacheOperationSource.reset()
-            log.debug 'Reset GrailsAnnotationCacheOperationSource cache'
         } else if (application.isCacheConfigClass(source)) {
             reloadCaches applicationContext
         }
