@@ -20,20 +20,10 @@ import grails.plugin.cache.web.filter.DefaultWebKeyGenerator
 import grails.plugin.cache.web.filter.ExpressionEvaluator
 import grails.plugins.Plugin
 import groovy.util.logging.Commons
-import javassist.util.proxy.ProxyFactory
 import org.springframework.cache.Cache
-import org.springframework.core.Ordered
 
 @Commons
 class CacheGrailsPlugin extends Plugin {
-
-    static {
-        ProxyFactory.classLoaderProvider = new ProxyFactory.ClassLoaderProvider() {
-            public ClassLoader get(ProxyFactory pf) {
-                return Thread.currentThread().getContextClassLoader();
-            }
-        };
-    }
 
     def grailsVersion = "3.2.0.M1 > *"
     def observe = ['controllers', 'services']
@@ -74,22 +64,7 @@ class CacheGrailsPlugin extends Plugin {
             }
 
             def cacheConfig = application.config.grails.cache
-            def proxyTargetClass = cacheConfig.proxyTargetClass
-            if (!(proxyTargetClass instanceof Boolean)) proxyTargetClass = false
-            def order = cacheConfig.aopOrder
-            if (!(order instanceof Number)) order = Ordered.LOWEST_PRECEDENCE
-            // allow user can to use their own key generator.
-            def cacheKeyGen = cacheConfig.keyGenerator ?: 'customCacheKeyGenerator'
             customCacheKeyGenerator(CustomCacheKeyGenerator)
-
-            xmlns cache: 'http://www.springframework.org/schema/cache'
-
-            // creates 3 beans: org.springframework.cache.config.internalCacheAdvisor (org.springframework.cache.interceptor.BeanFactoryCacheOperationSourceAdvisor),
-            //                  org.springframework.cache.annotation.AnnotationCacheOperationSource#0 (org.springframework.cache.annotation.AnnotationCacheOperationSource),
-            //                  org.springframework.cache.interceptor.CacheInterceptor#0 (org.springframework.cache.interceptor.CacheInterceptor)
-
-            cache.'annotation-driven'('cache-manager': 'grailsCacheManager', 'key-generator': cacheKeyGen,
-                    mode: 'proxy', order: order, 'proxy-target-class': proxyTargetClass)
 
             // updates the AnnotationCacheOperationSource with a custom subclass
             // and adds the 'cacheOperationSource' alias
@@ -101,7 +76,6 @@ class CacheGrailsPlugin extends Plugin {
             } else {
                 grailsCacheManager(GrailsConcurrentMapCacheManager)
             }
-
 
             grailsCacheConfigLoader(ConfigLoader)
 
