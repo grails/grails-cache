@@ -528,8 +528,7 @@ table.CodeRay td.code>pre{padding:0}
 </ul>
 </li>
 <li><a href="#_service_method_caching">Service method caching</a></li>
-<li><a href="#_controller_action_caching">Controller action caching</a></li>
-<li><a href="#_if_you_can_t_use_annotations">If you can&#8217;t use annotations</a>
+<li><a href="#_controller_action_caching">Controller action caching</a>
 <ul class="sectlevel2">
 <li><a href="#cacheManager">CacheManager</a></li>
 </ul>
@@ -579,26 +578,53 @@ table.CodeRay td.code>pre{padding:0}
 <div class="paragraph">
 <p>The Grails Cache plugin provides powerful and easy to use caching functionality to Grails applications and plugins.</p>
 </div>
-<div class="paragraph">
-<p>The plugin makes significant use of the caching abstraction provided by Spring 3.1.  This user guide will focus on taking advantage of that functionality specifically within the context of a Grails application.  For information on the underlying abstraction see <a href="http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/cache.html">The Official Spring Documentation</a>.</p>
-</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="usage">Usage</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The cache plugin adds Spring bean method call, controller action, and GSP page fragment and template caching to Grails applications. You configure one or more caches in <code>Config.groovy</code> and/or one or more Groovy artifact files with names ending in CacheConfig.groovy (for example FooCacheConfig.groovy, BarCacheConfig.groovy, and these can also be in packages) in <code>grails-app/conf</code> (or a subdirectory if in a package) using an implementation-specific DSL, and annotate methods (either in Spring beans (typically Grails services) or controllers) to be cached. You can also wrap GSP sections in cache tags and render cached templates.</p>
+<p>The cache plugin adds Spring bean method call and GSP page fragment and
+template caching to Grails applications. You configure one or more caches
+in <code>Config.groovy</code> and/or one or more Groovy artifact files with names ending
+in CacheConfig.groovy (for example FooCacheConfig.groovy,
+BarCacheConfig.groovy, and these can also be in packages) in <code>grails-app/conf</code>
+(or a subdirectory if in a package) using an implementation-specific DSL, and
+annotate methods (either in Spring beans (typically Grails services) or
+controllers) to be cached. You can also wrap GSP sections in cache tags and
+render cached templates.</p>
 </div>
 <div class="paragraph">
-<p>There are three annotations; <a href="api/grails/plugin/cache/Cacheable.html">Cacheable</a>, <a href="api/grails/plugin/cache/CachePut.html">CachePut</a>, and <a href="api/grails/plugin/cache/CacheEvict.html">CacheEvict</a>. You use \`Cacheable to mark a method as one that should check the cache for a pre-existing result, or generate a new result and cache it. Use \`CachePut to mark a method as one that should always be evaluated and store its result in the cache regardless of existing cache values. And use \@CacheEvict to flush a cache (either fully or partially) to force the re-evaluation of previously cached results. The annotations are based on the annotations with the same name from Spring (<a href="http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/springframework/cache/annotation/Cacheable.html">Cacheable</a>, <a href="http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/springframework/cache/annotation/CachePut.html">CachePut</a>, and <a href="http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/" class="bare">http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/</a>
-springframework/cache/annotation/CacheEvict.html[CacheEvict]) and support the same syntax but may support extended functionality in the future.</p>
+<p>There are three annotations; <a href="api/grails/plugin/cache/Cacheable.html">Cacheable</a>,
+<a href="api/grails/plugin/cache/CachePut.html">CachePut</a>,
+and <a href="api/grails/plugin/cache/CacheEvict.html">CacheEvict</a>. You use
+<code>Cacheable</code> to mark a method as one that should check the cache for a
+pre-existing result, or generate a new result and cache it. Use <code>CachePut</code> to
+mark a method as one that should always be evaluated and store its result in the
+cache regardless of existing cache values. And use <code>@CacheEvict</code> to flush a cache
+(either fully or partially) to force the re-evaluation of previously cached
+results.</p>
 </div>
 <div class="paragraph">
-<p>When using distributed caching (such as ehcache with distributed cache enabled, or redis with multiple instances of the application running against one redis instance), all classes that use annotation caching or XML caching should override the <code>hashCode</code> method. The hash code of the object with the method marked as being cacheable is included in the cache key, and the default <code>hashCode</code> implementation will vary each time the application is run. Overriding <code>hashCode</code> ensures that each instance of the applications will appropriately share cache keys.</p>
+<p>When using distributed caching (such as ehcache with distributed cache enabled,
+or redis with multiple instances of the application running against one redis
+instance), all classes that use annotation caching or XML caching should
+override the <code>hashCode</code> method. The hash code of the object with the method
+marked as being cacheable is included in the cache key, and the default
+<code>hashCode</code> implementation will vary each time the application is run. Overriding
+<code>hashCode</code> ensures that each instance of the applications will appropriately
+share cache keys.</p>
 </div>
 <div class="paragraph">
-<p>This <em>core</em> cache plugin uses an in-memory implementation where the caches and cache manager are backed by a thread-safe <code>java.util.concurrent.ConcurrentMap</code>. This is fine for testing and possibly for low-traffic sites, but you should consider using one of the extension plugins if you need clustering, disk storage, persistence between restarts, and more configurability of features like time-to-live, maximum cache size, etc. Currently the extension plugins include <a href="http://grails.org/plugin/cache-ehcache">cache-ehcache</a>, <a href="http://grails.org/plugin/cache-redis">cache-redis</a>, and <a href="http://grails.org/plugin/cache-gemfire">cache-gemfire</a>.</p>
+<p>This <em>core</em> cache plugin uses an in-memory implementation where the caches and
+cache manager are backed by a thread-safe <code>java.util.concurrent.ConcurrentMap</code>.
+This is fine for testing and possibly for low-traffic sites, but you should
+consider using one of the extension plugins if you need clustering, disk
+storage, persistence between restarts, and more configurability of features like
+time-to-live, maximum cache size, etc. Currently the extension plugins include
+<a href="http://grails.org/plugin/cache-ehcache">cache-ehcache</a>,
+<a href="http://grails.org/plugin/cache-redis">cache-redis</a>, and
+<a href="http://grails.org/plugin/cache-gemfire">cache-gemfire</a>.</p>
 </div>
 <div class="sect2">
 <h3 id="configuration">Configuration</h3>
@@ -856,40 +882,6 @@ Version 4 of the plugin does not yet support controller action caching!
 </td>
 </tr>
 </table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_if_you_can_t_use_annotations">If you can&#8217;t use annotations</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Annotations aren&#8217;t required, they&#8217;re just the most convenient approach for configuration. If you like you can define caching semantics in <code>grails-app/conf/spring/resources.groovy</code> (or <code>resources.xml</code> if you like XML). This is also useful if you want to apply caching but can&#8217;t edit the code to add annotations (for example if you have compiled classes in a jar).</p>
-</div>
-<div class="paragraph">
-<p>This Spring BeanBuilder DSL code will configure the same behavior as the two annotations in the example service class:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">beans = {
-
-   xmlns <span class="key">cache</span>: <span class="string"><span class="delimiter">'</span><span class="content">http://www.springframework.org/schema/cache</span><span class="delimiter">'</span></span>
-   xmlns <span class="key">aop</span>: <span class="string"><span class="delimiter">'</span><span class="content">http://www.springframework.org/schema/aop</span><span class="delimiter">'</span></span>
-
-   cache.<span class="string"><span class="delimiter">'</span><span class="content">advice</span><span class="delimiter">'</span></span>(<span class="key">id</span>: <span class="string"><span class="delimiter">'</span><span class="content">messageServiceCacheAdvice</span><span class="delimiter">'</span></span>,
-                  <span class="string"><span class="delimiter">'</span><span class="content">cache-manager</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">grailsCacheManager</span><span class="delimiter">'</span></span>) {
-      caching(<span class="key">cache</span>: <span class="string"><span class="delimiter">'</span><span class="content">message</span><span class="delimiter">'</span></span>) {
-         cacheable(<span class="key">method</span>: <span class="string"><span class="delimiter">'</span><span class="content">getMessage</span><span class="delimiter">'</span></span>)
-         <span class="string"><span class="delimiter">'</span><span class="content">cache-evict</span><span class="delimiter">'</span></span>(<span class="key">method</span>: <span class="string"><span class="delimiter">'</span><span class="content">save</span><span class="delimiter">'</span></span>, <span class="key">key</span>: <span class="string"><span class="delimiter">'</span><span class="content">#message.title</span><span class="delimiter">'</span></span>)
-      }
-   }
-
-   <span class="comment">// apply the cacheable behavior to MessageService</span>
-   aop.config {
-      advisor(<span class="string"><span class="delimiter">'</span><span class="content">advice-ref</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">messageServiceCacheAdvice</span><span class="delimiter">'</span></span>,
-              <span class="key">pointcut</span>: <span class="string"><span class="delimiter">'</span><span class="content">execution(* com.yourcompany.MessageService.*(..))</span><span class="delimiter">'</span></span>)
-   }
-}</code></pre>
-</div>
 </div>
 <div class="sect2">
 <h3 id="cacheManager">CacheManager</h3>
@@ -1259,7 +1251,7 @@ bar
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-07-19 20:27:56 UTC
+Last updated 2016-07-19 20:43:54 UTC
 </div>
 </div>
 </body>

@@ -425,7 +425,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel1">
 <li><a href="#_service_method_caching">Service method caching</a></li>
 <li><a href="#_controller_action_caching">Controller action caching</a></li>
-<li><a href="#_if_you_can_t_use_annotations">If you can&#8217;t use annotations</a></li>
 </ul>
 </div>
 </div>
@@ -516,44 +515,10 @@ Version 4 of the plugin does not yet support controller action caching!
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="_if_you_can_t_use_annotations">If you can&#8217;t use annotations</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Annotations aren&#8217;t required, they&#8217;re just the most convenient approach for configuration. If you like you can define caching semantics in <code>grails-app/conf/spring/resources.groovy</code> (or <code>resources.xml</code> if you like XML). This is also useful if you want to apply caching but can&#8217;t edit the code to add annotations (for example if you have compiled classes in a jar).</p>
-</div>
-<div class="paragraph">
-<p>This Spring BeanBuilder DSL code will configure the same behavior as the two annotations in the example service class:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">beans = {
-
-   xmlns cache: 'http://www.springframework.org/schema/cache'
-   xmlns aop: 'http://www.springframework.org/schema/aop'
-
-   cache.'advice'(id: 'messageServiceCacheAdvice',
-                  'cache-manager': 'grailsCacheManager') {
-      caching(cache: 'message') {
-         cacheable(method: 'getMessage')
-         'cache-evict'(method: 'save', key: '#message.title')
-      }
-   }
-
-   // apply the cacheable behavior to MessageService
-   aop.config {
-      advisor('advice-ref': 'messageServiceCacheAdvice',
-              pointcut: 'execution(* com.yourcompany.MessageService.*(..))')
-   }
-}</code></pre>
-</div>
-</div>
-</div>
-</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-07-19 20:27:56 UTC
+Last updated 2016-07-19 20:43:54 UTC
 </div>
 </div>
 </body>
