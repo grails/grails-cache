@@ -1,4 +1,4 @@
-= My Title
+= Grails Cache Plugin
 :version: 4.0.0.BUILD-SNAPSHOT
 :source-highlighter: coderay
 :imagesdir: ./images
