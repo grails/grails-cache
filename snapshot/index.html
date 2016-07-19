@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.3">
-<title>My Title</title>
+<title>Grails Cache Plugin</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -511,27 +511,11 @@ table.CodeRay td.code>pre{padding:0}
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1>My Title</h1>
+<h1>Grails Cache Plugin</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#introduction">Introduction To The Cache Plugin</a>
-<ul class="sectlevel2">
-<li><a href="#changeLog">Change log</a></li>
-<li><a href="#_version_1_1_7_june_24_2014">Version 1.1.7 - June 24, 2014</a></li>
-<li><a href="#_version_1_1_6_may_9_2014">Version 1.1.6 - May 9, 2014</a></li>
-<li><a href="#_version_1_1_5_april_25_2014">Version 1.1.5 - April 25, 2014</a></li>
-<li><a href="#_version_1_1_4_april_25_2014">Version 1.1.4 - April 25, 2014</a></li>
-<li><a href="#_version_1_1_3_april_24_2014">Version 1.1.3 - April 24, 2014</a></li>
-<li><a href="#_version_1_1_2_april_23_2014">Version 1.1.2 - April 23, 2014</a></li>
-<li><a href="#_version_1_1_1_july_3_2013">Version 1.1.1 - July 3, 2013</a></li>
-<li><a href="#_version_1_1_july_3_2013">Version 1.1 - July 3, 2013</a></li>
-<li><a href="#_version_1_0_1_october_28_2012">Version 1.0.1 - October 28, 2012</a></li>
-<li><a href="#_version_1_0_0_july_4_2012">Version 1.0.0 - July 4, 2012</a></li>
-<li><a href="#_version_1_0_0_rc1_may_22_2012">Version 1.0.0.RC1 - May 22, 2012</a></li>
-<li><a href="#_version_1_0_0_m2_may_12_2012">Version 1.0.0.M2 - May 12, 2012</a></li>
-</ul>
-</li>
+<li><a href="#introduction">Introduction To The Cache Plugin</a></li>
 <li><a href="#usage">Usage</a>
 <ul class="sectlevel2">
 <li><a href="#configuration">Configuration</a></li>
@@ -569,6 +553,20 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#reference">Reference</a>
 <ul class="sectlevel2">
 <li><a href="#ref-tags">Tags</a></li>
+<li><a href="#changeLog">Change log</a></li>
+<li><a href="#_version_4_0_0_still_being_developed">Version 4.0.0 (Still being developed)</a></li>
+<li><a href="#_version_1_1_7_june_24_2014">Version 1.1.7 - June 24, 2014</a></li>
+<li><a href="#_version_1_1_6_may_9_2014">Version 1.1.6 - May 9, 2014</a></li>
+<li><a href="#_version_1_1_5_april_25_2014">Version 1.1.5 - April 25, 2014</a></li>
+<li><a href="#_version_1_1_4_april_25_2014">Version 1.1.4 - April 25, 2014</a></li>
+<li><a href="#_version_1_1_3_april_24_2014">Version 1.1.3 - April 24, 2014</a></li>
+<li><a href="#_version_1_1_2_april_23_2014">Version 1.1.2 - April 23, 2014</a></li>
+<li><a href="#_version_1_1_1_july_3_2013">Version 1.1.1 - July 3, 2013</a></li>
+<li><a href="#_version_1_1_july_3_2013">Version 1.1 - July 3, 2013</a></li>
+<li><a href="#_version_1_0_1_october_28_2012">Version 1.0.1 - October 28, 2012</a></li>
+<li><a href="#_version_1_0_0_july_4_2012">Version 1.0.0 - July 4, 2012</a></li>
+<li><a href="#_version_1_0_0_rc1_may_22_2012">Version 1.0.0.RC1 - May 22, 2012</a></li>
+<li><a href="#_version_1_0_0_m2_may_12_2012">Version 1.0.0.M2 - May 12, 2012</a></li>
 </ul>
 </li>
 </ul>
@@ -583,60 +581,6 @@ table.CodeRay td.code>pre{padding:0}
 </div>
 <div class="paragraph">
 <p>The plugin makes significant use of the caching abstraction provided by Spring 3.1.  This user guide will focus on taking advantage of that functionality specifically within the context of a Grails application.  For information on the underlying abstraction see <a href="http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/cache.html">The Official Spring Documentation</a>.</p>
-</div>
-<div class="sect2">
-<h3 id="changeLog">Change log</h3>
-
-</div>
-<div class="sect2">
-<h3 id="_version_1_1_7_june_24_2014">Version 1.1.7 - June 24, 2014</h3>
-<div class="paragraph">
-<p>Requires Grails 2.3 or later</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_version_1_1_6_may_9_2014">Version 1.1.6 - May 9, 2014</h3>
-
-</div>
-<div class="sect2">
-<h3 id="_version_1_1_5_april_25_2014">Version 1.1.5 - April 25, 2014</h3>
-
-</div>
-<div class="sect2">
-<h3 id="_version_1_1_4_april_25_2014">Version 1.1.4 - April 25, 2014</h3>
-
-</div>
-<div class="sect2">
-<h3 id="_version_1_1_3_april_24_2014">Version 1.1.3 - April 24, 2014</h3>
-
-</div>
-<div class="sect2">
-<h3 id="_version_1_1_2_april_23_2014">Version 1.1.2 - April 23, 2014</h3>
-
-</div>
-<div class="sect2">
-<h3 id="_version_1_1_1_july_3_2013">Version 1.1.1 - July 3, 2013</h3>
-
-</div>
-<div class="sect2">
-<h3 id="_version_1_1_july_3_2013">Version 1.1 - July 3, 2013</h3>
-
-</div>
-<div class="sect2">
-<h3 id="_version_1_0_1_october_28_2012">Version 1.0.1 - October 28, 2012</h3>
-
-</div>
-<div class="sect2">
-<h3 id="_version_1_0_0_july_4_2012">Version 1.0.0 - July 4, 2012</h3>
-
-</div>
-<div class="sect2">
-<h3 id="_version_1_0_0_rc1_may_22_2012">Version 1.0.0.RC1 - May 22, 2012</h3>
-
-</div>
-<div class="sect2">
-<h3 id="_version_1_0_0_m2_may_12_2012">Version 1.0.0.M2 - May 12, 2012</h3>
-
 </div>
 </div>
 </div>
@@ -901,42 +845,14 @@ config = {
 <div class="sect1">
 <h2 id="_controller_action_caching">Controller action caching</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>In addition to caching Spring bean return values, you can also cache responses for web requests using the same annotations. Note that since caching is implemented only for methods (Spring creates a proxy for your cached class in the same way that it creates a transactional proxy to start, commit, and roll back transactions for transactional Grails services) so you cannot annotate action closures. This doesn&#8217;t fail silently; your controller class will not compile since the annotations are only allowed on the class or on methods; since Closures are fields, the annotations aren&#8217;t valid.</p>
-</div>
-<div class="paragraph">
-<p>For example, in this controller the <code>lookup</code> action will use the <code>"message"</code> cache, so the first time you call the action you will see the output from the <code>println</code> statement but subsequent calls won&#8217;t execute and you&#8217;ll see the cached response instead. When you call the <code>evict</code> action the entire cache will be cleared (because of the <code>allEntries=true</code> attribute):</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">package</span> com.yourcompany
-
-<span class="keyword">import</span> <span class="include">grails.plugin.cache.CacheEvict</span>
-<span class="keyword">import</span> <span class="include">grails.plugin.cache.Cacheable</span>
-
-<span class="type">class</span> <span class="class">TestController</span> {
-
-   <span class="annotation">@Cacheable</span>(<span class="string"><span class="delimiter">'</span><span class="content">message</span><span class="delimiter">'</span></span>)
-   <span class="keyword">def</span> <span class="function">lookup</span>() {
-      <span class="comment">// perform some expensive operations</span>
-      println <span class="string"><span class="delimiter">&quot;</span><span class="content">called 'lookup'</span><span class="delimiter">&quot;</span></span>
-   }
-
-   <span class="annotation">@CacheEvict</span>(value=<span class="string"><span class="delimiter">'</span><span class="content">message</span><span class="delimiter">'</span></span>, allEntries=<span class="predefined-constant">true</span>)
-   <span class="keyword">def</span> <span class="function">evict</span>() {
-      println <span class="string"><span class="delimiter">&quot;</span><span class="content">called 'evict'</span><span class="delimiter">&quot;</span></span>
-   }
-}</code></pre>
-</div>
-</div>
-<div class="admonitionblock note">
+<div class="admonitionblock warning">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-note" title="Note"></i>
+<i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-Caching of dynamically scaffolded actions is not supported.  If the scaffolding templates are installed with <code>grails install-templates</code> and cache related annotations are added to methods in the controller template, those annotations will only be relevant to generated scaffolding, not dynamic scaffolding.
+Version 4 of the plugin does not yet support controller action caching!
 </td>
 </tr>
 </table>
@@ -1051,11 +967,17 @@ Caching of dynamically scaffolded actions is not supported.  If the scaffolding 
 <div class="sect1">
 <h2 id="_controller_caching">Controller caching</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>The controller caching is implemented with a filter registered as <code>grailsCacheFilter</code> in <code>web.xml</code> and it is backed by the Spring bean of the same name. The implementation class is <code>grails.plugin.cache.web.filter.simple.MemoryPageFragmentCachingFilter</code>.</p>
-</div>
-<div class="paragraph">
-<p>The content that is cached is the response generated by GSP (or directly by the controller if a response is rendered programmatically) before Sitemesh applies its template(s).</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Version 4 of the plugin does not yet support controller action caching!
+</td>
+</tr>
+</table>
 </div>
 <div class="sect2">
 <h3 id="_key_generation">Key generation</h3>
@@ -1272,12 +1194,72 @@ bar
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="changeLog">Change log</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_version_4_0_0_still_being_developed">Version 4.0.0 (Still being developed)</h3>
+<div class="paragraph">
+<p>AST based solution.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_version_1_1_7_june_24_2014">Version 1.1.7 - June 24, 2014</h3>
+<div class="paragraph">
+<p>Requires Grails 2.3 or later</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_version_1_1_6_may_9_2014">Version 1.1.6 - May 9, 2014</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_version_1_1_5_april_25_2014">Version 1.1.5 - April 25, 2014</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_version_1_1_4_april_25_2014">Version 1.1.4 - April 25, 2014</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_version_1_1_3_april_24_2014">Version 1.1.3 - April 24, 2014</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_version_1_1_2_april_23_2014">Version 1.1.2 - April 23, 2014</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_version_1_1_1_july_3_2013">Version 1.1.1 - July 3, 2013</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_version_1_1_july_3_2013">Version 1.1 - July 3, 2013</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_version_1_0_1_october_28_2012">Version 1.0.1 - October 28, 2012</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_version_1_0_0_july_4_2012">Version 1.0.0 - July 4, 2012</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_version_1_0_0_rc1_may_22_2012">Version 1.0.0.RC1 - May 22, 2012</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_version_1_0_0_m2_may_12_2012">Version 1.0.0.M2 - May 12, 2012</h3>
+
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-06-24 15:14:12 UTC
+Last updated 2016-07-19 20:13:58 UTC
 </div>
 </div>
 </body>
