@@ -64,32 +64,3 @@ To test this out, be sure to define a `"message"` cache in `Config.groovy` and s
 == Controller action caching
 
 WARNING: Version 4 of the plugin does not yet support controller action caching!
-
-== If you can't use annotations
-
-Annotations aren't required, they're just the most convenient approach for configuration. If you like you can define caching semantics in `grails-app/conf/spring/resources.groovy` (or `resources.xml` if you like XML). This is also useful if you want to apply caching but can't edit the code to add annotations (for example if you have compiled classes in a jar).
-
-This Spring BeanBuilder DSL code will configure the same behavior as the two annotations in the example service class:
-
-[source,groovy]
-----
-beans = {
-
-   xmlns cache: 'http://www.springframework.org/schema/cache'
-   xmlns aop: 'http://www.springframework.org/schema/aop'
-
-   cache.'advice'(id: 'messageServiceCacheAdvice',
-                  'cache-manager': 'grailsCacheManager') {
-      caching(cache: 'message') {
-         cacheable(method: 'getMessage')
-         'cache-evict'(method: 'save', key: '#message.title')
-      }
-   }
-
-   // apply the cacheable behavior to MessageService
-   aop.config {
-      advisor('advice-ref': 'messageServiceCacheAdvice',
-              pointcut: 'execution(* com.yourcompany.MessageService.*(..))')
-   }
-}
-----
