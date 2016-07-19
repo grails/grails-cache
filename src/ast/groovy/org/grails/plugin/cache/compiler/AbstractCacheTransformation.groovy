@@ -15,6 +15,7 @@
  */
 package org.grails.plugin.cache.compiler
 
+import grails.artefact.Controller
 import grails.compiler.ast.GrailsArtefactClassInjector
 import grails.plugin.cache.GrailsCacheKeyGenerator
 import groovy.transform.CompileStatic
@@ -26,6 +27,7 @@ import org.codehaus.groovy.control.SourceUnit
 import org.codehaus.groovy.syntax.Token
 import org.codehaus.groovy.syntax.Types
 import org.codehaus.groovy.transform.ASTTransformation
+import org.grails.compiler.injection.GrailsASTUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.CacheManager
 
@@ -67,10 +69,15 @@ abstract class AbstractCacheTransformation implements ASTTransformation {
         if (annotatedNode instanceof MethodNode) {
             MethodNode methodNode = (MethodNode) annotatedNode
             ClassNode declaringClass = methodNode.getDeclaringClass()
+
+            prohibitControllerClasses declaringClass, sourceUnit, grailsCacheAnnotationNode
+
             configureCachingForMethod(declaringClass, grailsCacheAnnotationNode, methodNode, sourceUnit)
             addAutowiredPropertyToClass declaringClass, CacheManager, GRAILS_CACHE_MANAGER_PROPERTY_NAME
         } else if(annotatedNode instanceof ClassNode) {
             ClassNode annotatedClass = (ClassNode)annotatedNode
+
+            prohibitControllerClasses annotatedClass, sourceUnit, grailsCacheAnnotationNode
 
             addAutowiredPropertyToClass annotatedClass, CacheManager, GRAILS_CACHE_MANAGER_PROPERTY_NAME
 
@@ -81,6 +88,12 @@ abstract class AbstractCacheTransformation implements ASTTransformation {
                     configureCachingForMethod annotatedClass, grailsCacheAnnotationNode, method, sourceUnit
                 }
             }
+        }
+    }
+
+    protected void prohibitControllerClasses(ClassNode declaringClass, SourceUnit sourceUnit, AnnotationNode cacheAnnotationNode) {
+        if (GrailsASTUtils.isSubclassOfOrImplementsInterface(declaringClass, ClassHelper.make(Controller))) {
+            GrailsASTUtils.error(sourceUnit, cacheAnnotationNode, "The ${cacheAnnotationNode.classNode.name} Annotation Is Not Yet Supported In A Controller.")
         }
     }
 

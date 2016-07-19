@@ -63,38 +63,9 @@ To test this out, be sure to define a `"message"` cache in `Config.groovy` and s
 
 == Controller action caching
 
-
-In addition to caching Spring bean return values, you can also cache responses for web requests using the same annotations. Note that since caching is implemented only for methods (Spring creates a proxy for your cached class in the same way that it creates a transactional proxy to start, commit, and roll back transactions for transactional Grails services) so you cannot annotate action closures. This doesn't fail silently; your controller class will not compile since the annotations are only allowed on the class or on methods; since Closures are fields, the annotations aren't valid.
-
-For example, in this controller the `lookup` action will use the `"message"` cache, so the first time you call the action you will see the output from the `println` statement but subsequent calls won't execute and you'll see the cached response instead. When you call the `evict` action the entire cache will be cleared (because of the `allEntries=true` attribute):
-
-[source,groovy]
-----
-package com.yourcompany
-
-import grails.plugin.cache.CacheEvict
-import grails.plugin.cache.Cacheable
-
-class TestController {
-
-   @Cacheable('message')
-   def lookup() {
-      // perform some expensive operations
-      println "called 'lookup'"
-   }
-
-   @CacheEvict(value='message', allEntries=true)
-   def evict() {
-      println "called 'evict'"
-   }
-}
-----
-
-NOTE: Caching of dynamically scaffolded actions is not supported.  If the scaffolding templates are installed with `grails install-templates` and cache related annotations are added to methods in the controller template, those annotations will only be relevant to generated scaffolding, not dynamic scaffolding.
-
+WARNING: Version 4 of the plugin does not yet support controller action caching!
 
 == If you can't use annotations
-
 
 Annotations aren't required, they're just the most convenient approach for configuration. If you like you can define caching semantics in `grails-app/conf/spring/resources.groovy` (or `resources.xml` if you like XML). This is also useful if you want to apply caching but can't edit the code to add annotations (for example if you have compiled classes in a jar).
 
