@@ -69,10 +69,23 @@ abstract class AbstractCacheTransformation implements ASTTransformation {
             ClassNode declaringClass = methodNode.getDeclaringClass()
             configureCachingForMethod(declaringClass, grailsCacheAnnotationNode, methodNode, sourceUnit)
             addAutowiredPropertyToClass declaringClass, CacheManager, GRAILS_CACHE_MANAGER_PROPERTY_NAME
-        } else {
-            // TODO
-            // still need to deal with annotation on a class...
+        } else if(annotatedNode instanceof ClassNode) {
+            ClassNode annotatedClass = (ClassNode)annotatedNode
+
+            addAutowiredPropertyToClass annotatedClass, CacheManager, GRAILS_CACHE_MANAGER_PROPERTY_NAME
+
+            List<MethodNode> declaredMethods = annotatedClass.allDeclaredMethods
+
+            for(MethodNode method : declaredMethods) {
+                if(shouldMethodBeConfiguredForCaching(method)) {
+                    configureCachingForMethod annotatedClass, grailsCacheAnnotationNode, method, sourceUnit
+                }
+            }
         }
+    }
+
+    protected boolean shouldMethodBeConfiguredForCaching(MethodNode method) {
+        method.isPublic()
     }
 
     abstract
