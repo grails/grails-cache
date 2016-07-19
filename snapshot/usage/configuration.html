@@ -431,10 +431,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect3">
 <h4 id="_config_groovy_and_artifact_files">Config.groovy and artifact files</h4>
 <div class="paragraph">
-<p>The caching configuration can be specified in <code>Config.groovy</code> or \*CacheConfig.groovy files. Both approaches support <code>environments</code> blocks for environment-specific configuration, and you can specify the loading order, for example to support overriding values. One example of this might be a plugin that specifies a known load order, allowing you to choose a lower value in your file and override some or all of the plugin&#8217;s configuration.</p>
+<p>The caching configuration can be specified in <code>*CacheConfig.groovy</code> files.
+This approach supports <code>environments</code> blocks for environment-specific
+configuration, and you can specify the loading order, for example to support
+overriding values. One example of this might be a plugin that specifies a known
+load order, allowing you to choose a lower value in your file and override some
+or all of the plugin&#8217;s configuration.</p>
 </div>
 <div class="paragraph">
-<p>There are a few configuration options for the plugin; these are specified in <code>Config.groovy</code>.</p>
+<p>There are a few configuration options for the plugin; these are specified in
+<code>*CacheConfig.groovy</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all spread">
 <colgroup>
@@ -456,29 +462,19 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable the plugin</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">grails.cache.proxyTargetClass</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">From the Spring Javadoc: "By default</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">all proxies are created as JDK proxies. This may cause some problems if you are injecting objects as concrete classes rather than interfaces. To overcome this restriction you can set the <code>proxy-target-class</code> attribute to <code>true</code> which will result in class-based proxies being created."</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">grails.cache.aopOrder</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Ordered.LOWEST_PRECEDENCE</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">From the Spring docs: "Defines the order of the cache advice that is applied to beans annotated with \`Cacheable or \`CacheEvict. No specified ordering means that the AOP subsystem determines the order of the advice."</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">grails.cache.clearAtStartup</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to clear all caches at startup</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to clear all caches at startup</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">grails.cache.keyGenerator</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">customCacheKeyGenerator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Replace the key generator with your own. e.g. if your config is <code>grails.cache.keyGenerator="myCacheKeygen"</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Replace the key generator with your own. e.g. if your config is <code>grails.cache.keyGenerator="myCacheKeygen"</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">you would declare something like this <code>myCacheKeygen(my.company.MyKeyGen)</code> in your resources.groovy. Note: MyKeyGen must implement KeyGenerator.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">grails.cache.cacheManager</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GrailsConcurrentMapCacheManager</p></td>
 </tr>
 </tbody>
 </table>
@@ -486,7 +482,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-07-19 20:43:54 UTC
+Last updated 2016-07-19 20:52:43 UTC
 </div>
 </div>
 </body>
