@@ -18,16 +18,11 @@ package grails.plugin.cache
 import grails.core.GrailsApplication
 import grails.plugin.cache.web.filter.DefaultWebKeyGenerator
 import grails.plugin.cache.web.filter.ExpressionEvaluator
-import grails.plugin.cache.web.filter.NoOpFilter
-import grails.plugin.cache.web.filter.simple.MemoryPageFragmentCachingFilter
 import grails.plugins.Plugin
 import groovy.util.logging.Commons
 import javassist.util.proxy.ProxyFactory
-import org.springframework.boot.context.embedded.FilterRegistrationBean
 import org.springframework.cache.Cache
 import org.springframework.core.Ordered
-
-import javax.servlet.DispatcherType
 
 @Commons
 class CacheGrailsPlugin extends Plugin {
@@ -75,7 +70,6 @@ class CacheGrailsPlugin extends Plugin {
             def application = grailsApplication
             if (!isEnabled(application)) {
                 log.warn 'Cache plugin is disabled'
-                grailsCacheFilter(NoOpFilter)
                 return
             }
 
@@ -110,17 +104,6 @@ class CacheGrailsPlugin extends Plugin {
 
 
             grailsCacheConfigLoader(ConfigLoader)
-
-            grailsCacheFilter(FilterRegistrationBean) {
-                filter = bean(MemoryPageFragmentCachingFilter) {
-                    cacheManager = ref('grailsCacheManager')
-                    cacheOperationSource = ref('cacheOperationSource')
-                    keyGenerator = ref('webCacheKeyGenerator')
-                    expressionEvaluator = ref('webExpressionEvaluator')
-                }
-                urlPatterns = "*"
-                dispatcherTypes = EnumSet.of(DispatcherType.FORWARD, DispatcherType.INCLUDE)
-            }
 
             webCacheKeyGenerator(DefaultWebKeyGenerator)
 
