@@ -516,24 +516,18 @@ table.CodeRay td.code>pre{padding:0}
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
 <li><a href="#introduction">Introduction To The Cache Plugin</a></li>
-<li><a href="#usage">Usage</a>
+<li><a href="#usage">Usage</a></li>
+<li><a href="#configuration">Configuration</a>
 <ul class="sectlevel2">
-<li><a href="#configuration">Configuration</a></li>
-<li><a href="#dsl">Cache DSL</a></li>
+<li><a href="#_cache_config_dsl">Cache Config DSL</a></li>
+<li><a href="#_order">Order</a></li>
 </ul>
 </li>
-<li><a href="#_order">Order</a>
-<ul class="sectlevel2">
 <li><a href="#annotations">Annotations</a></li>
-</ul>
-</li>
 <li><a href="#_service_method_caching">Service method caching</a></li>
 <li><a href="#_unit_tests">Unit Tests</a></li>
-<li><a href="#_controller_action_caching">Controller action caching</a>
-<ul class="sectlevel2">
+<li><a href="#_controller_action_caching">Controller action caching</a></li>
 <li><a href="#cacheManager">CacheManager</a></li>
-</ul>
-</li>
 <li><a href="#cacheTags">GSP Cache Tags</a></li>
 <li><a href="#grailsCacheAdminService">Grails Cache Admin Service</a>
 <ul class="sectlevel2">
@@ -627,10 +621,13 @@ time-to-live, maximum cache size, etc. Currently the extension plugins include
 <a href="http://grails.org/plugin/cache-redis">cache-redis</a>, and
 <a href="http://grails.org/plugin/cache-gemfire">cache-gemfire</a>.</p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuration">Configuration</h2>
+<div class="sectionbody">
 <div class="sect2">
-<h3 id="configuration">Configuration</h3>
-<div class="sect3">
-<h4 id="_config_groovy_and_artifact_files">Config.groovy and artifact files</h4>
+<h3 id="_cache_config_dsl">Cache Config DSL</h3>
 <div class="paragraph">
 <p>The caching configuration can be specified in <code>*CacheConfig.groovy</code> files.
 This approach supports <code>environments</code> blocks for environment-specific
@@ -679,10 +676,6 @@ or all of the plugin&#8217;s configuration.</p>
 </tr>
 </tbody>
 </table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="dsl">Cache DSL</h3>
 <div class="paragraph">
 <p>The cache implementation used by this plugin is very simple, so there aren&#8217;t
 many configuration options (compared to the Ehcache implementation for example,
@@ -771,11 +764,8 @@ you can add the <code>maxCapacity</code> parameter to the cache config. Default 
 </div>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_order">Order</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_order">Order</h3>
 <div class="paragraph">
 <p>You can configure your cache definitions to be loaded before or after others by
 setting the <code>order</code> attribute. Configurations with higher numbers are loaded
@@ -796,11 +786,14 @@ config = {
 }</code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="annotations">Annotations</h3>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="annotations">Annotations</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>The <a href="api/grails/plugin/cache/Cacheable.html">Cacheable</a> and <a href="api/grails/plugin/cache/CacheEvict.html">CacheEvict</a> annotations provided by the plugin have counterparts with the same names provided by Spring. See the <a href="http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/cache.html">Spring documentation</a> for their usage and allowed syntax.</p>
-</div>
 </div>
 </div>
 </div>
@@ -983,14 +976,16 @@ Version 4 of the plugin does not yet support controller action caching!
 </tr>
 </table>
 </div>
-<div class="sect2">
-<h3 id="cacheManager">CacheManager</h3>
+</div>
+</div>
+<div class="sect1">
+<h2 id="cacheManager">CacheManager</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>The plugin registers an instance of the <a href="http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/springframework/cache/CacheManager.html">CacheManager</a> iterface as the <code>grailsCacheManager</code> Spring bean, so it&#8217;s easy to access using dependency injection.</p>
 </div>
 <div class="paragraph">
 <p>The most common method you would call on the <code>grailsCacheManager</code> is <code>getCache(String name)</code> to access a <a href="http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/springframework/cache/Cache.html">Cache</a> instance programmatically. This shouldn&#8217;t be needed often however. From the <code>Cache</code> instance you can also access the underlying cache implementation using <code>cache.getNativeCache()</code>.</p>
-</div>
 </div>
 </div>
 </div>
@@ -1351,7 +1346,7 @@ bar
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-07-20 15:31:50 UTC
+Last updated 2016-07-20 16:15:07 UTC
 </div>
 </div>
 </body>

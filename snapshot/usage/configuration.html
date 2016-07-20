@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.3">
-<title>Config.groovy and artifact files</title>
+<title>Cache Config DSL</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -422,14 +422,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<ul class="sectlevel3">
-<li><a href="#_config_groovy_and_artifact_files">Config.groovy and artifact files</a></li>
+<ul class="sectlevel2">
+<li><a href="#_cache_config_dsl">Cache Config DSL</a></li>
+<li><a href="#_order">Order</a></li>
 </ul>
 </div>
 </div>
 <div id="content">
-<div class="sect3">
-<h4 id="_config_groovy_and_artifact_files">Config.groovy and artifact files</h4>
+<div class="sect2">
+<h3 id="_cache_config_dsl">Cache Config DSL</h3>
 <div class="paragraph">
 <p>The caching configuration can be specified in <code>*CacheConfig.groovy</code> files.
 This approach supports <code>environments</code> blocks for environment-specific
@@ -478,11 +479,121 @@ or all of the plugin&#8217;s configuration.</p>
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p>The cache implementation used by this plugin is very simple, so there aren&#8217;t
+many configuration options (compared to the Ehcache implementation for example,
+where you have fine-grained control over features like overflowing to disk,
+time-to-live settings, maximum size of caches, etc.) So there aren&#8217;t many
+supported options in the cache configuration DSL, although each plugin&#8217;s DSL
+parser is lenient and just logs warnings if you specify options that aren&#8217;t
+understood. This lets you share configurations between applications that use
+different plugins.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Since there is no way to configure "time to live" with this plugin, all
+cached items have no timeout and remain cached until either the JVM restarts
+(since the backing store is in-memory) or the cache is partially or fully
+cleared (by calling a method or action annotated with \@CacheEvict or
+programmatically).
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You specify the cache configuration in a <code>*CacheConfig.groovy</code> file in the
+<code>grails-app/conf</code> directory under the <code>config</code> key, for example</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">config = {
+   cache {
+      name 'message'
+   }
+   cache {
+      name 'maps'
+   }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will create two caches, one with name "message" and one with name "maps".
+You can also use attributes from other DSLs and they will be ignored, for
+example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">config = {
+   cache {
+      name 'message'
+      eternal false
+      overflowToDisk true
+      maxElementsInMemory 10000
+      maxElementsOnDisk 10000000
+   }
+   cache {
+      name 'maps'
+   }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This configuration results in the same caches as the simpler one.</p>
+</div>
+<div class="paragraph">
+<p>If you want to limit the number of cache entries you have to change the default
+cache manager to <code>'GrailsConcurrentLinkedMapCacheManager'</code>. To specify the limit
+you can add the <code>maxCapacity</code> parameter to the cache config. Default value for
+<code>maxCapacity</code> is 10000.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">config = {
+   cacheManager 'GrailsConcurrentLinkedMapCacheManager'
+   cache {
+      maxCapacity = 5000
+      name 'message'
+   }
+   cache {
+      maxCapacity = 6000
+      name 'maps'
+   }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_order">Order</h3>
+<div class="paragraph">
+<p>You can configure your cache definitions to be loaded before or after others by
+setting the <code>order</code> attribute. Configurations with higher numbers are loaded
+later, so these can override previously-configured values, although there is no
+support for removing caches or cache attributes, only adding or overriding:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">order = 2000
+
+config = {
+   cache {
+      name 'message'
+   }
+   cache {
+      name 'maps'
+   }
+}</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-07-20 15:31:50 UTC
+Last updated 2016-07-20 16:15:07 UTC
 </div>
 </div>
 </body>
