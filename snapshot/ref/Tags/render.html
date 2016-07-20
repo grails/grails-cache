@@ -422,29 +422,39 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<ul class="sectlevel4">
-<li><a href="#_render">render</a></li>
+<ul class="sectlevel1">
+<li><a href="#ref-tags-render">render</a>
+<ul class="sectlevel2">
 <li><a href="#_description">Description</a></li>
 <li><a href="#_examples">Examples</a></li>
 <li><a href="#_attributes">Attributes</a></li>
 </ul>
+</li>
+</ul>
 </div>
 </div>
 <div id="content">
-<div class="sect4">
-<h5 id="_render">render</h5>
-
-</div>
-<div class="sect4">
-<h5 id="_description">Description</h5>
+<div class="sect1">
+<h2 id="ref-tags-render">render</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_description">Description</h3>
 <div class="paragraph">
-<p>Renders a GSP template and caches the result so that the next time the same template is rendered it doesn&#8217;t have to be evaluated again.  Optionally, a key may be provided which can be helpful if the cached content is different per user, for example.</p>
+<p>Renders a GSP template and caches the result so that the next time the same
+template is rendered it doesn&#8217;t have to be evaluated again.  Optionally, a key
+may be provided which can be helpful if the cached content is different per
+user, for example.</p>
 </div>
 <div class="paragraph">
-<p>This tag behaves just like the <code>g:render</code> tag provided by Grails except this one caches the rendered result so the template doesn&#8217;t have to be re-evaluated each time it is rendered.</p>
+<p>This tag behaves just like the <code>g:render</code> tag provided by Grails except this one
+caches the rendered result so the template doesn&#8217;t have to be re-evaluated each
+time it is rendered.</p>
 </div>
 <div class="paragraph">
-<p>By default the key used in the cache is the path to the template.  If the same template is rendered multiple times with a different model, an explicit key should be provided, otherwise the separate invocations (with different models) will share the same cache entry.</p>
+<p>By default the key used in the cache is the path to the template.  If the same
+template is rendered multiple times with a different model, an explicit key
+should be provided, otherwise the separate invocations (with different models)
+will share the same cache entry.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -452,11 +462,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="paragraph">
-<p>Note that the key&#8217;s namespace is confined to a particular template.  This means that if there are 2 separate GSP templates cached with the same key value, the 2 will not collide with each other.  Each cached GSP template has its own set of keys.</p>
+<p>Note that the key&#8217;s namespace is confined to a particular template.  This means
+that if there are 2 separate GSP templates cached with the same key value, the 2
+will not collide with each other.  Each cached GSP template has its own set of
+keys.</p>
 </div>
 </div>
-<div class="sect4">
-<h5 id="_examples">Examples</h5>
+<div class="sect2">
+<h3 id="_examples">Examples</h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;cache:render template="myTemplate" model="[name: 'Some Value']"/&gt;</code></pre>
@@ -473,8 +486,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 </div>
-<div class="sect4">
-<h5 id="_attributes">Attributes</h5>
+<div class="sect2">
+<h3 id="_attributes">Attributes</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -511,9 +524,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 </div>
+</div>
+</div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-07-20 16:15:07 UTC
+Last updated 2016-07-20 19:07:45 UTC
 </div>
 </div>
 </body>

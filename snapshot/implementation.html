@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.3">
-<title>Cache manager</title>
+<title>Implementation Details</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -423,6 +423,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
+<li><a href="#implementation">Implementation Details</a></li>
 <li><a href="#_cache_manager">Cache manager</a></li>
 <li><a href="#_controller_caching">Controller caching</a>
 <ul class="sectlevel2">
@@ -436,8 +437,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div id="content">
+<div class="sect1">
+<h2 id="implementation">Implementation Details</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>All of the plugin&#8217;s classes are designed for extensibility; the classes are all public, and fields and methods are mostly public or protected. Consider subclassing existing classes to reuse as much as possible instead of completely rewriting them.</p>
+</div>
+</div>
 </div>
 <div class="sect1">
 <h2 id="_cache_manager">Cache manager</h2>
@@ -542,7 +548,7 @@ bar
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-07-20 16:15:07 UTC
+Last updated 2016-07-20 19:07:45 UTC
 </div>
 </div>
 </body>
