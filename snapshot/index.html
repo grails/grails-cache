@@ -884,17 +884,17 @@ method is invoked.</p>
 <pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@CompileStatic</span>
 <span class="type">class</span> <span class="class">BasicCachingService</span> {
 
-        <span class="directive">private</span> <span class="type">int</span> invocationCounter = <span class="integer">0</span>
+    <span class="directive">private</span> <span class="type">int</span> invocationCounter = <span class="integer">0</span>
 
-        <span class="keyword">def</span> <span class="function">getInvocationCounter</span>() {
-                invocationCounter
-        }
+    <span class="keyword">def</span> <span class="function">getInvocationCounter</span>() {
+        invocationCounter
+    }
 
-        <span class="annotation">@Cacheable</span>(<span class="string"><span class="delimiter">'</span><span class="content">basic</span><span class="delimiter">'</span></span>)
-        <span class="keyword">def</span> <span class="function">getData</span>() {
-                ++invocationCounter
-                <span class="string"><span class="delimiter">'</span><span class="content">Hello World!</span><span class="delimiter">'</span></span>
-        }
+    <span class="annotation">@Cacheable</span>(<span class="string"><span class="delimiter">'</span><span class="content">basic</span><span class="delimiter">'</span></span>)
+    <span class="keyword">def</span> <span class="function">getData</span>() {
+        ++invocationCounter
+        <span class="string"><span class="delimiter">'</span><span class="content">Hello World!</span><span class="delimiter">'</span></span>
+    }
 }</code></pre>
 </div>
 </div>
@@ -1351,7 +1351,7 @@ bar
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-07-20 15:27:15 UTC
+Last updated 2016-07-20 15:31:50 UTC
 </div>
 </div>
 </body>

@@ -437,17 +437,17 @@ method is invoked.</p>
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">@CompileStatic
 class BasicCachingService {
 
-	private int invocationCounter = 0
+    private int invocationCounter = 0
 
-	def getInvocationCounter() {
-		invocationCounter
-	}
+    def getInvocationCounter() {
+        invocationCounter
+    }
 
-	@Cacheable('basic')
-	def getData() {
-		++invocationCounter
-		'Hello World!'
-	}
+    @Cacheable('basic')
+    def getData() {
+        ++invocationCounter
+        'Hello World!'
+    }
 }</code></pre>
 </div>
 </div>
@@ -522,7 +522,7 @@ class BasicCachingServiceSpec extends Specification {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-07-20 15:27:15 UTC
+Last updated 2016-07-20 15:31:50 UTC
 </div>
 </div>
 </body>
