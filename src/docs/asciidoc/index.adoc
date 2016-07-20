@@ -14,22 +14,17 @@ include::introduction.adoc[]
 include::usage.adoc[]
 
 [[configuration]]
-=== Configuration
+== Configuration
 
 include::usage/configuration.adoc[]
 
-[[dsl]]
-=== Cache DSL
-
-include::usage/dsl.adoc[]
-
 [[annotations]]
-=== Annotations
+== Annotations
 
 include::usage/annotations.adoc[]
 
 [[cacheManager]]
-=== CacheManager
+== CacheManager
 
 include::usage/cacheManager.adoc[]
 
