@@ -1,3 +1,6 @@
+[[cacheManager]]
+== CacheManager
+
 The plugin registers an instance of the http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/springframework/cache/CacheManager.html[CacheManager] iterface as the `grailsCacheManager` Spring bean, so it's easy to access using dependency injection.
 
 The most common method you would call on the `grailsCacheManager` is `getCache(String name)` to access a http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/springframework/cache/Cache.html[Cache] instance programmatically. This shouldn't be needed often however. From the `Cache` instance you can also access the underlying cache implementation using `cache.getNativeCache()`.

@@ -1,3 +1,7 @@
+[[annotations]]
+== Annotations
+
+
 The link:api/grails/plugin/cache/Cacheable.html[Cacheable] and link:api/grails/plugin/cache/CacheEvict.html[CacheEvict] annotations provided by the plugin have counterparts with the same names provided by Spring. See the http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/cache.html[Spring documentation] for their usage and allowed syntax.
 
 

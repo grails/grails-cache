@@ -1,3 +1,6 @@
+[[usage]]
+== Usage
+
 The cache plugin adds Spring bean method call and GSP page fragment and
 template caching to Grails applications. You configure one or more caches
 in `Config.groovy` and/or one or more Groovy artifact files with names ending

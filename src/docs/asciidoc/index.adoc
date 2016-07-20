@@ -3,48 +3,21 @@
 :source-highlighter: coderay
 :imagesdir: ./images
 
-[[introduction]]
-== Introduction To The Cache Plugin
-
 include::introduction.adoc[]
-
-[[usage]]
-== Usage
 
 include::usage.adoc[]
 
-[[configuration]]
-== Configuration
-
 include::usage/configuration.adoc[]
-
-[[annotations]]
-== Annotations
 
 include::usage/annotations.adoc[]
 
-[[cacheManager]]
-== CacheManager
-
 include::usage/cacheManager.adoc[]
-
-[[cacheTags]]
-== GSP Cache Tags
 
 include::cacheTags.adoc[]
 
-[[grailsCacheAdminService]]
-== Grails Cache Admin Service
-
 include::grailsCacheAdminService.adoc[]
 
-[[clearingCaches]]
-=== Clearing Caches
-
 include::grailsCacheAdminService/clearingCaches.adoc[]
-
-[[implementation]]
-== Implementation Details
 
 include::implementation.adoc[]
 
@@ -54,18 +27,9 @@ include::implementation.adoc[]
 [[ref-tags]]
 === Tags
 
-[[ref-tags-block]]
-==== block
-
 include::ref/Tags/block.adoc[]
 
-[[ref-tags-render]]
-==== render
-
 include::ref/Tags/render.adoc[]
-
-[[changeLog]]
-=== Change log
 
 include::introduction/changeLog.adoc[]
 

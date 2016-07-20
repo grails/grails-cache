@@ -1,3 +1,6 @@
+[[cacheTags]]
+== GSP Cache Tags
+
 The plugin provides GSP tags which are useful for caching the result of evaluating sections of markup.  These tags allow for the result of evaluating sections of markup to be cached so subsequent renderings of the same markup do not have to result in the markup being evaluated again.  These tags support automatic cache eviction with the use of a time to live (ttl) attribute.
 
 See the documentation for the <<ref-tags-block,block>> and <<ref-tags-render,render>> tags for more details.

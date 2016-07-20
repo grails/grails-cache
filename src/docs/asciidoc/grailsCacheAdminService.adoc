@@ -1,1 +1,4 @@
+[[grailsCacheAdminService]]
+== Grails Cache Admin Service
+
 The plugin provides a service named `GrailsCacheAdminService` which supports various methods for administering caches.

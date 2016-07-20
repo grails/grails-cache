@@ -1,3 +1,6 @@
+[[clearingCaches]]
+=== Clearing Caches
+
 There are methods in GrailsCacheAdminService for clearing the caches used by the <<ref-tags-block,block>> and <<ref-tags-render,render>> tags.
 
 [source,java]

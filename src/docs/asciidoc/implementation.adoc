@@ -1,3 +1,6 @@
+[[implementation]]
+== Implementation Details
+
 All of the plugin's classes are designed for extensibility; the classes are all public, and fields and methods are mostly public or protected. Consider subclassing existing classes to reuse as much as possible instead of completely rewriting them.
 
 == Cache manager
