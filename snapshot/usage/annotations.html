@@ -424,6 +424,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
 <li><a href="#_service_method_caching">Service method caching</a></li>
+<li><a href="#_unit_tests">Unit Tests</a></li>
 <li><a href="#_controller_action_caching">Controller action caching</a></li>
 </ul>
 </div>
@@ -499,6 +500,104 @@ class Message implements Serializable {
 </div>
 </div>
 <div class="sect1">
+<h2 id="_unit_tests">Unit Tests</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In general, code that is marked with cache related annotations can be unit
+tested without doing anything special to deal with caching.  The caching just
+won&#8217;t be enabled and the code in cached methods will be executed each time the
+method is invoked.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">@CompileStatic
+class BasicCachingService {
+
+	private int invocationCounter = 0
+
+	def getInvocationCounter() {
+		invocationCounter
+	}
+
+	@Cacheable('basic')
+	def getData() {
+		++invocationCounter
+		'Hello World!'
+	}
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">package com.demo
+
+import grails.test.mixin.TestFor
+import spock.lang.Specification
+
+@TestFor(BasicCachingService)
+class BasicCachingServiceNoCacheManagerSpec extends Specification {
+
+    void 'test invoking cacheable method when no cache manager is present'() {
+        when: 'a cached method is invoked the first time'
+        def result = service.getData()
+
+        then: 'the code in the method is exeucted'
+        result == 'Hello World!'
+        service.invocationCounter == 1
+
+        when: 'a cached method is invoked the second time'
+        result = service.getData()
+
+        then: 'the code in the method is still exeucted because no cache manager is present'
+        result == 'Hello World!'
+        service.invocationCounter == 2
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In order for caching to be active when the unit test is running, cache manager
+and key generator beans must be added to the Spring application context by the
+test.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">package com.demo
+
+import grails.plugin.cache.CustomCacheKeyGenerator
+import grails.plugin.cache.GrailsConcurrentMapCacheManager
+import grails.test.mixin.TestFor
+import spock.lang.Specification
+
+@TestFor(BasicCachingService)
+class BasicCachingServiceSpec extends Specification {
+
+    static doWithSpring = {
+        grailsCacheManager GrailsConcurrentMapCacheManager
+        customCacheKeyGenerator CustomCacheKeyGenerator
+    }
+
+    void 'test invoking cacheable method when cache manager is present'() {
+        when: 'a cached method is invoked the first time'
+        def result = service.getData()
+
+        then: 'the code in the method is exeucted'
+        result == 'Hello World!'
+        service.invocationCounter == 1
+
+        when: 'a cached method is invoked the second time'
+        result = service.getData()
+
+        then: 'the cached return value is returned and the code in the method is not executed'
+        result == 'Hello World!'
+        service.invocationCounter == 1
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_controller_action_caching">Controller action caching</h2>
 <div class="sectionbody">
 <div class="admonitionblock warning">
@@ -518,7 +617,7 @@ Version 4 of the plugin does not yet support controller action caching!
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-07-19 21:20:12 UTC
+Last updated 2016-07-20 15:27:15 UTC
 </div>
 </div>
 </body>

@@ -528,6 +528,7 @@ table.CodeRay td.code>pre{padding:0}
 </ul>
 </li>
 <li><a href="#_service_method_caching">Service method caching</a></li>
+<li><a href="#_unit_tests">Unit Tests</a></li>
 <li><a href="#_controller_action_caching">Controller action caching</a>
 <ul class="sectlevel2">
 <li><a href="#cacheManager">CacheManager</a></li>
@@ -866,6 +867,104 @@ config = {
 </div>
 <div class="paragraph">
 <p>To test this out, be sure to define a <code>"message"</code> cache in <code>Config.groovy</code> and save and retrieve <code>Message</code> instances using the service. There are <code>println</code> statements but you can also turn on SQL logging to watch the database access that&#8217;s needed to retrieve instances that aren&#8217;t cached yet, and you shouldn&#8217;t see database access for cached values.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_unit_tests">Unit Tests</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In general, code that is marked with cache related annotations can be unit
+tested without doing anything special to deal with caching.  The caching just
+won&#8217;t be enabled and the code in cached methods will be executed each time the
+method is invoked.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@CompileStatic</span>
+<span class="type">class</span> <span class="class">BasicCachingService</span> {
+
+        <span class="directive">private</span> <span class="type">int</span> invocationCounter = <span class="integer">0</span>
+
+        <span class="keyword">def</span> <span class="function">getInvocationCounter</span>() {
+                invocationCounter
+        }
+
+        <span class="annotation">@Cacheable</span>(<span class="string"><span class="delimiter">'</span><span class="content">basic</span><span class="delimiter">'</span></span>)
+        <span class="keyword">def</span> <span class="function">getData</span>() {
+                ++invocationCounter
+                <span class="string"><span class="delimiter">'</span><span class="content">Hello World!</span><span class="delimiter">'</span></span>
+        }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">package</span> com.demo
+
+<span class="keyword">import</span> <span class="include">grails.test.mixin.TestFor</span>
+<span class="keyword">import</span> <span class="include">spock.lang.Specification</span>
+
+<span class="annotation">@TestFor</span>(BasicCachingService)
+<span class="type">class</span> <span class="class">BasicCachingServiceNoCacheManagerSpec</span> <span class="directive">extends</span> Specification {
+
+    <span class="type">void</span> <span class="string"><span class="delimiter">'</span><span class="content">test invoking cacheable method when no cache manager is present</span><span class="delimiter">'</span></span>() {
+        <span class="key">when</span>: <span class="string"><span class="delimiter">'</span><span class="content">a cached method is invoked the first time</span><span class="delimiter">'</span></span>
+        <span class="keyword">def</span> result = service.getData()
+
+        <span class="key">then</span>: <span class="string"><span class="delimiter">'</span><span class="content">the code in the method is exeucted</span><span class="delimiter">'</span></span>
+        result == <span class="string"><span class="delimiter">'</span><span class="content">Hello World!</span><span class="delimiter">'</span></span>
+        service.invocationCounter == <span class="integer">1</span>
+
+        <span class="key">when</span>: <span class="string"><span class="delimiter">'</span><span class="content">a cached method is invoked the second time</span><span class="delimiter">'</span></span>
+        result = service.getData()
+
+        <span class="key">then</span>: <span class="string"><span class="delimiter">'</span><span class="content">the code in the method is still exeucted because no cache manager is present</span><span class="delimiter">'</span></span>
+        result == <span class="string"><span class="delimiter">'</span><span class="content">Hello World!</span><span class="delimiter">'</span></span>
+        service.invocationCounter == <span class="integer">2</span>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In order for caching to be active when the unit test is running, cache manager
+and key generator beans must be added to the Spring application context by the
+test.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">package</span> com.demo
+
+<span class="keyword">import</span> <span class="include">grails.plugin.cache.CustomCacheKeyGenerator</span>
+<span class="keyword">import</span> <span class="include">grails.plugin.cache.GrailsConcurrentMapCacheManager</span>
+<span class="keyword">import</span> <span class="include">grails.test.mixin.TestFor</span>
+<span class="keyword">import</span> <span class="include">spock.lang.Specification</span>
+
+<span class="annotation">@TestFor</span>(BasicCachingService)
+<span class="type">class</span> <span class="class">BasicCachingServiceSpec</span> <span class="directive">extends</span> Specification {
+
+    <span class="directive">static</span> doWithSpring = {
+        grailsCacheManager GrailsConcurrentMapCacheManager
+        customCacheKeyGenerator CustomCacheKeyGenerator
+    }
+
+    <span class="type">void</span> <span class="string"><span class="delimiter">'</span><span class="content">test invoking cacheable method when cache manager is present</span><span class="delimiter">'</span></span>() {
+        <span class="key">when</span>: <span class="string"><span class="delimiter">'</span><span class="content">a cached method is invoked the first time</span><span class="delimiter">'</span></span>
+        <span class="keyword">def</span> result = service.getData()
+
+        <span class="key">then</span>: <span class="string"><span class="delimiter">'</span><span class="content">the code in the method is exeucted</span><span class="delimiter">'</span></span>
+        result == <span class="string"><span class="delimiter">'</span><span class="content">Hello World!</span><span class="delimiter">'</span></span>
+        service.invocationCounter == <span class="integer">1</span>
+
+        <span class="key">when</span>: <span class="string"><span class="delimiter">'</span><span class="content">a cached method is invoked the second time</span><span class="delimiter">'</span></span>
+        result = service.getData()
+
+        <span class="key">then</span>: <span class="string"><span class="delimiter">'</span><span class="content">the cached return value is returned and the code in the method is not executed</span><span class="delimiter">'</span></span>
+        result == <span class="string"><span class="delimiter">'</span><span class="content">Hello World!</span><span class="delimiter">'</span></span>
+        service.invocationCounter == <span class="integer">1</span>
+    }
+}</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -1252,7 +1351,7 @@ bar
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-07-19 21:20:12 UTC
+Last updated 2016-07-20 15:27:15 UTC
 </div>
 </div>
 </body>
