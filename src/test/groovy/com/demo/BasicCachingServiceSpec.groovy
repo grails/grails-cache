@@ -9,24 +9,22 @@ import spock.lang.Specification
 class BasicCachingServiceSpec extends Specification {
 
     static doWithSpring = {
-        // TODO The plugin should provide a convenient
-        // mechanism for setting these up...
-        grailsCacheManager(GrailsConcurrentMapCacheManager)
-        customCacheKeyGenerator(CustomCacheKeyGenerator)
+        grailsCacheManager GrailsConcurrentMapCacheManager
+        customCacheKeyGenerator CustomCacheKeyGenerator
     }
 
     void 'test invoking cacheable method when cache manager is present'() {
-        when:
+        when: 'a cached method is invoked the first time'
         def result = service.getData()
 
-        then:
+        then: 'the code in the method is exeucted'
         result == 'Hello World!'
         service.invocationCounter == 1
 
-        when:
+        when: 'a cached method is invoked the second time'
         result = service.getData()
 
-        then:
+        then: 'the cached return value is returned and the code in the method is not executed'
         result == 'Hello World!'
         service.invocationCounter == 1
     }

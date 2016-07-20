@@ -5,23 +5,27 @@ import grails.plugin.cache.CachePut
 import grails.plugin.cache.Cacheable
 import groovy.transform.CompileStatic
 
+// tag::get_data[]
 @CompileStatic
 class BasicCachingService {
 
-	static transactional = false
-
 	private int invocationCounter = 0
-	private int invocationCounter2 = 100
 
 	def getInvocationCounter() {
 		invocationCounter
 	}
 
+	// end::get_data[]
+
+	private int invocationCounter2 = 100
+
+	// tag::get_data[]
 	@Cacheable('basic')
 	def getData() {
 		++invocationCounter
 		'Hello World!'
 	}
+	// end::get_data[]
 
 	@CacheEvict(value="basic", allEntries=true)
 	def resetData() {
@@ -60,4 +64,6 @@ class BasicCachingService {
 	def getData(String key, String value) {
 		"** ${value} **"
 	}
+	// tag::get_data[]
 }
+// end::get_data[]
