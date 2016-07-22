@@ -16,6 +16,7 @@ package grails.plugin.cache;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentMap;
 
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
@@ -97,9 +98,14 @@ public class GrailsConcurrentLinkedMapCache implements GrailsCache {
       throw new IllegalStateException("Cached value is not of required type [" + type.getName() + "]: " + value);
     }
     return (T) value;
-  }   
+  }
 
-   @SuppressWarnings("unchecked")
+    @Override
+    public <T> T get(Object key, Callable<T> valueLoader) {
+        throw new UnsupportedOperationException();
+    }
+
+    @SuppressWarnings("unchecked")
    public Collection<Object> getAllKeys() {
       return getNativeCache().keySet();
    }
