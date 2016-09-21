@@ -36,12 +36,7 @@ import org.springframework.cache.Cache
 class CachePutTransformation extends AbstractCacheTransformation {
 
     @Override
-    protected void configureCachingForMethod(ClassNode declaringClass, AnnotationNode cacheAnnotationOnMethod, MethodNode methodToCache, SourceUnit sourceUnit) {
-        Expression expressionToCallOriginalMethod = moveOriginalCodeToNewMethod(sourceUnit, declaringClass, methodToCache)
-
-        BlockStatement cachingCode = new BlockStatement()
-
-        addCodeToExecuteIfCacheManagerIsNull(expressionToCallOriginalMethod, cachingCode)
+    protected void configureCachingForMethod(MethodNode methodToCache, ClassNode declaringClass, AnnotationNode cacheAnnotationOnMethod, BlockStatement cachingCode, Expression expressionToCallOriginalMethod, SourceUnit sourceUnit) {
         addCodeToRetrieveCache(cacheAnnotationOnMethod, cachingCode)
         addCodeToInitializeCacheKey(declaringClass, methodToCache, cacheAnnotationOnMethod, cachingCode)
 

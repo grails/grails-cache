@@ -48,6 +48,7 @@ abstract class AbstractCacheTransformation implements ASTTransformation {
 
     public static final String GRAILS_CACHE_MANAGER_PROPERTY_NAME = 'grailsCacheManager'
     public static final String CACHE_KEY_LOCAL_VARIABLE_NAME = '$_cache_cacheKey'
+    public static final String METHOD_PARAMETER_MAP_LOCAL_VARIABLE_NAME = '$$__map'
     public static final String CACHE_VARIABLE_LOCAL_VARIABLE_NAME = '$_cache_cacheVariable'
     public static final String GRAILS_CACHE_KEY_GENERATOR_PROPERTY_NAME = 'customCacheKeyGenerator'
     public static final ClassNode STRING_TYPE = ClassHelper.make(String)
@@ -102,7 +103,19 @@ abstract class AbstractCacheTransformation implements ASTTransformation {
     }
 
     abstract
-    protected void configureCachingForMethod(ClassNode declaringClass, AnnotationNode cacheAnnotationOnMethod, MethodNode methodToCache, SourceUnit sourceUnit)
+    protected void configureCachingForMethod(MethodNode methodToCache, ClassNode declaringClass, AnnotationNode cacheAnnotationOnMethod, BlockStatement cachingCode, Expression expressionToCallOriginalMethod, SourceUnit sourceUnit)
+
+    protected void configureCachingForMethod(ClassNode declaringClass, AnnotationNode cacheAnnotationOnMethod, MethodNode methodToCache, SourceUnit sourceUnit) {
+        Expression expressionToCallOriginalMethod = moveOriginalCodeToNewMethod(sourceUnit, declaringClass, methodToCache)
+
+        BlockStatement cachingCode = new BlockStatement()
+
+        addCodeToExecuteIfCacheManagerIsNull(expressionToCallOriginalMethod, cachingCode)
+
+        declareAndInitializeParameterValueMap(cachingCode, methodToCache)
+
+        configureCachingForMethod(methodToCache, declaringClass, cacheAnnotationOnMethod, cachingCode, expressionToCallOriginalMethod, sourceUnit)
+    }
 
     protected addAutowiredPropertyToClass(ClassNode classNode, Class propertyType, String propertyName) {
         if (!classNode.hasProperty(propertyName)) {
@@ -145,7 +158,7 @@ abstract class AbstractCacheTransformation implements ASTTransformation {
         originalMethodCall
     }
 
-    protected void addCodeToExecuteIfCacheManagerIsNull(MethodCallExpression expressionToCallOriginalMethod, BlockStatement codeBlock) {
+    protected void addCodeToExecuteIfCacheManagerIsNull(Expression expressionToCallOriginalMethod, BlockStatement codeBlock) {
         VariableExpression cacheManagerVariableExpression = new VariableExpression(GRAILS_CACHE_MANAGER_PROPERTY_NAME)
         Statement ifCacheManager = new IfStatement(new BooleanExpression(cacheManagerVariableExpression), new EmptyStatement(), new ReturnStatement(expressionToCallOriginalMethod))
 
@@ -166,26 +179,12 @@ abstract class AbstractCacheTransformation implements ASTTransformation {
 
     protected void addCodeToInitializeCacheKey(ClassNode declaringClass, MethodNode methodToCache, AnnotationNode cacheAnnotationOnMethod, BlockStatement codeBlock) {
         addAutowiredPropertyToClass declaringClass, GrailsCacheKeyGenerator, GRAILS_CACHE_KEY_GENERATOR_PROPERTY_NAME
-        def declareMap = new DeclarationExpression(new VariableExpression('$$__map', MAP_TYPE), Token.newSymbol(Types.EQUALS, 0, 0), new ConstructorCallExpression(ClassHelper.make(LinkedHashMap), new ArgumentListExpression()))
-        codeBlock.addStatement(new ExpressionStatement(declareMap))
-        def parameters1 = methodToCache.getParameters()
-        if (parameters1) {
-            MethodNode mapPutMethod = MAP_TYPE.getMethod('put', [new Parameter(OBJECT_TYPE, 'key'), new Parameter(OBJECT_TYPE, 'value')] as Parameter[])
-            for (Parameter p : parameters1) {
-                ArgumentListExpression putArgs = new ArgumentListExpression()
-                putArgs.addExpression(new ConstantExpression(p.getName()))
-                putArgs.addExpression(new VariableExpression(p.getName()))
-                MethodCallExpression mce = new MethodCallExpression(new VariableExpression('$$__map'), 'put', putArgs)
-                mce.methodTarget = mapPutMethod
-                codeBlock.addStatement(new ExpressionStatement(mce))
-            }
-        }
 
         ArgumentListExpression createKeyArgs = new ArgumentListExpression()
         createKeyArgs.addExpression(new ConstantExpression(declaringClass.getName()))
         createKeyArgs.addExpression(new ConstantExpression(methodToCache.getName()))
         createKeyArgs.addExpression(new MethodCallExpression(new VariableExpression('this'), 'hashCode', new ArgumentListExpression()))
-        createKeyArgs.addExpression(new VariableExpression('$$__map'))
+        createKeyArgs.addExpression(new VariableExpression(METHOD_PARAMETER_MAP_LOCAL_VARIABLE_NAME))
         createKeyArgs.addExpression(new CastExpression(STRING_TYPE, new ConstantExpression(cacheAnnotationOnMethod.getMember('key')?.getText())))
         MethodCallExpression cacheKeyExpression = new MethodCallExpression(new VariableExpression(GRAILS_CACHE_KEY_GENERATOR_PROPERTY_NAME), 'generate', createKeyArgs)
         MethodNode generateMethod = ClassHelper.make(GrailsCacheKeyGenerator).getMethod('generate', [new Parameter(STRING_TYPE, 'className'),
@@ -198,5 +197,22 @@ abstract class AbstractCacheTransformation implements ASTTransformation {
         VariableExpression cacheKeyVariableExpression = new VariableExpression(CACHE_KEY_LOCAL_VARIABLE_NAME)
         DeclarationExpression cacheKeyDeclaration = new DeclarationExpression(cacheKeyVariableExpression, Token.newSymbol(Types.EQUALS, 0, 0), cacheKeyExpression)
         codeBlock.addStatement(new ExpressionStatement(cacheKeyDeclaration))
+    }
+
+    protected void declareAndInitializeParameterValueMap(BlockStatement codeBlock, MethodNode methodToCache) {
+        def declareMap = new DeclarationExpression(new VariableExpression(METHOD_PARAMETER_MAP_LOCAL_VARIABLE_NAME, MAP_TYPE), Token.newSymbol(Types.EQUALS, 0, 0), new ConstructorCallExpression(ClassHelper.make(LinkedHashMap), new ArgumentListExpression()))
+        codeBlock.addStatement(new ExpressionStatement(declareMap))
+        def parameters1 = methodToCache.getParameters()
+        if (parameters1) {
+            MethodNode mapPutMethod = MAP_TYPE.getMethod('put', [new Parameter(OBJECT_TYPE, 'key'), new Parameter(OBJECT_TYPE, 'value')] as Parameter[])
+            for (Parameter p : parameters1) {
+                ArgumentListExpression putArgs = new ArgumentListExpression()
+                putArgs.addExpression(new ConstantExpression(p.getName()))
+                putArgs.addExpression(new VariableExpression(p.getName()))
+                MethodCallExpression mce = new MethodCallExpression(new VariableExpression(METHOD_PARAMETER_MAP_LOCAL_VARIABLE_NAME), 'put', putArgs)
+                mce.methodTarget = mapPutMethod
+                codeBlock.addStatement(new ExpressionStatement(mce))
+            }
+        }
     }
 }

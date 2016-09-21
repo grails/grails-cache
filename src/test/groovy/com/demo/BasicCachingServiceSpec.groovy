@@ -28,4 +28,34 @@ class BasicCachingServiceSpec extends Specification {
         result == 'Hello World!'
         service.invocationCounter == 1
     }
+
+    void 'test invoking a cacheable method that expresses a condition'() {
+        when: 'mutliply is called with x < 10'
+        def result = service.multiply(4, 7)
+
+        then: 'the method should have been invoked'
+        result == 28
+        service.conditionalInvocationCounter == 1
+
+        when: 'the method is invoked with x > 10'
+        result = service.multiply(40, 7)
+
+        then: 'the method should have executed'
+        result == 280
+        service.conditionalInvocationCounter == 2
+
+        when: 'mutliply is called with x < 10 with a cached value'
+        result = service.multiply(4, 7)
+
+        then: 'the method should not have executed'
+        result == 28
+        service.conditionalInvocationCounter == 2
+
+        when: 'the method is invoked with x > 10 again'
+        result = service.multiply(40, 7)
+
+        then: 'the condition should prevent caching'
+        result == 280
+        service.conditionalInvocationCounter == 3
+    }
 }

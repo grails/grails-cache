@@ -10,6 +10,7 @@ import groovy.transform.CompileStatic
 class BasicCachingService {
 
     private int invocationCounter = 0
+    private int conditionalInvocationCounter = 0
 
     def getInvocationCounter() {
         invocationCounter
@@ -63,6 +64,12 @@ class BasicCachingService {
     @CachePut(value = 'basic', key = '#key')
     def getData(String key, String value) {
         "** ${value} **"
+    }
+
+    @Cacheable(value = 'basic', condition='#x < 10')
+    def multiply(int x, int y) {
+        conditionalInvocationCounter++
+        x * y
     }
     // tag::get_data[]
 }

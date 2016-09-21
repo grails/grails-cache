@@ -38,12 +38,7 @@ import org.codehaus.groovy.transform.GroovyASTTransformation
 class CacheEvictTransformation extends AbstractCacheTransformation {
 
     @Override
-    protected void configureCachingForMethod(ClassNode declaringClass, AnnotationNode cacheAnnotationOnMethod, MethodNode methodToCache, SourceUnit sourceUnit) {
-        Expression expressionToCallOriginalMethod = moveOriginalCodeToNewMethod(sourceUnit, declaringClass, methodToCache)
-
-        BlockStatement cachingCode = new BlockStatement()
-
-        addCodeToExecuteIfCacheManagerIsNull(expressionToCallOriginalMethod, cachingCode)
+    protected void configureCachingForMethod(MethodNode methodToCache, ClassNode declaringClass, AnnotationNode cacheAnnotationOnMethod, BlockStatement cachingCode, Expression expressionToCallOriginalMethod, SourceUnit sourceUnit) {
         addCodeToRetrieveCache(cacheAnnotationOnMethod, cachingCode)
 
         Expression clearCacheMethodCall = new MethodCallExpression(new VariableExpression(CACHE_VARIABLE_LOCAL_VARIABLE_NAME), 'clear', new ArgumentListExpression())
