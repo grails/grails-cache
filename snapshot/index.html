@@ -593,10 +593,10 @@ table.CodeRay td.code>pre{padding:0}
 <h2 id="usage">Usage</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The cache plugin adds Spring bean method call and GSP page fragment and
+<p>The cache plugin adds Spring bean method call, GSP page fragment and
 template caching to Grails applications. You configure one or more caches
-in <code>Config.groovy</code> and/or one or more Groovy artifact files with names ending
-in CacheConfig.groovy (for example FooCacheConfig.groovy,
+in <code>*CacheConfig.groovy</code> and/or one or more Groovy artifact files with names ending
+in CacheConfig.groovy (for example <code>FooCacheConfig.groovy</code>,
 BarCacheConfig.groovy, and these can also be in packages) in <code>grails-app/conf</code>
 (or a subdirectory if in a package) using an implementation-specific DSL, and
 annotate methods (either in Spring beans (typically Grails services) or
@@ -807,7 +807,7 @@ config = {
 <h2 id="annotations">Annotations</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The <a href="api/grails/plugin/cache/Cacheable.html">Cacheable</a> and <a href="api/grails/plugin/cache/CacheEvict.html">CacheEvict</a> annotations provided by the plugin have counterparts with the same names provided by Spring. See the <a href="http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/cache.html">Spring documentation</a> for their usage and allowed syntax.</p>
+<p>The <a href="api/grails/plugin/cache/Cacheable.html">Cacheable</a> and <a href="api/grails/plugin/cache/CacheEvict.html">CacheEvict</a> annotations provided by the plugin have counterparts with the same names provided by Spring.</p>
 </div>
 </div>
 </div>
@@ -873,7 +873,7 @@ config = {
 <p>Note that for in-memory cache implementations it&#8217;s not required that the objects being cached implement <code>Serializable</code> but if you use an implementation that uses Java serialization (for example the Redis plugin, or the Ehcache plugin when you have configured clustered caching) you must implement <code>Serializable</code>.</p>
 </div>
 <div class="paragraph">
-<p>To test this out, be sure to define a <code>"message"</code> cache in <code>Config.groovy</code> and save and retrieve <code>Message</code> instances using the service. There are <code>println</code> statements but you can also turn on SQL logging to watch the database access that&#8217;s needed to retrieve instances that aren&#8217;t cached yet, and you shouldn&#8217;t see database access for cached values.</p>
+<p>To test this out, be sure to define a <code>"message"</code> cache in <code>*CacheConfig.groovy</code> and save and retrieve <code>Message</code> instances using the service. There are <code>println</code> statements but you can also turn on SQL logging to watch the database access that&#8217;s needed to retrieve instances that aren&#8217;t cached yet, and you shouldn&#8217;t see database access for cached values.</p>
 </div>
 </div>
 </div>
@@ -1404,7 +1404,7 @@ keys.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-09-21 01:23:46 UTC
+Last updated 2016-09-21 01:33:14 UTC
 </div>
 </div>
 </body>
