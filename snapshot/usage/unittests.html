@@ -438,6 +438,7 @@ method is invoked.</p>
 class BasicCachingService {
 
     private int invocationCounter = 0
+    private int conditionalInvocationCounter = 0
 
     def getInvocationCounter() {
         invocationCounter
@@ -516,13 +517,43 @@ class BasicCachingServiceSpec extends Specification {
         result == 'Hello World!'
         service.invocationCounter == 1
     }
+
+    void 'test invoking a cacheable method that expresses a condition'() {
+        when: 'mutliply is called with x &lt; 10'
+        def result = service.multiply(4, 7)
+
+        then: 'the method should have been invoked'
+        result == 28
+        service.conditionalInvocationCounter == 1
+
+        when: 'the method is invoked with x &gt; 10'
+        result = service.multiply(40, 7)
+
+        then: 'the method should have executed'
+        result == 280
+        service.conditionalInvocationCounter == 2
+
+        when: 'mutliply is called with x &lt; 10 with a cached value'
+        result = service.multiply(4, 7)
+
+        then: 'the method should not have executed'
+        result == 28
+        service.conditionalInvocationCounter == 2
+
+        when: 'the method is invoked with x &gt; 10 again'
+        result = service.multiply(40, 7)
+
+        then: 'the condition should prevent caching'
+        result == 280
+        service.conditionalInvocationCounter == 3
+    }
 }</code></pre>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-07-22 15:12:42 UTC
+Last updated 2016-09-21 01:23:46 UTC
 </div>
 </div>
 </body>

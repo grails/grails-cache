@@ -892,6 +892,7 @@ method is invoked.</p>
 <span class="type">class</span> <span class="class">BasicCachingService</span> {
 
     <span class="directive">private</span> <span class="type">int</span> invocationCounter = <span class="integer">0</span>
+    <span class="directive">private</span> <span class="type">int</span> conditionalInvocationCounter = <span class="integer">0</span>
 
     <span class="keyword">def</span> <span class="function">getInvocationCounter</span>() {
         invocationCounter
@@ -969,6 +970,36 @@ test.</p>
         <span class="key">then</span>: <span class="string"><span class="delimiter">'</span><span class="content">the cached return value is returned and the code in the method is not executed</span><span class="delimiter">'</span></span>
         result == <span class="string"><span class="delimiter">'</span><span class="content">Hello World!</span><span class="delimiter">'</span></span>
         service.invocationCounter == <span class="integer">1</span>
+    }
+
+    <span class="type">void</span> <span class="string"><span class="delimiter">'</span><span class="content">test invoking a cacheable method that expresses a condition</span><span class="delimiter">'</span></span>() {
+        <span class="key">when</span>: <span class="string"><span class="delimiter">'</span><span class="content">mutliply is called with x &lt; 10</span><span class="delimiter">'</span></span>
+        <span class="keyword">def</span> result = service.multiply(<span class="integer">4</span>, <span class="integer">7</span>)
+
+        <span class="key">then</span>: <span class="string"><span class="delimiter">'</span><span class="content">the method should have been invoked</span><span class="delimiter">'</span></span>
+        result == <span class="integer">28</span>
+        service.conditionalInvocationCounter == <span class="integer">1</span>
+
+        <span class="key">when</span>: <span class="string"><span class="delimiter">'</span><span class="content">the method is invoked with x &gt; 10</span><span class="delimiter">'</span></span>
+        result = service.multiply(<span class="integer">40</span>, <span class="integer">7</span>)
+
+        <span class="key">then</span>: <span class="string"><span class="delimiter">'</span><span class="content">the method should have executed</span><span class="delimiter">'</span></span>
+        result == <span class="integer">280</span>
+        service.conditionalInvocationCounter == <span class="integer">2</span>
+
+        <span class="key">when</span>: <span class="string"><span class="delimiter">'</span><span class="content">mutliply is called with x &lt; 10 with a cached value</span><span class="delimiter">'</span></span>
+        result = service.multiply(<span class="integer">4</span>, <span class="integer">7</span>)
+
+        <span class="key">then</span>: <span class="string"><span class="delimiter">'</span><span class="content">the method should not have executed</span><span class="delimiter">'</span></span>
+        result == <span class="integer">28</span>
+        service.conditionalInvocationCounter == <span class="integer">2</span>
+
+        <span class="key">when</span>: <span class="string"><span class="delimiter">'</span><span class="content">the method is invoked with x &gt; 10 again</span><span class="delimiter">'</span></span>
+        result = service.multiply(<span class="integer">40</span>, <span class="integer">7</span>)
+
+        <span class="key">then</span>: <span class="string"><span class="delimiter">'</span><span class="content">the condition should prevent caching</span><span class="delimiter">'</span></span>
+        result == <span class="integer">280</span>
+        service.conditionalInvocationCounter == <span class="integer">3</span>
     }
 }</code></pre>
 </div>
@@ -1373,7 +1404,7 @@ keys.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-07-22 15:12:42 UTC
+Last updated 2016-09-21 01:23:46 UTC
 </div>
 </div>
 </body>
