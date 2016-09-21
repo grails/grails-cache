@@ -112,9 +112,15 @@ abstract class AbstractCacheTransformation implements ASTTransformation {
 
         addCodeToExecuteIfCacheManagerIsNull(expressionToCallOriginalMethod, cachingCode)
 
-        declareAndInitializeParameterValueMap(cachingCode, methodToCache)
+        if(requiresParameterMap()) {
+            declareAndInitializeParameterValueMap(cachingCode, methodToCache)
+        }
 
         configureCachingForMethod(methodToCache, declaringClass, cacheAnnotationOnMethod, cachingCode, expressionToCallOriginalMethod, sourceUnit)
+    }
+
+    protected boolean requiresParameterMap() {
+        true
     }
 
     protected addAutowiredPropertyToClass(ClassNode classNode, Class propertyType, String propertyName) {

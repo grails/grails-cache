@@ -48,4 +48,8 @@ class CacheEvictTransformation extends AbstractCacheTransformation {
 
         methodToCache.code = cachingCode
     }
+
+    protected boolean requiresParameterMap() {
+        false
+    }
 }
