@@ -45,10 +45,4 @@ public @interface CachePut {
 	 * <p>Default is "", meaning all method parameters are considered as a key.
 	 */
 	String key() default "";
-
-	/*
-	 * Spring Expression Language (SpEL) attribute used for conditioning the cache update.
-	 * <p>Default is "", meaning the method result is always cached.
-	 */
-	String condition() default "";
 }

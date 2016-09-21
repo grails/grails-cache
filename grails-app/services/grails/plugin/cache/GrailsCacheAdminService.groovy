@@ -22,10 +22,10 @@ class GrailsCacheAdminService {
 
     def grailsCacheManager
 
-    @CacheEvict(value="grailsBlocksCache", allEntries=true)
+    @CacheEvict(value="grailsBlocksCache")
     def clearBlocksCache() {}
 
-    @CacheEvict(value="grailsTemplatesCache", allEntries=true)
+    @CacheEvict(value="grailsTemplatesCache")
     def clearTemplatesCache() {}
 
     def clearCache(cacheName) {
