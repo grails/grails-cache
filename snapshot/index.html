@@ -595,13 +595,9 @@ table.CodeRay td.code>pre{padding:0}
 <div class="paragraph">
 <p>The cache plugin adds Spring bean method call, GSP page fragment and
 template caching to Grails applications. You configure one or more caches
-in <code>*CacheConfig.groovy</code> and/or one or more Groovy artifact files with names ending
-in CacheConfig.groovy (for example <code>FooCacheConfig.groovy</code>,
-BarCacheConfig.groovy, and these can also be in packages) in <code>grails-app/conf</code>
-(or a subdirectory if in a package) using an implementation-specific DSL, and
-annotate methods (either in Spring beans (typically Grails services) or
-controllers) to be cached. You can also wrap GSP sections in cache tags and
-render cached templates.</p>
+in <code>grails-app/init/*CacheConfig.groovy</code> using an implementation-specific DSL, and
+annotate methods (either in Spring beans (typically Grails services)) to be cached.
+You can also wrap GSP sections in cache tags and render cached templates.</p>
 </div>
 <div class="paragraph">
 <p>There are three annotations; <a href="api/grails/plugin/cache/Cacheable.html">Cacheable</a>,
@@ -643,7 +639,7 @@ time-to-live, maximum cache size, etc. Currently the extension plugins include
 <div class="sect2">
 <h3 id="_cache_config_dsl">Cache Config DSL</h3>
 <div class="paragraph">
-<p>The caching configuration can be specified in <code>*CacheConfig.groovy</code> files.
+<p>The caching configuration can be specified in <code>grails-app/init/*CacheConfig.groovy</code> files.
 This approach supports <code>environments</code> blocks for environment-specific
 configuration, and you can specify the loading order, for example to support
 overriding values. One example of this might be a plugin that specifies a known
@@ -652,7 +648,7 @@ or all of the plugin&#8217;s configuration.</p>
 </div>
 <div class="paragraph">
 <p>There are a few configuration options for the plugin; these are specified in
-<code>*CacheConfig.groovy</code>.</p>
+<code>grails-app/init/*CacheConfig.groovy</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all spread">
 <colgroup>
@@ -717,7 +713,7 @@ programmatically).
 </table>
 </div>
 <div class="paragraph">
-<p>You specify the cache configuration in a <code>*CacheConfig.groovy</code> file in the
+<p>You specify the cache configuration in a <code>grails-app/init/*CacheConfig.groovy</code> file in the
 <code>grails-app/conf</code> directory under the <code>config</code> key, for example</p>
 </div>
 <div class="listingblock">
@@ -873,7 +869,7 @@ config = {
 <p>Note that for in-memory cache implementations it&#8217;s not required that the objects being cached implement <code>Serializable</code> but if you use an implementation that uses Java serialization (for example the Redis plugin, or the Ehcache plugin when you have configured clustered caching) you must implement <code>Serializable</code>.</p>
 </div>
 <div class="paragraph">
-<p>To test this out, be sure to define a <code>"message"</code> cache in <code>*CacheConfig.groovy</code> and save and retrieve <code>Message</code> instances using the service. There are <code>println</code> statements but you can also turn on SQL logging to watch the database access that&#8217;s needed to retrieve instances that aren&#8217;t cached yet, and you shouldn&#8217;t see database access for cached values.</p>
+<p>To test this out, be sure to define a <code>"message"</code> cache in <code>grails-app/init/*CacheConfig.groovy</code> and save and retrieve <code>Message</code> instances using the service. There are <code>println</code> statements but you can also turn on SQL logging to watch the database access that&#8217;s needed to retrieve instances that aren&#8217;t cached yet, and you shouldn&#8217;t see database access for cached values.</p>
 </div>
 </div>
 </div>
@@ -1404,7 +1400,7 @@ keys.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-09-21 01:33:14 UTC
+Last updated 2016-09-21 19:19:09 UTC
 </div>
 </div>
 </body>

@@ -431,7 +431,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect2">
 <h3 id="_cache_config_dsl">Cache Config DSL</h3>
 <div class="paragraph">
-<p>The caching configuration can be specified in <code>*CacheConfig.groovy</code> files.
+<p>The caching configuration can be specified in <code>grails-app/init/*CacheConfig.groovy</code> files.
 This approach supports <code>environments</code> blocks for environment-specific
 configuration, and you can specify the loading order, for example to support
 overriding values. One example of this might be a plugin that specifies a known
@@ -440,7 +440,7 @@ or all of the plugin&#8217;s configuration.</p>
 </div>
 <div class="paragraph">
 <p>There are a few configuration options for the plugin; these are specified in
-<code>*CacheConfig.groovy</code>.</p>
+<code>grails-app/init/*CacheConfig.groovy</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all spread">
 <colgroup>
@@ -505,7 +505,7 @@ programmatically).
 </table>
 </div>
 <div class="paragraph">
-<p>You specify the cache configuration in a <code>*CacheConfig.groovy</code> file in the
+<p>You specify the cache configuration in a <code>grails-app/init/*CacheConfig.groovy</code> file in the
 <code>grails-app/conf</code> directory under the <code>config</code> key, for example</p>
 </div>
 <div class="listingblock">
@@ -569,7 +569,7 @@ you can add the <code>maxCapacity</code> parameter to the cache config. Default 
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-09-21 01:33:14 UTC
+Last updated 2016-09-21 19:19:09 UTC
 </div>
 </div>
 </body>

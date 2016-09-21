@@ -434,13 +434,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>The cache plugin adds Spring bean method call, GSP page fragment and
 template caching to Grails applications. You configure one or more caches
-in <code>*CacheConfig.groovy</code> and/or one or more Groovy artifact files with names ending
-in CacheConfig.groovy (for example <code>FooCacheConfig.groovy</code>,
-BarCacheConfig.groovy, and these can also be in packages) in <code>grails-app/conf</code>
-(or a subdirectory if in a package) using an implementation-specific DSL, and
-annotate methods (either in Spring beans (typically Grails services) or
-controllers) to be cached. You can also wrap GSP sections in cache tags and
-render cached templates.</p>
+in <code>grails-app/init/*CacheConfig.groovy</code> using an implementation-specific DSL, and
+annotate methods (either in Spring beans (typically Grails services)) to be cached.
+You can also wrap GSP sections in cache tags and render cached templates.</p>
 </div>
 <div class="paragraph">
 <p>There are three annotations; <a href="api/grails/plugin/cache/Cacheable.html">Cacheable</a>,
@@ -479,7 +475,7 @@ time-to-live, maximum cache size, etc. Currently the extension plugins include
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-09-21 01:33:14 UTC
+Last updated 2016-09-21 19:19:09 UTC
 </div>
 </div>
 </body>
