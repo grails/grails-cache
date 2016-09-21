@@ -30,8 +30,7 @@ class CacheGrailsPlugin extends Plugin {
     def loadAfter = ['controllers', 'services']
     def artefacts = [CacheConfigArtefactHandler]
     def watchedResources = [
-            'file:./grails-app/conf/**/*CacheConfig.groovy',
-            'file:./plugins/*/grails-app/conf/**/*CacheConfig.groovy'
+            'file:./grails-app/init/**/*CacheConfig.groovy'
     ]
 
     def title = 'Cache Plugin'

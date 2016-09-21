@@ -1,6 +1,6 @@
 === Cache Config DSL
 
-The caching configuration can be specified in `*CacheConfig.groovy` files.
+The caching configuration can be specified in `grails-app/init/*CacheConfig.groovy` files.
 This approach supports `environments` blocks for environment-specific
 configuration, and you can specify the loading order, for example to support
 overriding values. One example of this might be a plugin that specifies a known
@@ -8,7 +8,7 @@ load order, allowing you to choose a lower value in your file and override some
 or all of the plugin's configuration.
 
 There are a few configuration options for the plugin; these are specified in
-`*CacheConfig.groovy`.
+`grails-app/init/*CacheConfig.groovy`.
 
 [format="csv", options="header"]
 |===
@@ -35,7 +35,7 @@ cached items have no timeout and remain cached until either the JVM restarts
 cleared (by calling a method or action annotated with \@CacheEvict or
 programmatically).
 
-You specify the cache configuration in a `*CacheConfig.groovy` file in the
+You specify the cache configuration in a `grails-app/init/*CacheConfig.groovy` file in the
 `grails-app/conf` directory under the `config` key, for example
 
 [source,groovy]
