@@ -17,6 +17,7 @@ target-eclipse/
 plugin.xml
 target
 build
+classes
 .gradle
 web-app/WEB-INF/tld
 grails-app/conf/ApplicationResources.groovy
