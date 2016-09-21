@@ -1,10 +1,10 @@
 [[usage]]
 == Usage
 
-The cache plugin adds Spring bean method call and GSP page fragment and
+The cache plugin adds Spring bean method call, GSP page fragment and
 template caching to Grails applications. You configure one or more caches
-in `Config.groovy` and/or one or more Groovy artifact files with names ending
-in CacheConfig.groovy (for example FooCacheConfig.groovy,
+in `*CacheConfig.groovy` and/or one or more Groovy artifact files with names ending
+in CacheConfig.groovy (for example `FooCacheConfig.groovy`,
 BarCacheConfig.groovy, and these can also be in packages) in `grails-app/conf`
 (or a subdirectory if in a package) using an implementation-specific DSL, and
 annotate methods (either in Spring beans (typically Grails services) or
