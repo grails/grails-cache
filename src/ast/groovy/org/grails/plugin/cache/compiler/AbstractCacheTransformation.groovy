@@ -49,7 +49,7 @@ abstract class AbstractCacheTransformation implements ASTTransformation {
 
     public static final String GRAILS_CACHE_MANAGER_PROPERTY_NAME = 'grailsCacheManager'
     public static final String CACHE_KEY_LOCAL_VARIABLE_NAME = '$_cache_cacheKey'
-    public static final String METHOD_PARAMETER_MAP_LOCAL_VARIABLE_NAME = '$$__map'
+    public static final String METHOD_PARAMETER_MAP_LOCAL_VARIABLE_NAME = '$_method_parameter_map'
     public static final String CACHE_VARIABLE_LOCAL_VARIABLE_NAME = '$_cache_cacheVariable'
     public static final String GRAILS_CACHE_KEY_GENERATOR_PROPERTY_NAME = 'customCacheKeyGenerator'
     public static final ClassNode STRING_TYPE = ClassHelper.make(String)
@@ -136,7 +136,7 @@ abstract class AbstractCacheTransformation implements ASTTransformation {
     }
 
     protected MethodCallExpression moveOriginalCodeToNewMethod(SourceUnit source, ClassNode classNode, MethodNode methodNode) {
-        String renamedMethodName = '$$_cache_' + methodNode.getName()
+        String renamedMethodName = '$_cache_' + methodNode.getName()
         def newParameters = methodNode.getParameters() ? (copyParameters(((methodNode.getParameters() as List)) as Parameter[])) : new Parameter[0]
 
         MethodNode renamedMethodNode = new MethodNode(
