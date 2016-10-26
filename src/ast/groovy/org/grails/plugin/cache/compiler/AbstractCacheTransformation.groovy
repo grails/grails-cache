@@ -27,6 +27,7 @@ import org.codehaus.groovy.control.SourceUnit
 import org.codehaus.groovy.syntax.Token
 import org.codehaus.groovy.syntax.Types
 import org.codehaus.groovy.transform.ASTTransformation
+import org.codehaus.groovy.transform.sc.transformers.CompareToNullExpression
 import org.grails.compiler.injection.GrailsASTUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.CacheManager
@@ -166,7 +167,8 @@ abstract class AbstractCacheTransformation implements ASTTransformation {
 
     protected void addCodeToExecuteIfCacheManagerIsNull(Expression expressionToCallOriginalMethod, BlockStatement codeBlock) {
         VariableExpression cacheManagerVariableExpression = new VariableExpression(GRAILS_CACHE_MANAGER_PROPERTY_NAME)
-        Statement ifCacheManager = new IfStatement(new BooleanExpression(cacheManagerVariableExpression), new EmptyStatement(), new ReturnStatement(expressionToCallOriginalMethod))
+        Expression cacheManagerNotNullExpression = new CompareToNullExpression(cacheManagerVariableExpression, false)
+        Statement ifCacheManager = new IfStatement(new BooleanExpression(cacheManagerNotNullExpression), new EmptyStatement(), new ReturnStatement(expressionToCallOriginalMethod))
 
         codeBlock.addStatement(ifCacheManager)
     }
