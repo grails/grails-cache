@@ -25,6 +25,7 @@ import org.codehaus.groovy.control.SourceUnit
 import org.codehaus.groovy.syntax.Token
 import org.codehaus.groovy.syntax.Types
 import org.codehaus.groovy.transform.GroovyASTTransformation
+import org.codehaus.groovy.transform.sc.transformers.CompareToNullExpression
 import org.springframework.cache.Cache
 
 /**
@@ -60,7 +61,8 @@ public class CacheableTransformation extends AbstractCacheTransformation {
         BlockStatement wrapperNotNullBlock = getCodeToExecuteIfWrapperExistsInCache()
         BlockStatement wrapperIsNullBlock = getCodeToExecuteIfWrapperIsNull(expressionToCallOriginalMethod)
 
-        Statement ifValueWrapperStatement = new IfStatement(new BooleanExpression(valueWrapperVariableExpression), wrapperNotNullBlock, wrapperIsNullBlock)
+        Expression valueWrapperNotNullExpression = new CompareToNullExpression(valueWrapperVariableExpression, false)
+        Statement ifValueWrapperStatement = new IfStatement(new BooleanExpression(valueWrapperNotNullExpression), wrapperNotNullBlock, wrapperIsNullBlock)
         cachingCode.addStatement(ifValueWrapperStatement)
 
         methodToCache.code = cachingCode
