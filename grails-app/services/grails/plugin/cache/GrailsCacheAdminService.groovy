@@ -20,7 +20,7 @@ class GrailsCacheAdminService {
 
     static transactional = false
 
-    def grailsCacheManager
+    GrailsCacheManager grailsCacheManager
 
     @CacheEvict(value="grailsBlocksCache")
     def clearBlocksCache() {}
