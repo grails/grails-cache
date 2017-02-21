@@ -535,8 +535,7 @@ table.CodeRay td.code>pre{padding:0}
 </ul>
 </li>
 <li><a href="#implementation">Implementation Details</a></li>
-<li><a href="#_cache_manager">Cache manager</a></li>
-<li><a href="#_controller_caching">Controller caching</a>
+<li><a href="#_cache_manager">Cache manager</a>
 <ul class="sectlevel2">
 <li><a href="#_key_generation">Key generation</a></li>
 <li><a href="#_fragment_caching">Fragment caching</a></li>
@@ -1090,23 +1089,6 @@ Version 4 of the plugin does not yet support controller action caching!
 <div class="paragraph">
 <p>You can customize the cache manager by replacing the <code>grailsCacheManager</code> Spring bean in <code>resources.groovy</code> with your own; either subclass <code>GrailsConcurrentMapCacheManager</code> (e.g. to override the <code>createConcurrentMapCache()</code> method) or by implementing the <code>grails.plugin.cache.GrailsCacheManager</code> interface.</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_controller_caching">Controller caching</h2>
-<div class="sectionbody">
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Version 4 of the plugin does not yet support controller action caching!
-</td>
-</tr>
-</table>
-</div>
 <div class="sect2">
 <h3 id="_key_generation">Key generation</h3>
 <div class="paragraph">
@@ -1344,6 +1326,9 @@ keys.</p>
 <div class="paragraph">
 <p>AST based solution.</p>
 </div>
+<div class="paragraph">
+<p>Controller caching is no longer supported.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_version_1_1_7_june_24_2014">Version 1.1.7 - June 24, 2014</h3>
@@ -1400,7 +1385,7 @@ keys.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-10-26 18:11:59 UTC
+Last updated 2017-02-21 16:25:14 UTC
 </div>
 </div>
 </body>
