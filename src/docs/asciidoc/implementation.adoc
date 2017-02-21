@@ -11,10 +11,6 @@ The core cache plugin registers a `grailsCacheManager` Spring bean, and the exte
 You can customize the cache manager by replacing the `grailsCacheManager` Spring bean in `resources.groovy` with your own; either subclass `GrailsConcurrentMapCacheManager` (e.g. to override the `createConcurrentMapCache()` method) or by implementing the `grails.plugin.cache.GrailsCacheManager` interface.
 
 
-== Controller caching
-
-WARNING: Version 4 of the plugin does not yet support controller action caching!
-
 === Key generation
 
 

@@ -95,7 +95,7 @@ abstract class AbstractCacheTransformation implements ASTTransformation {
 
     protected void prohibitControllerClasses(ClassNode declaringClass, SourceUnit sourceUnit, AnnotationNode cacheAnnotationNode) {
         if (GrailsASTUtils.isSubclassOfOrImplementsInterface(declaringClass, ClassHelper.make(Controller))) {
-            GrailsASTUtils.error(sourceUnit, cacheAnnotationNode, "The ${cacheAnnotationNode.classNode.name} Annotation Is Not Yet Supported In A Controller.")
+            GrailsASTUtils.error(sourceUnit, cacheAnnotationNode, "The ${cacheAnnotationNode.classNode.name} Annotation Is Not Supported In A Controller.")
         }
     }
 
