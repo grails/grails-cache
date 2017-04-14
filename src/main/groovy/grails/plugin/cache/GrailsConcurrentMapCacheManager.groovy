@@ -14,12 +14,10 @@
  */
 package grails.plugin.cache;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
-import org.springframework.cache.Cache;
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentMap
+import org.springframework.cache.Cache
 
 /**
  * Based on org.springframework.cache.concurrent.ConcurrentMapCacheManager.
@@ -27,35 +25,41 @@ import org.springframework.cache.Cache;
  * @author Juergen Hoeller
  * @author Burt Beckwith
  */
-public class GrailsConcurrentMapCacheManager implements GrailsCacheManager {
+class GrailsConcurrentMapCacheManager implements GrailsCacheManager {
 
-	protected final ConcurrentMap<String, Cache> cacheMap = new ConcurrentHashMap<String, Cache>();
+	protected final ConcurrentMap<String, Cache> cacheMap = new ConcurrentHashMap<String, Cache>()
 
-	public Collection<String> getCacheNames() {
-		return Collections.unmodifiableSet(cacheMap.keySet());
+	Collection<String> getCacheNames() {
+		Collections.unmodifiableSet(cacheMap.keySet())
 	}
 
-	public Cache getCache(String name) {
-		Cache cache = cacheMap.get(name);
+	Cache getCache(String name) {
+		Cache cache = cacheMap.get(name)
 		if (cache == null) {
-			cache = createConcurrentMapCache(name);
-			Cache existing = cacheMap.putIfAbsent(name, cache);
+			cache = createConcurrentMapCache(name)
+			Cache existing = cacheMap.putIfAbsent(name, cache)
 			if (existing != null) {
-				cache = existing;
+				cache = existing
 			}
 		}
-		return cache;
+		cache
 	}
 
-	public boolean cacheExists(String name) {
-		return getCacheNames().contains(name);
+	boolean cacheExists(String name) {
+		getCacheNames().contains(name)
 	}
 
-	public boolean destroyCache(String name) {
-		return cacheMap.remove(name) != null;
+	boolean destroyCache(String name) {
+		cacheMap.remove(name) != null
 	}
 
 	protected GrailsConcurrentMapCache createConcurrentMapCache(String name) {
-		return new GrailsConcurrentMapCache(name);
+		new GrailsConcurrentMapCache(name)
+	}
+
+	void setConfiguration(CachePluginConfiguration configuration) {
+		configuration.caches.each { String key, CachePluginConfiguration.CacheConfig value ->
+			getCache(key)
+		}
 	}
 }

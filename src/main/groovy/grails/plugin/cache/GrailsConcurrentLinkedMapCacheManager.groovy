@@ -27,39 +27,46 @@ import org.springframework.cache.Cache;
  *
  * @author Jakob Drangmeister
  */
-public class GrailsConcurrentLinkedMapCacheManager implements GrailsCacheManager {
+class GrailsConcurrentLinkedMapCacheManager implements GrailsCacheManager {
 
-   protected final ConcurrentMap<String, Cache> cacheMap = new ConcurrentHashMap<String, Cache>();
+   protected final ConcurrentMap<String, Cache> cacheMap = new ConcurrentHashMap<String, Cache>()
 
-   public Collection<String> getCacheNames() {
-      return Collections.unmodifiableSet(cacheMap.keySet());
+   Collection<String> getCacheNames() {
+      return Collections.unmodifiableSet(cacheMap.keySet())
    }
 
-   public Cache getCache(String name) {
-      return getCache(name, 10000);
+   Cache getCache(String name) {
+      return getCache(name, 10000)
    }
 
-   public Cache getCache(String name, int capacity) {
-      Cache cache = cacheMap.get(name);
+   Cache getCache(String name, int capacity) {
+      Cache cache = cacheMap.get(name)
       if (cache == null) {
-         cache = createConcurrentLinkedMapCache(name, capacity);
-         Cache existing = cacheMap.putIfAbsent(name, cache);
+         cache = createConcurrentLinkedMapCache(name, capacity)
+         Cache existing = cacheMap.putIfAbsent(name, cache)
          if (existing != null) {
-            cache = existing;
+            cache = existing
          }
       }
-      return cache;
+      return cache
    }
 
-   public boolean cacheExists(String name) {
-      return getCacheNames().contains(name);
+   boolean cacheExists(String name) {
+      getCacheNames().contains(name)
    }
 
-   public boolean destroyCache(String name) {
-      return cacheMap.remove(name) != null;
+   boolean destroyCache(String name) {
+      cacheMap.remove(name) != null
    }
 
    protected GrailsConcurrentLinkedMapCache createConcurrentLinkedMapCache(String name, long capacity) {
-      return new GrailsConcurrentLinkedMapCache(name, capacity);
+      return new GrailsConcurrentLinkedMapCache(name, capacity)
+   }
+
+   void setConfiguration(CachePluginConfiguration configuration) {
+      configuration.caches.each { String key, CachePluginConfiguration.CacheConfig value ->
+         getCache(key, value.maxCapacity)
+      }
+
    }
 }

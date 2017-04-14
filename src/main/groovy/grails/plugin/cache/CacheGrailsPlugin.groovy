@@ -15,9 +15,6 @@
 
 package grails.plugin.cache
 
-import grails.core.GrailsApplication
-import grails.plugin.cache.web.filter.DefaultWebKeyGenerator
-import grails.plugin.cache.web.filter.ExpressionEvaluator
 import grails.plugins.Plugin
 import groovy.util.logging.Commons
 import org.springframework.cache.Cache
@@ -25,14 +22,9 @@ import org.springframework.cache.Cache
 @Commons
 class CacheGrailsPlugin extends Plugin {
 
-    def grailsVersion = "3.2.0.M1 > *"
+    def grailsVersion = "3.2.0 > *"
     def observe = ['controllers', 'services']
     def loadAfter = ['controllers', 'services']
-    def artefacts = [CacheConfigArtefactHandler]
-    def watchedResources = [
-            'file:./grails-app/init/**/*CacheConfig.groovy'
-    ]
-
     def title = 'Cache Plugin'
     def author = 'Jeff Brown'
     def authorEmail = 'brownj@ociweb.com'
@@ -57,78 +49,45 @@ class CacheGrailsPlugin extends Plugin {
     Closure doWithSpring() {
         { ->
             def application = grailsApplication
-            if (!isEnabled(application)) {
+            if (!application.config.getProperty('grails.cache.enabled', Boolean, true)) {
                 log.warn 'Cache plugin is disabled'
                 return
             }
 
-            def cacheConfig = application.config.grails.cache
             customCacheKeyGenerator(CustomCacheKeyGenerator)
 
+            Class<? extends GrailsCacheManager> cacheClazz = GrailsConcurrentMapCacheManager
             // Selects cache manager from config
-            if (cacheConfig.cacheManager.equals("GrailsConcurrentLinkedMapCacheManager")) {
-                grailsCacheManager(GrailsConcurrentLinkedMapCacheManager)
-            } else {
-                grailsCacheManager(GrailsConcurrentMapCacheManager)
+            if (application.config.getProperty("grails.cache.cacheManager", String, null) == "GrailsConcurrentLinkedMapCacheManager") {
+                cacheClazz = GrailsConcurrentLinkedMapCacheManager
             }
 
-            grailsCacheConfigLoader(ConfigLoader)
+            grailsCacheManager(cacheClazz) {
+                configuration = ref('grailsCacheConfiguration')
+            }
 
-            webCacheKeyGenerator(DefaultWebKeyGenerator)
-
-            webExpressionEvaluator(ExpressionEvaluator)
+            grailsCacheConfiguration(CachePluginConfiguration)
         }
     }
 
     void doWithApplicationContext() {
-        def ctx = applicationContext
-        reloadCaches ctx
+        CachePluginConfiguration pluginConfiguration = applicationContext.getBean('grailsCacheConfiguration')
+        GrailsCacheManager grailsCacheManager = applicationContext.getBean('grailsCacheManager', GrailsCacheManager)
 
-        def cacheConfig = ctx.grailsApplication.config.grails.cache
-        if (cacheConfig.clearAtStartup instanceof Boolean && cacheConfig.clearAtStartup) {
-            def grailsCacheManager = ctx.grailsCacheManager
+        if (pluginConfiguration.clearAtStartup) {
             for (String cacheName in grailsCacheManager.cacheNames) {
                 log.info "Clearing cache $cacheName"
                 Cache cache = grailsCacheManager.getCache(cacheName)
                 cache.clear()
             }
         }
-    }
 
-    void onChange(Map<String, Object> event) {
-
-        def application = grailsApplication
-        if (!isEnabled(application)) {
-            return
+        List<String> defaultCaches = ['grailsBlocksCache', 'grailsTemplatesCache']
+        defaultCaches.each {
+            if (!grailsCacheManager.cacheExists(it)) {
+                grailsCacheManager.getCache(it)
+            }
         }
 
-        def source = event.source
-        if (!source) {
-            return
-        }
-
-        if (application.isControllerClass(source) || application.isServiceClass(source)) {
-        } else if (application.isCacheConfigClass(source)) {
-            reloadCaches applicationContext
-        }
-    }
-
-    void onConfigChange(Map<String, Object> event) {
-        reloadCaches applicationContext
-    }
-
-    private void reloadCaches(ctx) {
-
-        if (!isEnabled(ctx.grailsApplication)) {
-            return
-        }
-
-        ctx.grailsCacheConfigLoader.reload ctx
-        log.debug 'Reloaded grailsCacheConfigLoader'
-    }
-
-    private boolean isEnabled(GrailsApplication application) {
-        def enabled = application.config.grails.cache.enabled
-        enabled == null || enabled != false
     }
 }
