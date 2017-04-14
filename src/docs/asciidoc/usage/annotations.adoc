@@ -39,7 +39,7 @@ class MessageService {
 }
 ----
 
-Note that you could also use \`CacheEvict for the `save@ method, which would remove the old cached value but not cache the current value.
+Note that you could also use `CacheEvict` for the `save` method, which would remove the old cached value but not cache the current value.
 
 This service works with the `Message` domain class:
 
@@ -67,7 +67,3 @@ To test this out, be sure to define a `"message"` cache in `grails-app/init/*Cac
 == Unit Tests
 
 include::unittests.adoc[]
-
-== Controller action caching
-
-WARNING: Version 4 of the plugin does not yet support controller action caching!

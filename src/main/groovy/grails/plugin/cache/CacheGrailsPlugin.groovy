@@ -16,10 +16,11 @@
 package grails.plugin.cache
 
 import grails.plugins.Plugin
-import groovy.util.logging.Commons
+import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
 import org.springframework.cache.Cache
 
-@Commons
+@Slf4j
 class CacheGrailsPlugin extends Plugin {
 
     def grailsVersion = "3.2.0 > *"
@@ -37,11 +38,11 @@ class CacheGrailsPlugin extends Plugin {
     def issueManagement = [system: 'GITHUB', url: 'https://github.com/grails-plugins/grails-cache/issues']
     def scm = [url: 'https://github.com/grails-plugins/grails-cache']
 
+
     // resources that should be loaded by the plugin once installed in the application
     //Does this even work anymore?  Doesn't appear to.
     def pluginExcludes = [
             '**/com/demo/**',
-            'TestCacheConfig**',
             'grails-app/views/**',
             '**/*.gsp'
     ]
@@ -70,6 +71,7 @@ class CacheGrailsPlugin extends Plugin {
         }
     }
 
+    @CompileStatic
     void doWithApplicationContext() {
         CachePluginConfiguration pluginConfiguration = applicationContext.getBean('grailsCacheConfiguration')
         GrailsCacheManager grailsCacheManager = applicationContext.getBean('grailsCacheManager', GrailsCacheManager)
@@ -88,6 +90,5 @@ class CacheGrailsPlugin extends Plugin {
                 grailsCacheManager.getCache(it)
             }
         }
-
     }
 }

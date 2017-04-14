@@ -46,7 +46,6 @@ dependencies {
     profile "org.grails.profiles:web-plugin"
     provided "org.grails:grails-plugin-services"
     provided "org.grails:grails-plugin-domain-class"
-    runtime "com.bertramlabs.plugins:asset-pipeline-grails:2.8.2"
     testCompile "org.grails:grails-plugin-testing"
     testCompile "org.grails.plugins:geb"
     testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
@@ -60,7 +59,6 @@ task wrapper(type: Wrapper) {
     gradleVersion = gradleWrapperVersion
 }
 jar {
-    exclude "TestCacheConfig**"
     exclude "application.groovy"
     exclude "com/demo/**/**"
     exclude "demo/**"
