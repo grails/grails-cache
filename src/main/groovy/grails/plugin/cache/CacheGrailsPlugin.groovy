@@ -73,7 +73,7 @@ class CacheGrailsPlugin extends Plugin {
 
     @CompileStatic
     void doWithApplicationContext() {
-        CachePluginConfiguration pluginConfiguration = applicationContext.getBean('grailsCacheConfiguration')
+        CachePluginConfiguration pluginConfiguration = applicationContext.getBean('grailsCacheConfiguration', CachePluginConfiguration)
         GrailsCacheManager grailsCacheManager = applicationContext.getBean('grailsCacheManager', GrailsCacheManager)
 
         if (pluginConfiguration.clearAtStartup) {
