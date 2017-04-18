@@ -24,17 +24,19 @@ class GrailsCacheAdminService {
     GrailsCacheManager grailsCacheManager
 
     @CacheEvict(value="grailsBlocksCache")
-    void clearBlocksCache() {}
+    def clearBlocksCache() {}
 
     @CacheEvict(value="grailsTemplatesCache")
-    void clearTemplatesCache() {}
+    def clearTemplatesCache() {}
 
-    void clearCache(cacheName) {
-        grailsCacheManager.getCache(cacheName)?.clear()
+    def clearCache(CharSequence cacheName) {
+        if(cacheName) {
+            grailsCacheManager.getCache(cacheName.toString())?.clear()
+        }
     }
 
-    void clearAllCaches() {
-        grailsCacheManager.cacheNames.each { cacheName ->
+    def clearAllCaches() {
+        for(CharSequence cacheName in grailsCacheManager.cacheNames) {
             clearCache(cacheName)
         }
     }

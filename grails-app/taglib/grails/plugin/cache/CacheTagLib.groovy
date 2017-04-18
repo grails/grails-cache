@@ -15,9 +15,11 @@
 package grails.plugin.cache
 
 import grails.plugin.cache.util.ClassUtils
+import groovy.transform.Memoized
 import groovy.util.logging.Slf4j
 import org.grails.buffer.StreamCharBuffer
 import org.grails.gsp.GroovyPageTemplate
+import org.grails.web.gsp.GroovyPagesTemplateRenderer
 import org.grails.web.servlet.mvc.GrailsWebRequest
 import org.springframework.web.context.request.RequestContextHolder
 
@@ -27,8 +29,8 @@ class CacheTagLib {
 
 	static namespace = 'cache'
 
-	def grailsCacheManager
-	def groovyPagesTemplateRenderer
+	GrailsCacheManager grailsCacheManager
+	GroovyPagesTemplateRenderer groovyPagesTemplateRenderer
 
 	/**
 	 * Renders a block of markup and caches the result so the next time the same block
@@ -123,6 +125,7 @@ class CacheTagLib {
 		}
 	}
 
+	@Memoized(maxCacheSize = 100)
 	protected String calculateFullKey(String templateName, String contextPath, String pluginName) {
 		GrailsWebRequest webRequest = RequestContextHolder.currentRequestAttributes()
 		String uri = webRequest.attributes.getTemplateUri(templateName, webRequest.request)
@@ -135,7 +138,7 @@ class CacheTagLib {
 			throwTagError("Template not found for name [$templateName] and path [$uri]")
 		}
 
-		t.metaInfo.pageClass.name
+		return t.metaInfo.pageClass.name
 	}
 
 	protected static cloneIfNecessary(content) {

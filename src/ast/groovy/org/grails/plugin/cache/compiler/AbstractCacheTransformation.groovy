@@ -31,7 +31,8 @@ import org.codehaus.groovy.transform.sc.transformers.CompareToNullExpression
 import org.grails.compiler.injection.GrailsASTUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.CacheManager
-
+import static org.codehaus.groovy.ast.ClassHelper.*
+import static org.codehaus.groovy.ast.tools.GeneralUtils.*
 import java.lang.reflect.Modifier
 
 import static org.grails.compiler.injection.GrailsASTUtils.copyParameters
@@ -52,21 +53,18 @@ abstract class AbstractCacheTransformation implements ASTTransformation {
     public static final String METHOD_PARAMETER_MAP_LOCAL_VARIABLE_NAME = '$_method_parameter_map'
     public static final String CACHE_VARIABLE_LOCAL_VARIABLE_NAME = '$_cache_cacheVariable'
     public static final String GRAILS_CACHE_KEY_GENERATOR_PROPERTY_NAME = 'customCacheKeyGenerator'
-    public static final ClassNode STRING_TYPE = ClassHelper.make(String)
-    public static final ClassNode INT_TYPE = ClassHelper.make(Integer.TYPE)
-    public static final ClassNode MAP_TYPE = ClassHelper.make(Map)
 
     @Override
-    public void visit(final ASTNode[] astNodes, final SourceUnit sourceUnit) {
-        final ASTNode firstNode = astNodes[0];
-        final ASTNode secondNode = astNodes[1];
+    void visit(final ASTNode[] astNodes, final SourceUnit sourceUnit) {
+        final ASTNode firstNode = astNodes[0]
+        final ASTNode secondNode = astNodes[1]
         if (!(firstNode instanceof AnnotationNode) || !(secondNode instanceof AnnotatedNode)) {
             throw new RuntimeException("Internal error: wrong types: " + firstNode.getClass().getName() +
-                    " / " + secondNode.getClass().getName());
+                    " / " + secondNode.getClass().getName())
         }
 
-        final AnnotationNode grailsCacheAnnotationNode = (AnnotationNode) firstNode;
-        final AnnotatedNode annotatedNode = (AnnotatedNode) secondNode;
+        final AnnotationNode grailsCacheAnnotationNode = (AnnotationNode) firstNode
+        final AnnotatedNode annotatedNode = (AnnotatedNode) secondNode
 
         if (annotatedNode instanceof MethodNode) {
             MethodNode methodNode = (MethodNode) annotatedNode
@@ -145,7 +143,7 @@ abstract class AbstractCacheTransformation implements ASTTransformation {
                 newParameters,
                 GrailsArtefactClassInjector.EMPTY_CLASS_ARRAY,
                 methodNode.code
-        );
+        )
 
         // GrailsCompileStatic and GrailsTypeChecked are not explicitly addressed
         // here but they will be picked up because they are @AnnotationCollector annotations
@@ -189,18 +187,37 @@ abstract class AbstractCacheTransformation implements ASTTransformation {
         addAutowiredPropertyToClass declaringClass, GrailsCacheKeyGenerator, GRAILS_CACHE_KEY_GENERATOR_PROPERTY_NAME
 
         ArgumentListExpression createKeyArgs = new ArgumentListExpression()
-        createKeyArgs.addExpression(new ConstantExpression(declaringClass.getName()))
-        createKeyArgs.addExpression(new ConstantExpression(methodToCache.getName()))
-        createKeyArgs.addExpression(new MethodCallExpression(new VariableExpression('this'), 'hashCode', new ArgumentListExpression()))
-        createKeyArgs.addExpression(new VariableExpression(METHOD_PARAMETER_MAP_LOCAL_VARIABLE_NAME))
-        createKeyArgs.addExpression(new CastExpression(STRING_TYPE, new ConstantExpression(cacheAnnotationOnMethod.getMember('key')?.getText())))
-        MethodCallExpression cacheKeyExpression = new MethodCallExpression(new VariableExpression(GRAILS_CACHE_KEY_GENERATOR_PROPERTY_NAME), 'generate', createKeyArgs)
-        MethodNode generateMethod = ClassHelper.make(GrailsCacheKeyGenerator).getMethod('generate', [new Parameter(STRING_TYPE, 'className'),
-                                                                                                     new Parameter(STRING_TYPE, 'methodName'),
-                                                                                                     new Parameter(INT_TYPE, 'objHashCode'),
-                                                                                                     new Parameter(MAP_TYPE, 'methodParams'),
-                                                                                                     new Parameter(STRING_TYPE, 'spel'),
-        ] as Parameter[])
+        createKeyArgs.addExpression(constX(declaringClass.getName()))
+        createKeyArgs.addExpression(constX(methodToCache.getName()))
+        createKeyArgs.addExpression(callX(varX('this'), 'hashCode', new ArgumentListExpression()))
+
+
+
+        Expression keyGenMember = cacheAnnotationOnMethod.getMember('key')
+        MethodNode generateMethod
+
+        if(keyGenMember instanceof ClosureExpression) {
+            ClosureExpression closureExpression = (ClosureExpression)keyGenMember
+            cacheAnnotationOnMethod.members.remove('key')
+            makeClosureParameterAware(declaringClass.module.context, methodToCache, closureExpression)
+
+            generateMethod = make(GrailsCacheKeyGenerator).getMethod('generateFromClosure', params(
+                                                                                        param(STRING_TYPE, 'className'),
+                                                                                        param(STRING_TYPE, 'methodName'),
+                                                                                        param(int_TYPE, 'objHashCode'),
+                                                                                        param(CLOSURE_TYPE, 'keyGenerator')))
+            createKeyArgs.addExpression(keyGenMember)
+        }
+        else {
+            generateMethod = make(GrailsCacheKeyGenerator).getMethod('generateFromParameters', params(
+                    param(STRING_TYPE, 'className'),
+                    param(STRING_TYPE, 'methodName'),
+                    param(int_TYPE, 'objHashCode'),
+                    param(MAP_TYPE, 'methodParams')))
+            createKeyArgs.addExpression(varX(METHOD_PARAMETER_MAP_LOCAL_VARIABLE_NAME))
+        }
+        MethodCallExpression cacheKeyExpression = new MethodCallExpression(new VariableExpression(GRAILS_CACHE_KEY_GENERATOR_PROPERTY_NAME), generateMethod.name, createKeyArgs)
+
         cacheKeyExpression.methodTarget = generateMethod
         VariableExpression cacheKeyVariableExpression = new VariableExpression(CACHE_KEY_LOCAL_VARIABLE_NAME)
         DeclarationExpression cacheKeyDeclaration = new DeclarationExpression(cacheKeyVariableExpression, Token.newSymbol(Types.EQUALS, 0, 0), cacheKeyExpression)
@@ -222,5 +239,41 @@ abstract class AbstractCacheTransformation implements ASTTransformation {
                 codeBlock.addStatement(new ExpressionStatement(mce))
             }
         }
+    }
+
+    protected void makeClosureParameterAware(SourceUnit sourceUnit, MethodNode method, ClosureExpression closureExpression) {
+        VariableScope variableScope = closureExpression.variableScope
+        for (p in method.parameters) {
+            if (variableScope.isReferencedClassVariable(p.name)) {
+                variableScope.removeReferencedClassVariable(p.name)
+            }
+            variableScope.putDeclaredVariable(p)
+            variableScope.putReferencedLocalVariable(p)
+            p.setClosureSharedVariable(true)
+        }
+        new ClassCodeExpressionTransformer() {
+            @Override
+            Expression transform(Expression exp) {
+                if (exp instanceof VariableExpression) {
+                    Variable var = ((VariableExpression) exp).accessedVariable
+                    if (var instanceof DynamicVariable) {
+                        Variable ref = variableScope.getDeclaredVariable(var.name)
+                        if (ref != null) {
+                            def newExpr = new VariableExpression(ref)
+                            newExpr.setClosureSharedVariable(true)
+                            newExpr.setAccessedVariable(ref)
+
+                            return newExpr
+                        }
+                    }
+                }
+                return super.transform(exp)
+            }
+
+            @Override
+            protected SourceUnit getSourceUnit() {
+                return sourceUnit
+            }
+        }.visitClosureExpression(closureExpression)
     }
 }

@@ -57,20 +57,21 @@ class BasicCachingService {
         'Hello World 2!'
     }
 
-    @Cacheable(value = 'basic', key = '#key')
+    @Cacheable(value = 'basic', key = { key } )
     def getData(String key) {
     }
 
-    @CachePut(value = 'basic', key = '#key')
+    @CachePut(value = 'basic', key = { key } )
     def getData(String key, String value) {
         "** ${value} **"
     }
 
-    @Cacheable(value = 'basic', condition='#x < 10')
+    @Cacheable(value = 'basic', condition = { x < 10 })
     def multiply(int x, int y) {
         conditionalInvocationCounter++
         x * y
     }
+
     // tag::get_data[]
 }
 // end::get_data[]

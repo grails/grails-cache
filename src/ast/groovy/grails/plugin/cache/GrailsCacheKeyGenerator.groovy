@@ -16,8 +16,30 @@
 package grails.plugin.cache
 
 /**
+ * Generates a cache key for the given arguments
+ *
  * @since 4.0.0
+ * @author Jeff Brown
+ * @author Graeme Rocher
  */
 interface GrailsCacheKeyGenerator {
-    def generate(String className, String methodName, int objHashCode, Map methodParams, String spel)
+    /**
+     *
+     * @param className The name of the class
+     * @param methodName The name of the object
+     * @param objHashCode The hash code of the instance
+     * @param keyGenerator A closure that generates the key
+     * @return The generated key
+     */
+    Serializable generateFromClosure(String className, String methodName, int objHashCode, Closure keyGenerator)
+
+    /**
+     *
+     * @param className The name of the class
+     * @param methodName The name of the object
+     * @param objHashCode The hash code of the instance
+     * @param methodParams The parameters to the method as a map of parameter name to value
+     * @return The generated key
+     */
+    Serializable generateFromParameters(String className, String methodName, int objHashCode, Map methodParams)
 }

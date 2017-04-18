@@ -30,6 +30,7 @@ import org.codehaus.groovy.transform.GroovyASTTransformationClass;
  * returned instance is used as the cache value.
  *
  * @author Jeff Brown
+ * @author Graeme Rocher
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
@@ -41,19 +42,19 @@ public @interface Cacheable {
     /**
      * Name of the caches in which the update takes place.
      * <p>May be used to determine the target cache (or caches), matching the
-     * qualifier value (or the bean name(s)) of (a) specific bean definition.
+     * qualifier value.
      */
     String[] value();
 
     /**
-     * Spring Expression Language (SpEL) attribute for computing the key dynamically.
-     * <p>Default is "", meaning all method parameters are considered as a key.
+     * A closure for computing the key dynamically.
+     * <p>Default is null, meaning all method parameters are considered as a key.
      */
-    String key() default "";
+    Class[] key() default {};
 
     /**
-     * Spring Expression Language (SpEL) attribute used for conditioning the method caching.
-     * <p>Default is "", meaning the method is always cached.
+     * A closure used for conditioning the method caching.
+     * <p>Default is null, meaning the method is always cached.
      */
-    String condition() default "";
+    Class[] condition() default {};
 }

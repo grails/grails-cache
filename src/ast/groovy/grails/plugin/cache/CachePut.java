@@ -25,6 +25,7 @@ import java.lang.annotation.*;
  * always causes the method to be invoked and its result to be placed into the cache.
  *
  * @author Jeff Brown
+ * @author Graeme Rocher
  */
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
@@ -33,16 +34,16 @@ import java.lang.annotation.*;
 @GroovyASTTransformationClass("org.grails.plugin.cache.compiler.CachePutTransformation")
 public @interface CachePut {
 
-	/*
+	/**
 	 * Name of the caches in which the update takes place.
 	 * <p>May be used to determine the target cache (or caches), matching the
-	 * qualifier value (or the bean name(s)) of (a) specific bean definition.
+	 * qualifier value.
 	 */
 	String[] value();
 
-	/*
-	 * Spring Expression Language (SpEL) attribute for computing the key dynamically.
-	 * <p>Default is "", meaning all method parameters are considered as a key.
+	/**
+	 * A closure for computing the key dynamically.
+	 * <p>Default is null, meaning all method parameters are considered as a key.
 	 */
-	String key() default "";
+	Class[] key() default {};
 }

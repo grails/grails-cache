@@ -23,6 +23,7 @@ import java.lang.annotation.*;
  * a cache invalidate operation.
  *
  * @author Jeff Brown
+ * @author Graeme Rocher
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
@@ -31,10 +32,10 @@ import java.lang.annotation.*;
 @GroovyASTTransformationClass("org.grails.plugin.cache.compiler.CacheEvictTransformation")
 public @interface CacheEvict {
 
-	/*
+	/**
 	 * Qualifier value for the specified cached operation.
 	 * <p>May be used to determine the target cache (or caches), matching the qualifier
-	 * value (or the bean name(s)) of (a) specific bean definition.
+	 * value.
 	 */
 	String[] value();
 }

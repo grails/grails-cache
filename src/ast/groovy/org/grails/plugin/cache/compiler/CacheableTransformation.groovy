@@ -15,25 +15,30 @@
  */
 package org.grails.plugin.cache.compiler
 
-import grails.plugin.cache.util.CacheConditionUtils
 import groovy.transform.CompileStatic
 import org.codehaus.groovy.ast.*
 import org.codehaus.groovy.ast.expr.*
 import org.codehaus.groovy.ast.stmt.*
+import org.codehaus.groovy.classgen.VariableScopeVisitor
 import org.codehaus.groovy.control.CompilePhase
+import org.codehaus.groovy.control.ResolveVisitor
 import org.codehaus.groovy.control.SourceUnit
 import org.codehaus.groovy.syntax.Token
 import org.codehaus.groovy.syntax.Types
 import org.codehaus.groovy.transform.GroovyASTTransformation
 import org.codehaus.groovy.transform.sc.transformers.CompareToNullExpression
 import org.springframework.cache.Cache
+import static org.codehaus.groovy.ast.tools.GeneralUtils.*
 
 /**
  * @since 4.0.0
+ *
+ * @author Jeff Brown
+ * @author Graeme Rocher
  */
-@GroovyASTTransformation(phase = CompilePhase.CANONICALIZATION)
+@GroovyASTTransformation(phase = CompilePhase.SEMANTIC_ANALYSIS)
 @CompileStatic
-public class CacheableTransformation extends AbstractCacheTransformation {
+class CacheableTransformation extends AbstractCacheTransformation {
 
     public static final String CACHE_VALUE_WRAPPER_LOCAL_VARIABLE_NAME = '$_cache_valueWrapper'
     public static final String CACHE_ORIGINAL_METHOD_RETURN_VALUE_LOCAL_VARIABLE_NAME = '$_cache_originalMethodReturnValue'
@@ -41,17 +46,20 @@ public class CacheableTransformation extends AbstractCacheTransformation {
     protected void configureCachingForMethod(MethodNode methodToCache, ClassNode declaringClass, AnnotationNode cacheAnnotationOnMethod, BlockStatement cachingCode, Expression expressionToCallOriginalMethod, SourceUnit sourceUnit) {
         addCodeToRetrieveCache(cacheAnnotationOnMethod, cachingCode)
 
-        def conditionMember = cacheAnnotationOnMethod.getMember('condition')
-        if(conditionMember) {
-            ArgumentListExpression args = new ArgumentListExpression()
-            args.addExpression(new VariableExpression('this'))
-            args.addExpression(new VariableExpression(METHOD_PARAMETER_MAP_LOCAL_VARIABLE_NAME))
-            args.addExpression(conditionMember)
+        Expression conditionMember = cacheAnnotationOnMethod.getMember('condition')
+        if(conditionMember instanceof ClosureExpression) {
+            ClosureExpression closureExpression = (ClosureExpression)conditionMember
+            makeClosureParameterAware(sourceUnit, methodToCache, closureExpression)
+            // Adds check whether caching should happen
+            // if(!condition.call()) {
+            //    return originalMethodCall.call()
 
-            StaticMethodCallExpression shouldCacheMethodCallExpression = new StaticMethodCallExpression(ClassHelper.make(CacheConditionUtils), 'shouldCache', args)
-
-            Statement ifShouldCacheMethodCallStatement = new IfStatement(new BooleanExpression(shouldCacheMethodCallExpression), new EmptyStatement(), new ReturnStatement(expressionToCallOriginalMethod))
+            Statement ifShouldCacheMethodCallStatement = ifS(
+                    notX(callX(conditionMember, "call")),
+                    returnS(expressionToCallOriginalMethod)
+            )
             cachingCode.addStatement(ifShouldCacheMethodCallStatement)
+            cacheAnnotationOnMethod.members.remove('condition')
         }
 
         addCodeToInitializeCacheKey(declaringClass, methodToCache, cacheAnnotationOnMethod, cachingCode)
@@ -67,6 +75,7 @@ public class CacheableTransformation extends AbstractCacheTransformation {
 
         methodToCache.code = cachingCode
     }
+
 
     protected BlockStatement getCodeToExecuteIfWrapperExistsInCache() {
         BlockStatement wrapperNotNullBlock = new BlockStatement()

@@ -20,7 +20,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * An annotation added to all methods or types that product a cache operation.
+ * An annotation added to all methods or types that produce a cache operation.
  *
  * @author Graeme Rocher
  */
