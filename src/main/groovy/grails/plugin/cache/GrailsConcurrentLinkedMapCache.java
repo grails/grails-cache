@@ -14,17 +14,13 @@
  */
 package grails.plugin.cache;
 
+import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
+import org.springframework.cache.support.SimpleValueWrapper;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentMap;
-
-import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
-import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap.Builder;
-
-import org.springframework.cache.Cache;
-import org.springframework.cache.support.SimpleValueWrapper;
-import org.springframework.util.Assert;
 
 /**
  * @author Jakob Drangmeister
@@ -48,7 +44,7 @@ public class GrailsConcurrentLinkedMapCache implements GrailsCache {
       this.name = name;
       this.capacity = capacity;
       this.allowNullValues = allowNullValues;
-      this.store = new ConcurrentLinkedHashMap.Builder<Object, Object>()
+      this.store = new ConcurrentLinkedHashMap.Builder<>()
          .maximumWeightedCapacity(capacity)
          .build();
    }

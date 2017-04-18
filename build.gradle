@@ -46,6 +46,8 @@ dependencies {
     profile "org.grails.profiles:web-plugin"
     provided "org.grails:grails-plugin-services"
     provided "org.grails:grails-plugin-domain-class"
+
+    testCompile "org.grails:grails-datastore-gorm-test"
     testCompile "org.grails:grails-plugin-testing"
     testCompile "org.grails.plugins:geb"
     testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
@@ -53,6 +55,8 @@ dependencies {
 
     compile "com.googlecode.concurrentlinkedhashmap:concurrentlinkedhashmap-lru:1.4.2"
     compile "org.javassist:javassist:3.17.1-GA"
+
+
 }
 
 task wrapper(type: Wrapper) {

@@ -1,5 +1,7 @@
 package grails.plugin.cache
 
+import groovy.transform.CompileStatic
+
 /**
  * A runtime Cache Exception.
  * <p/>
@@ -10,6 +12,7 @@ package grails.plugin.cache
  * @author James Kleeh
  *
  */
+@CompileStatic
 class CacheException extends RuntimeException {
 
     /**

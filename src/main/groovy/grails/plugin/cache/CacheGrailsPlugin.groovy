@@ -23,21 +23,11 @@ import org.springframework.cache.Cache
 @Slf4j
 class CacheGrailsPlugin extends Plugin {
 
-    def grailsVersion = "3.2.0 > *"
+    def grailsVersion = "3.3.0 > *"
     def observe = ['controllers', 'services']
     def loadAfter = ['controllers', 'services']
-    def title = 'Cache Plugin'
-    def author = 'Jeff Brown'
     def authorEmail = 'brownj@ociweb.com'
     def description = 'Grails Cache Plugin'
-    def documentation = 'http://grails3-plugins.github.com/cache/latest'
-    def profiles = ['web']
-    def license = 'APACHE'
-    def organization = [name: 'SpringSource', url: 'http://www.springsource.org/']
-    def developers = [[name: 'Burt Beckwith', email: 'beckwithb@vmware.com']]
-    def issueManagement = [system: 'GITHUB', url: 'https://github.com/grails-plugins/grails-cache/issues']
-    def scm = [url: 'https://github.com/grails-plugins/grails-cache']
-
 
     // resources that should be loaded by the plugin once installed in the application
     //Does this even work anymore?  Doesn't appear to.
@@ -85,9 +75,9 @@ class CacheGrailsPlugin extends Plugin {
         }
 
         List<String> defaultCaches = ['grailsBlocksCache', 'grailsTemplatesCache']
-        defaultCaches.each {
-            if (!grailsCacheManager.cacheExists(it)) {
-                grailsCacheManager.getCache(it)
+        for(name in defaultCaches) {
+            if (!grailsCacheManager.cacheExists(name)) {
+                grailsCacheManager.getCache(name)
             }
         }
     }

@@ -12,112 +12,114 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package grails.plugin.cache;
+package grails.plugin.cache
 
 import grails.plugins.GrailsVersionUtils
-import groovy.transform.CompileStatic;
-import org.springframework.aop.framework.AopProxyUtils;
-import org.springframework.cache.interceptor.KeyGenerator;
-import org.springframework.core.SpringVersion;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
+import groovy.transform.CompileStatic
+import groovy.transform.EqualsAndHashCode
+import org.springframework.aop.framework.AopProxyUtils
+import org.springframework.cache.interceptor.KeyGenerator
+import org.springframework.core.SpringVersion
+import org.springframework.expression.spel.standard.SpelExpressionParser
+import org.springframework.expression.spel.support.StandardEvaluationContext
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.Map;
+import java.io.Serializable
+import java.lang.reflect.Method
+import java.util.Map
 
 /**
  * Includes the hashcode, method signature, and class name of the target (caller) in the cache key
  */
 @CompileStatic
-public class CustomCacheKeyGenerator implements KeyGenerator, GrailsCacheKeyGenerator {
+class CustomCacheKeyGenerator implements KeyGenerator, GrailsCacheKeyGenerator {
 	
-	private final KeyGenerator innerKeyGenerator;
-	
-	public CustomCacheKeyGenerator(KeyGenerator innerKeyGenerator){
-		this.innerKeyGenerator = innerKeyGenerator;
+	private final KeyGenerator innerKeyGenerator
+
+	CustomCacheKeyGenerator(KeyGenerator innerKeyGenerator){
+		this.innerKeyGenerator = innerKeyGenerator
 	}
-	
-	public CustomCacheKeyGenerator(){
+
+	CustomCacheKeyGenerator(){
 		// Use the Spring key generator if the Spring version is 4.0.3 or later
 		// Can't use the Spring key generator if < 4.0.3 because of https://jira.spring.io/browse/SPR-11505
 		if(SpringVersion.getVersion()==null || GrailsVersionUtils.isVersionGreaterThan(SpringVersion.getVersion(),"4.0.3")){
-			this.innerKeyGenerator = new SimpleKeyGenerator();
+			this.innerKeyGenerator = new SimpleKeyGenerator()
 		}else{
 			try {
-				this.innerKeyGenerator = (KeyGenerator) Class.forName("org.springframework.cache.interceptor.SimpleKeyGenerator").newInstance();
+				this.innerKeyGenerator = (KeyGenerator) Class.forName("org.springframework.cache.interceptor.SimpleKeyGenerator").newInstance()
 			} catch (Exception e) {
 				// this should never happen
-				throw new RuntimeException(e);
+				throw new RuntimeException(e)
 			}
 		}
 	}
 	
 	@SuppressWarnings("serial")
 	private static final class CacheKey implements Serializable {
-		final String targetClassName;
-		final String targetMethodName;
-		final int targetObjectHashCode;
-		final Object simpleKey;
-		public CacheKey(String targetClassName, String targetMethodName,
-				int targetObjectHashCode, Object simpleKey) {
-			this.targetClassName = targetClassName;
-			this.targetMethodName = targetMethodName;
-			this.targetObjectHashCode = targetObjectHashCode;
-			this.simpleKey = simpleKey;
+		final String targetClassName
+		final String targetMethodName
+		final int targetObjectHashCode
+		final Object simpleKey
+
+		CacheKey(String targetClassName, String targetMethodName,
+				 int targetObjectHashCode, Object simpleKey) {
+			this.targetClassName = targetClassName
+			this.targetMethodName = targetMethodName
+			this.targetObjectHashCode = targetObjectHashCode
+			this.simpleKey = simpleKey
 		}
 		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
+		int hashCode() {
+			final int prime = 31
+			int result = 1
 			result = prime * result
-					+ ((simpleKey == null) ? 0 : simpleKey.hashCode());
+					+ ((simpleKey == null) ? 0 : simpleKey.hashCode())
 			result = prime * result
 					+ ((targetClassName == null) ? 0 : targetClassName
-							.hashCode());
+							.hashCode())
 			result = prime * result
 					+ ((targetMethodName == null) ? 0 : targetMethodName
-							.hashCode());
-			result = prime * result + targetObjectHashCode;
-			return result;
+							.hashCode())
+			result = prime * result + targetObjectHashCode
+			return result
 		}
 		@Override
-		public boolean equals(Object obj) {
+		boolean equals(Object obj) {
 			if (this == obj)
-				return true;
+				return true
 			if (obj == null)
-				return false;
+				return false
 			if (getClass() != obj.getClass())
-				return false;
-			CacheKey other = (CacheKey) obj;
+				return false
+			CacheKey other = (CacheKey) obj
 			if (simpleKey == null) {
 				if (other.simpleKey != null)
-					return false;
+					return false
 			} else if (!simpleKey.equals(other.simpleKey))
-				return false;
+				return false
 			if (targetClassName == null) {
 				if (other.targetClassName != null)
-					return false;
+					return false
 			} else if (!targetClassName.equals(other.targetClassName))
-				return false;
+				return false
 			if (targetMethodName == null) {
 				if (other.targetMethodName != null)
-					return false;
+					return false
 			} else if (!targetMethodName.equals(other.targetMethodName))
-				return false;
+				return false
 			if (targetObjectHashCode != other.targetObjectHashCode)
-				return false;
-			return true;
+				return false
+			return true
 		}
 	}
 
-	public Object generate(Object target, Method method, Object... params) {
-		Class<?> objClass = AopProxyUtils.ultimateTargetClass(target);
-		
+	Object generate(Object target, Method method, Object... params) {
+		Class<?> objClass = AopProxyUtils.ultimateTargetClass(target)
+
 		return new CacheKey(
 				objClass.getName().intern(),
 				method.toString().intern(),
-				target.hashCode(), innerKeyGenerator.generate(target, method, params));
+				target.hashCode(), innerKeyGenerator.generate(target, method, params))
 	}
 
 	@Override
@@ -139,61 +141,23 @@ public class CustomCacheKeyGenerator implements KeyGenerator, GrailsCacheKeyGene
 
 		new TemporaryGrailsCacheKey(className, methodName, objHashCode, simpleKey)
 	}
+
+	@EqualsAndHashCode
+	@CompileStatic
+	private static class TemporaryGrailsCacheKey implements Serializable {
+		final String targetClassName
+		final String targetMethodName
+		final int targetObjectHashCode
+		final Object simpleKey
+
+		TemporaryGrailsCacheKey(String targetClassName, String targetMethodName,
+								int targetObjectHashCode, Object simpleKey) {
+			this.targetClassName = targetClassName
+			this.targetMethodName = targetMethodName
+			this.targetObjectHashCode = targetObjectHashCode
+			this.simpleKey = simpleKey
+		}
+	}
+
 }
 
-class TemporaryGrailsCacheKey implements Serializable {
-	final String targetClassName;
-	final String targetMethodName;
-	final int targetObjectHashCode;
-	final Object simpleKey;
-	public TemporaryGrailsCacheKey(String targetClassName, String targetMethodName,
-								   int targetObjectHashCode, Object simpleKey) {
-		this.targetClassName = targetClassName;
-		this.targetMethodName = targetMethodName;
-		this.targetObjectHashCode = targetObjectHashCode;
-		this.simpleKey = simpleKey;
-	}
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-		+ ((simpleKey == null) ? 0 : simpleKey.hashCode());
-		result = prime * result
-		+ ((targetClassName == null) ? 0 : targetClassName
-				.hashCode());
-		result = prime * result
-		+ ((targetMethodName == null) ? 0 : targetMethodName
-				.hashCode());
-		result = prime * result + targetObjectHashCode;
-		return result;
-	}
-	@Override
-	public boolean equals(Object obj) {
-		if (this.is(obj))
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		TemporaryGrailsCacheKey other = (TemporaryGrailsCacheKey) obj;
-		if (simpleKey == null) {
-			if (other.simpleKey != null)
-				return false;
-		} else if (!simpleKey.equals(other.simpleKey))
-			return false;
-		if (targetClassName == null) {
-			if (other.targetClassName != null)
-				return false;
-		} else if (!targetClassName.equals(other.targetClassName))
-			return false;
-		if (targetMethodName == null) {
-			if (other.targetMethodName != null)
-				return false;
-		} else if (!targetMethodName.equals(other.targetMethodName))
-			return false;
-		if (targetObjectHashCode != other.targetObjectHashCode)
-			return false;
-		return true;
-	}
-}

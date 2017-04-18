@@ -20,6 +20,7 @@ import org.springframework.cache.Cache;
 
 /**
  * @author Burt Beckwith
+ * @since 1.0
  */
 public interface GrailsCache extends Cache {
 

@@ -12,8 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package grails.plugin.cache;
+package grails.plugin.cache
 
+import groovy.transform.CompileStatic;
 
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
@@ -25,6 +26,7 @@ import org.springframework.cache.Cache
  * @author Juergen Hoeller
  * @author Burt Beckwith
  */
+@CompileStatic
 class GrailsConcurrentMapCacheManager implements GrailsCacheManager {
 
 	protected final ConcurrentMap<String, Cache> cacheMap = new ConcurrentHashMap<String, Cache>()
