@@ -16,27 +16,27 @@ package grails.plugin.cache
 
 import groovy.transform.CompileStatic
 import org.grails.plugin.cache.GrailsCacheManager
+import org.springframework.beans.factory.annotation.Autowired
 
 @CompileStatic
 class GrailsCacheAdminService {
 
-    static transactional = false
-
+    @Autowired
     GrailsCacheManager grailsCacheManager
 
     @CacheEvict(value="grailsBlocksCache")
-    def clearBlocksCache() {}
+    void clearBlocksCache() {}
 
     @CacheEvict(value="grailsTemplatesCache")
-    def clearTemplatesCache() {}
+    void clearTemplatesCache() {}
 
-    def clearCache(CharSequence cacheName) {
+    void clearCache(CharSequence cacheName) {
         if(cacheName) {
             grailsCacheManager.getCache(cacheName.toString())?.clear()
         }
     }
 
-    def clearAllCaches() {
+    void clearAllCaches() {
         for(CharSequence cacheName in grailsCacheManager.cacheNames) {
             clearCache(cacheName)
         }
