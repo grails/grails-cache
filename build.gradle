@@ -85,6 +85,7 @@ asciidoctor {
             'toc'           : 'left',
             'icons'         : 'font',
             'version'       : project.version,
+            'springApi'     : "https://docs.spring.io/spring/docs/current/javadoc-api",
             'sourcedir'     : "${project.projectDir}/src/main/groovy"
 }
 task copyDocs(type:Copy, dependsOn:asciidoctor) {

@@ -1,5 +1,6 @@
 package org.grails.plugin.cache
 
+import grails.plugin.cache.CustomCacheKeyGenerator
 import grails.plugin.cache.GrailsCacheKeyGenerator
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,7 +16,7 @@ import org.springframework.cache.CacheManager
 trait GrailsCacheManagerAware {
 
     @Autowired(required = false)
-    private GrailsCacheKeyGenerator customCacheKeyGenerator
+    private GrailsCacheKeyGenerator customCacheKeyGenerator = new CustomCacheKeyGenerator()
 
     @Autowired(required = false)
     private CacheManager grailsCacheManager

@@ -3,9 +3,8 @@
 
 === Version 4.0.0 (Still being developed)
 
-AST based solution.
-
-Controller caching is no longer supported.
+* AST based solution.
+* Controller caching is no longer supported.
 
 === Version 1.1.7 - June 24, 2014
 

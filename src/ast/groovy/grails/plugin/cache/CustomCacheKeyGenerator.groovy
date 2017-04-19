@@ -14,18 +14,13 @@
  */
 package grails.plugin.cache
 
-import grails.plugins.GrailsVersionUtils
 import groovy.transform.CompileStatic
 import groovy.transform.EqualsAndHashCode
 import org.springframework.aop.framework.AopProxyUtils
 import org.springframework.cache.interceptor.KeyGenerator
-import org.springframework.core.SpringVersion
-import org.springframework.expression.spel.standard.SpelExpressionParser
-import org.springframework.expression.spel.support.StandardEvaluationContext
+import org.springframework.cache.interceptor.SimpleKeyGenerator
 
-import java.io.Serializable
 import java.lang.reflect.Method
-import java.util.Map
 
 /**
  * Includes the hashcode, method signature, and class name of the target (caller) in the cache key
@@ -40,21 +35,8 @@ class CustomCacheKeyGenerator implements KeyGenerator, GrailsCacheKeyGenerator {
 	}
 
 	CustomCacheKeyGenerator(){
-		// Use the Spring key generator if the Spring version is 4.0.3 or later
-		// Can't use the Spring key generator if < 4.0.3 because of https://jira.spring.io/browse/SPR-11505
-		if(SpringVersion.getVersion()==null || GrailsVersionUtils.isVersionGreaterThan(SpringVersion.getVersion(),"4.0.3")){
-			this.innerKeyGenerator = new SimpleKeyGenerator()
-		}else{
-			try {
-				this.innerKeyGenerator = (KeyGenerator) Class.forName("org.springframework.cache.interceptor.SimpleKeyGenerator").newInstance()
-			} catch (Exception e) {
-				// this should never happen
-				throw new RuntimeException(e)
-			}
-		}
+		this.innerKeyGenerator = new SimpleKeyGenerator()
 	}
-
-
 
 	@SuppressWarnings("serial")
 	@EqualsAndHashCode

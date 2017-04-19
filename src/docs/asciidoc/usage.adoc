@@ -3,7 +3,7 @@
 
 The cache plugin adds Spring bean method call, GSP page fragment and
 template caching to Grails applications. You configure one or more caches
-in `grails-app/init/*CacheConfig.groovy` using an implementation-specific DSL, and
+in `grails-app/conf/application.yml`, and
 annotate methods (either in Spring beans (typically Grails services)) to be cached.
 You can also wrap GSP sections in cache tags and render cached templates.
 

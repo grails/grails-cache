@@ -10,13 +10,6 @@ The core cache plugin registers a `grailsCacheManager` Spring bean, and the exte
 
 You can customize the cache manager by replacing the `grailsCacheManager` Spring bean in `resources.groovy` with your own; either subclass `GrailsConcurrentMapCacheManager` (e.g. to override the `createConcurrentMapCache()` method) or by implementing the `grails.plugin.cache.GrailsCacheManager` interface.
 
-
-=== Key generation
-
-
-Controller caching uses a key generator, a class that implements the `grails.plugin.cache.web.filter.WebKeyGenerator` interface (by default a `grails.plugin.cache.web.filter.DefaultWebKeyGenerator`). This is registered as the `webCacheKeyGenerator` Spring bean, so customizing the key generation is simply a matter of subclassing `DefaultWebKeyGenerator` or re-implementing the interface and registering your own `webCacheKeyGenerator` bean in `resources.groovy`.
-
-
 === Fragment caching
 
 
@@ -38,44 +31,16 @@ You can cache the content of templates with the `<cache:render>` tag. You can sp
 
 === Service caching
 
-
 You can cache the return value of a service method by annotating it with `Cacheable`.
-
 
 ==== Key generation
 
+The default key generated implements the `grails.plugin.cache.GrailsCacheKeyGenerator` which provides method for generating keys taking into account:
 
-The default implementation of the `org.springframework.cache.interceptor.KeyGenerator` used to generate keys for service method calls is `org.springframework.cache.interceptor.DefaultKeyGenerator`. This is only used if there is no `key` attribute specified in the annotation for the method. It generates a numeric key, with the following logic:
+* The class name
+* The method name
+* A hashCode for the current object
+* The parameters or if a closure is specified to generate the key the value of the closure call
 
-[source,groovy]
-----
-public Object generate(Object target, Method method, Object... params) {
-   if (params.length == 1) {
-      return (params<<0>> == null ? 53 : params<<0>>);
-   }
+You can override this implementation by defining a bean called `customCacheKeyGenerator` via Spring.
 
-   if (params.length == 0) {
-      return 0;
-   }
-
-   int hashCode = 17;
-   for (Object object : params) {
-      hashCode = 31 * hashCode + (object == null ? 53 : object.hashCode());
-   }
-   return hashCode;
-}
-----
-
-This is very generic and somewhat risky, since two no-arg methods that use the same cache will store values under the same key (0), and different methods with similar signatures can easily generate the same key for different return values. So it's best to either specify the `key` attribute in the annotation, or use separate caches.
-
-
-=== DSL parsing
-
-
-The cache plugin's DSL is very basic; only the cache name can be specified. But you could extend it (for example if you customized the cache or cache manager implementation, although a new plugin would probably make more sense) by replacing the `grailsCacheConfigLoader` Spring bean in `resources.groovy`. The default implementation is a `grails.plugin.cache.ConfigLoader`.
-
-
-==== Annotation SpEL expression evaluator
-
-
-You can extend or customize what is SpEL expressions are supported by re-defining the `webExpressionEvaluator` Spring bean in `resources.groovy`. The default implementation is an instance of `grails.plugin.cache.web.filter.ExpressionEvaluator`.
