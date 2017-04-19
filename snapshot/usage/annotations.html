@@ -424,7 +424,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
 <li><a href="#annotations">Annotations</a></li>
-<li><a href="#_service_method_caching">Service method caching</a></li>
+<li><a href="#_service_method_caching">Service Method Caching</a></li>
 <li><a href="#_unit_tests">Unit Tests</a></li>
 </ul>
 </div>
@@ -436,45 +436,115 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>The <a href="api/grails/plugin/cache/Cacheable.html">Cacheable</a> and <a href="api/grails/plugin/cache/CacheEvict.html">CacheEvict</a> annotations provided by the plugin have counterparts with the same names provided by Spring.</p>
 </div>
+<div class="paragraph">
+<p>However, unlike the Spring versions, these apply AST transformations, avoiding the need to create runtime proxies.</p>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_service_method_caching">Service method caching</h2>
+<h2 id="_service_method_caching">Service Method Caching</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Given this simple service, you can see that the <code>getMessage</code> method is configured to cache the results in the <code>"message"</code> cache. The <code>title</code> parameter will be used as the cache key; if there were multiple parameters they would be combined into the key, and you can always specify the key using the Spring SpEL support. The <code>save</code> method is configured as one that evicts elements from the cache. There is no need to clear the entire cache in this case; instead any previously cached item with the same <code>title</code> attribute will be replaced with the current <code>Message</code> instance.</p>
+<p>Given the below simple service, you can see that the <code>getMessage</code> method is configured to cache the results in the <code>"message"</code> cache.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">package com.yourcompany
 
-import grails.plugin.cache.CacheEvict
-import grails.plugin.cache.Cacheable
+import grails.plugin.cache.*
 
 class MessageService {
 
-   @Cacheable('message', key='#title')
+   @Cacheable('message')
    Message getMessage(String title) {
       println 'Fetching message'
       Message.findByTitle(title)
    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By default the cache key is calculated using:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The class name</p>
+</li>
+<li>
+<p>The method name</p>
+</li>
+<li>
+<p>The parameter names and values</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In the previous example, the <code>title</code> parameter will be used as the cache key; if there were multiple parameters they would be combined into the key.</p>
+</div>
+<div class="paragraph">
+<p>You can use a closure to dynamically define the key. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">package com.yourcompany
 
-   @CachePut(value='message', key='#message.title')
+import grails.plugin.cache.*
+
+class MessageService {
+
+   @Cacheable('message', key = { title.toUpperCase() } )
+   Message getMessage(String title) {
+      println 'Fetching message'
+      Message.findByTitle(title)
+   }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>CachePut</code> annotation can be used to place a value into the cache. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">package com.yourcompany
+
+import grails.plugin.cache.*
+
+class MessageService {
+
+   ...
+
+   @CachePut(value='message', key= { message.title })
    void save(Message message) {
       println "Saving message $message"
       message.save()
    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>save</code> method in the example above is configured as one that evicts elements from the cache. There is no need to clear the entire cache in this case; instead any previously cached item with the same <code>title</code> attribute will be replaced with the current <code>Message</code> instance.</p>
+</div>
+<div class="paragraph">
+<p>Note that you could also use <code>CacheEvict</code> for the <code>save</code> method, which would remove the old cached value but not cache the current value:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">package com.yourcompany
 
-   @CacheEvict(value='message', key='#message.title')
+import grails.plugin.cache.*
+
+class MessageService {
+
+   ...
+
+   @CacheEvict(value='message', key = { message.title })
    void delete(Message message) {
       println "Deleting message $message"
       message.delete()
    }
 }</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>Note that you could also use <code>CacheEvict</code> for the <code>save</code> method, which would remove the old cached value but not cache the current value.</p>
 </div>
 <div class="paragraph">
 <p>This service works with the <code>Message</code> domain class:</p>
@@ -500,7 +570,7 @@ class Message implements Serializable {
 <p>Note that for in-memory cache implementations it&#8217;s not required that the objects being cached implement <code>Serializable</code> but if you use an implementation that uses Java serialization (for example the Redis plugin, or the Ehcache plugin when you have configured clustered caching) you must implement <code>Serializable</code>.</p>
 </div>
 <div class="paragraph">
-<p>To test this out, be sure to define a <code>"message"</code> cache in <code>grails-app/init/*CacheConfig.groovy</code> and save and retrieve <code>Message</code> instances using the service. There are <code>println</code> statements but you can also turn on SQL logging to watch the database access that&#8217;s needed to retrieve instances that aren&#8217;t cached yet, and you shouldn&#8217;t see database access for cached values.</p>
+<p>To test this out, be sure to define a <code>"message"</code> cache in <code>grails-app/conf/application.yml</code> and save and retrieve <code>Message</code> instances using the service. There are <code>println</code> statements but you can also turn on SQL logging to watch the database access that&#8217;s needed to retrieve instances that aren&#8217;t cached yet, and you shouldn&#8217;t see database access for cached values.</p>
 </div>
 </div>
 </div>
@@ -636,7 +706,7 @@ class BasicCachingServiceSpec extends Specification {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-04-18 14:21:30 UTC
+Last updated 2017-04-19 08:39:21 UTC
 </div>
 </div>
 </body>

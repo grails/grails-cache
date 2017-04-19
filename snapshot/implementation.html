@@ -426,10 +426,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#implementation">Implementation Details</a></li>
 <li><a href="#_cache_manager">Cache manager</a>
 <ul class="sectlevel2">
-<li><a href="#_key_generation">Key generation</a></li>
 <li><a href="#_fragment_caching">Fragment caching</a></li>
 <li><a href="#_service_caching">Service caching</a></li>
-<li><a href="#_dsl_parsing">DSL parsing</a></li>
 </ul>
 </li>
 </ul>
@@ -452,12 +450,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="paragraph">
 <p>You can customize the cache manager by replacing the <code>grailsCacheManager</code> Spring bean in <code>resources.groovy</code> with your own; either subclass <code>GrailsConcurrentMapCacheManager</code> (e.g. to override the <code>createConcurrentMapCache()</code> method) or by implementing the <code>grails.plugin.cache.GrailsCacheManager</code> interface.</p>
-</div>
-<div class="sect2">
-<h3 id="_key_generation">Key generation</h3>
-<div class="paragraph">
-<p>Controller caching uses a key generator, a class that implements the <code>grails.plugin.cache.web.filter.WebKeyGenerator</code> interface (by default a <code>grails.plugin.cache.web.filter.DefaultWebKeyGenerator</code>). This is registered as the <code>webCacheKeyGenerator</code> Spring bean, so customizing the key generation is simply a matter of subclassing <code>DefaultWebKeyGenerator</code> or re-implementing the interface and registering your own <code>webCacheKeyGenerator</code> bean in <code>resources.groovy</code>.</p>
-</div>
 </div>
 <div class="sect2">
 <h3 id="_fragment_caching">Fragment caching</h3>
@@ -485,43 +477,28 @@ bar
 <p>You can cache the return value of a service method by annotating it with <code>Cacheable</code>.</p>
 </div>
 <div class="sect3">
-<h4 id="_key_generation_2">Key generation</h4>
+<h4 id="_key_generation">Key generation</h4>
 <div class="paragraph">
-<p>The default implementation of the <code>org.springframework.cache.interceptor.KeyGenerator</code> used to generate keys for service method calls is <code>org.springframework.cache.interceptor.DefaultKeyGenerator</code>. This is only used if there is no <code>key</code> attribute specified in the annotation for the method. It generates a numeric key, with the following logic:</p>
+<p>The default key generated implements the <code>grails.plugin.cache.GrailsCacheKeyGenerator</code> which provides method for generating keys taking into account:</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">public Object generate(Object target, Method method, Object... params) {
-   if (params.length == 1) {
-      return (params&lt;&lt;0&gt;&gt; == null ? 53 : params&lt;&lt;0&gt;&gt;);
-   }
-
-   if (params.length == 0) {
-      return 0;
-   }
-
-   int hashCode = 17;
-   for (Object object : params) {
-      hashCode = 31 * hashCode + (object == null ? 53 : object.hashCode());
-   }
-   return hashCode;
-}</code></pre>
-</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The class name</p>
+</li>
+<li>
+<p>The method name</p>
+</li>
+<li>
+<p>A hashCode for the current object</p>
+</li>
+<li>
+<p>The parameters or if a closure is specified to generate the key the value of the closure call</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>This is very generic and somewhat risky, since two no-arg methods that use the same cache will store values under the same key (0), and different methods with similar signatures can easily generate the same key for different return values. So it&#8217;s best to either specify the <code>key</code> attribute in the annotation, or use separate caches.</p>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_dsl_parsing">DSL parsing</h3>
-<div class="paragraph">
-<p>The cache plugin&#8217;s DSL is very basic; only the cache name can be specified. But you could extend it (for example if you customized the cache or cache manager implementation, although a new plugin would probably make more sense) by replacing the <code>grailsCacheConfigLoader</code> Spring bean in <code>resources.groovy</code>. The default implementation is a <code>grails.plugin.cache.ConfigLoader</code>.</p>
-</div>
-<div class="sect3">
-<h4 id="_annotation_spel_expression_evaluator">Annotation SpEL expression evaluator</h4>
-<div class="paragraph">
-<p>You can extend or customize what is SpEL expressions are supported by re-defining the <code>webExpressionEvaluator</code> Spring bean in <code>resources.groovy</code>. The default implementation is an instance of <code>grails.plugin.cache.web.filter.ExpressionEvaluator</code>.</p>
+<p>You can override this implementation by defining a bean called <code>customCacheKeyGenerator</code> via Spring.</p>
 </div>
 </div>
 </div>
@@ -530,7 +507,7 @@ bar
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-04-18 14:21:30 UTC
+Last updated 2017-04-19 08:39:21 UTC
 </div>
 </div>
 </body>
