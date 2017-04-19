@@ -26,6 +26,11 @@ class TestService {
     def multiply(int x, int y) {
         x * y
     }
+    
+    @Cacheable(value = 'sum')
+    def sum(int x, int y) {
+        x + y
+    }
 }
 return TestService
 

@@ -16,6 +16,7 @@ import org.grails.datastore.gorm.transform.AbstractMethodDecoratingTransformatio
 import org.grails.datastore.gorm.transform.AbstractTraitApplyingGormASTTransformation
 import org.grails.datastore.mapping.core.Ordered
 import org.grails.datastore.mapping.model.config.GormProperties
+import org.grails.datastore.mapping.reflect.AstUtils
 import org.grails.plugin.cache.GrailsCacheManagerAware
 import org.springframework.cache.Cache
 import org.springframework.cache.CacheManager
@@ -73,9 +74,11 @@ abstract class AbstractCacheTransformation extends AbstractMethodDecoratingTrans
 
     @Override
     protected void enhanceClassNode(SourceUnit sourceUnit, AnnotationNode annotationNode, ClassNode classNode) {
-        AbstractTraitApplyingGormASTTransformation.weaveTraitWithGenerics(classNode, GrailsCacheManagerAware)
-        if (compilationUnit != null) {
-            TraitComposer.doExtendTraits(classNode, sourceUnit, compilationUnit)
+        if(!classNode.getAllInterfaces().contains(make(GrailsCacheManagerAware))) {
+            AbstractTraitApplyingGormASTTransformation.weaveTraitWithGenerics(classNode, GrailsCacheManagerAware)
+            if (compilationUnit != null) {
+                TraitComposer.doExtendTraits(classNode, sourceUnit, compilationUnit)
+            }
         }
     }
 
