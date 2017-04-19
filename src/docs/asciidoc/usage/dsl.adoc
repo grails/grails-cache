@@ -1,14 +1,7 @@
-=== Cache Config DSL
-
-The caching configuration can be specified in `grails-app/init/*CacheConfig.groovy` files.
-This approach supports `environments` blocks for environment-specific
-configuration, and you can specify the loading order, for example to support
-overriding values. One example of this might be a plugin that specifies a known
-load order, allowing you to choose a lower value in your file and override some
-or all of the plugin's configuration.
+=== Configuration Options
 
 There are a few configuration options for the plugin; these are specified in
-`grails-app/init/*CacheConfig.groovy`.
+`grails-app/conf/application.yml`.
 
 [format="csv", options="header"]
 |===
@@ -16,18 +9,14 @@ There are a few configuration options for the plugin; these are specified in
 *Property*,*Default*,*Description*
 grails.cache.enabled,`true`,Whether to enable the plugin
 grails.cache.clearAtStartup,`false`,Whether to clear all caches at startup
-grails.cache.keyGenerator,"customCacheKeyGenerator",Replace the key generator with your own. e.g. if your config is `grails.cache.keyGenerator="myCacheKeygen"`, you would declare something like this `myCacheKeygen(my.company.MyKeyGen)` in your resources.groovy. Note: MyKeyGen must implement KeyGenerator.
-grails.cache.cacheManager,"GrailsConcurrentMapCacheManager",Cache Manager to use. Default cache manager uses Spring Frameworks ConcurrentMapCache which might grow limitless. If you cannot predict how many cache entries you are going to generate use "GrailsConcurrentLinkedMapCacheManager" instead which uses com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap and limits by default to 10000 entries per cache.
+grails.cache.cacheManager,lGrailsConcurrentMapCacheManager,Cache Manager to use. Default cache manager uses Spring Frameworks ConcurrentMapCache which might grow limitless. If you cannot predict how many cache entries you are going to generate use "GrailsConcurrentLinkedMapCacheManager" instead which uses com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap and limits by default to 10000 entries per cache.
 |===
 
 The cache implementation used by this plugin is very simple, so there aren't
 many configuration options (compared to the Ehcache implementation for example,
 where you have fine-grained control over features like overflowing to disk,
 time-to-live settings, maximum size of caches, etc.) So there aren't many
-supported options in the cache configuration DSL, although each plugin's DSL
-parser is lenient and just logs warnings if you specify options that aren't
-understood. This lets you share configurations between applications that use
-different plugins.
+supported options in the cache configuration.
 
 WARNING: Since there is no way to configure "time to live" with this plugin, all
 cached items have no timeout and remain cached until either the JVM restarts
@@ -35,60 +24,22 @@ cached items have no timeout and remain cached until either the JVM restarts
 cleared (by calling a method or action annotated with \@CacheEvict or
 programmatically).
 
-You specify the cache configuration in a `grails-app/init/*CacheConfig.groovy` file in the
-`grails-app/conf` directory under the `config` key, for example
-
-[source,groovy]
-----
-config = {
-   cache {
-      name 'message'
-   }
-   cache {
-      name 'maps'
-   }
-}
-----
-
-This will create two caches, one with name "message" and one with name "maps".
-You can also use attributes from other DSLs and they will be ignored, for
-example:
-
-[source,groovy]
-----
-config = {
-   cache {
-      name 'message'
-      eternal false
-      overflowToDisk true
-      maxElementsInMemory 10000
-      maxElementsOnDisk 10000000
-   }
-   cache {
-      name 'maps'
-   }
-}
-----
-
-This configuration results in the same caches as the simpler one.
+If you don't need to supply any configuration to your cache, simply don't include it in the configuration.
 
 If you want to limit the number of cache entries you have to change the default
 cache manager to `'GrailsConcurrentLinkedMapCacheManager'`. To specify the limit
 you can add the `maxCapacity` parameter to the cache config. Default value for
 `maxCapacity` is 10000.
 
-[source,groovy]
+[source,yaml]
 ----
-config = {
-   cacheManager 'GrailsConcurrentLinkedMapCacheManager'
-   cache {
-      maxCapacity = 5000
-      name 'message'
-   }
-   cache {
-      maxCapacity = 6000
-      name 'maps'
-   }
-}
+grails:
+    cache:
+        cacheManager: GrailsConcurrentLinkedMapCacheManager
+        caches:
+            message:
+                maxCapacity: 5000
+            maps:
+                maxCapacity: 6000
 ----
 

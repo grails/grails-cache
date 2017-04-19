@@ -2,5 +2,3 @@
 == Configuration
 
 include::dsl.adoc[]
-
-include::order.adoc[]

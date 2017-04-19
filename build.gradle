@@ -79,6 +79,7 @@ grailsPublish {
     desc = "Grails Cache Plugin"
     developers = [jeffbrown: "Jeff Scott Brown"]
 }
+
 asciidoctor {
     attributes 'experimental'  : 'true',
             'compat-mode'   : 'true',
@@ -88,11 +89,15 @@ asciidoctor {
             'springApi'     : "https://docs.spring.io/spring/docs/current/javadoc-api",
             'sourcedir'     : "${project.projectDir}/src/main/groovy"
 }
+
 task copyDocs(type:Copy, dependsOn:asciidoctor) {
     from "${project.buildDir}/asciidoc/html5"
-    into "${buildDir}/docs/manual"
+    into "${project.buildDir}/docs/manual"
 }
-task docs(dependsOn:[groovydoc, copyDocs])
-groovydoc.destinationDir = new File("${buildDir}/docs/manual/api")
 
+task docs(dependsOn:[groovydoc, copyDocs])
+
+groovydoc.destinationDir = new File("${buildDir}/docs/manual/api")
+groovydoc.exclude("com/demo/**/**", "cache/Application.groovy")
+groovydoc.source("${project.projectDir}/src/ast/groovy")
 //compileGroovy.groovyOptions.forkOptions.jvmArgs = ['-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005']

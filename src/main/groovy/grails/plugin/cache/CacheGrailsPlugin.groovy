@@ -40,8 +40,7 @@ class CacheGrailsPlugin extends Plugin {
 
     Closure doWithSpring() {
         { ->
-            def application = grailsApplication
-            if (!application.config.getProperty('grails.cache.enabled', Boolean, true)) {
+            if (!config.getProperty('grails.cache.enabled', Boolean, true)) {
                 log.warn 'Cache plugin is disabled'
                 return
             }
@@ -51,7 +50,7 @@ class CacheGrailsPlugin extends Plugin {
 
             Class<? extends GrailsCacheManager> cacheClazz = GrailsConcurrentMapCacheManager
             // Selects cache manager from config
-            if (application.config.getProperty("grails.cache.cacheManager", String, null) == "GrailsConcurrentLinkedMapCacheManager") {
+            if (config.getProperty("grails.cache.cacheManager", String, null) == "GrailsConcurrentLinkedMapCacheManager") {
                 cacheClazz = GrailsConcurrentLinkedMapCacheManager
             }
 
