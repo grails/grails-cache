@@ -15,14 +15,10 @@
 package grails.plugin.cache
 
 import groovy.transform.CompileStatic
-import org.grails.plugin.cache.GrailsCacheManager
-import org.springframework.beans.factory.annotation.Autowired
+import org.grails.plugin.cache.GrailsCacheManagerAware
 
 @CompileStatic
-class GrailsCacheAdminService {
-
-    @Autowired
-    GrailsCacheManager grailsCacheManager
+class GrailsCacheAdminService implements GrailsCacheManagerAware {
 
     @CacheEvict(value="grailsBlocksCache")
     void clearBlocksCache() {}
