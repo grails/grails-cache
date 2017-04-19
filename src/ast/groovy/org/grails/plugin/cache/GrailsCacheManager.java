@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package grails.plugin.cache;
+package org.grails.plugin.cache;
 
 import org.springframework.cache.CacheManager;
 

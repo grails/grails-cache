@@ -1,5 +1,6 @@
-package grails.plugin.cache
+package org.grails.plugin.cache
 
+import grails.plugin.cache.GrailsCacheKeyGenerator
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.CacheManager

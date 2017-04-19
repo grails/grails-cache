@@ -15,20 +15,24 @@
  */
 package org.grails.plugin.cache.compiler
 
+import grails.plugin.cache.Cacheable
 import groovy.transform.CompileStatic
-import org.codehaus.groovy.ast.*
-import org.codehaus.groovy.ast.expr.*
-import org.codehaus.groovy.ast.stmt.*
-import org.codehaus.groovy.classgen.VariableScopeVisitor
+import org.codehaus.groovy.ast.AnnotationNode
+import org.codehaus.groovy.ast.ClassNode
+import org.codehaus.groovy.ast.MethodNode
+import org.codehaus.groovy.ast.expr.ClosureExpression
+import org.codehaus.groovy.ast.expr.Expression
+import org.codehaus.groovy.ast.expr.MethodCallExpression
+import org.codehaus.groovy.ast.expr.VariableExpression
+import org.codehaus.groovy.ast.stmt.BlockStatement
+import org.codehaus.groovy.ast.stmt.Statement
 import org.codehaus.groovy.control.CompilePhase
-import org.codehaus.groovy.control.ResolveVisitor
 import org.codehaus.groovy.control.SourceUnit
-import org.codehaus.groovy.syntax.Token
-import org.codehaus.groovy.syntax.Types
 import org.codehaus.groovy.transform.GroovyASTTransformation
-import org.codehaus.groovy.transform.sc.transformers.CompareToNullExpression
 import org.springframework.cache.Cache
-import static org.codehaus.groovy.ast.tools.GeneralUtils.*
+
+import static org.codehaus.groovy.ast.ClassHelper.*
+import static org.grails.datastore.gorm.transform.AstMethodDispatchUtils.*
 
 /**
  * @since 4.0.0
@@ -41,82 +45,83 @@ import static org.codehaus.groovy.ast.tools.GeneralUtils.*
 class CacheableTransformation extends AbstractCacheTransformation {
 
     public static final String CACHE_VALUE_WRAPPER_LOCAL_VARIABLE_NAME = '$_cache_valueWrapper'
-    public static final String CACHE_ORIGINAL_METHOD_RETURN_VALUE_LOCAL_VARIABLE_NAME = '$_cache_originalMethodReturnValue'
+    public static final ClassNode ANNOTATION_TYPE = make(Cacheable)
 
-    protected void configureCachingForMethod(MethodNode methodToCache, ClassNode declaringClass, AnnotationNode cacheAnnotationOnMethod, BlockStatement cachingCode, Expression expressionToCallOriginalMethod, SourceUnit sourceUnit) {
-        addCodeToRetrieveCache(cacheAnnotationOnMethod, cachingCode)
+    @Override
+    protected ClassNode getAnnotationType() {
+        return ANNOTATION_TYPE
+    }
 
-        Expression conditionMember = cacheAnnotationOnMethod.getMember('condition')
-        if(conditionMember instanceof ClosureExpression) {
-            ClosureExpression closureExpression = (ClosureExpression)conditionMember
-            makeClosureParameterAware(sourceUnit, methodToCache, closureExpression)
+    @Override
+    protected Expression buildDelegatingMethodCall(SourceUnit sourceUnit, AnnotationNode annotationNode, ClassNode classNode, MethodNode methodNode, MethodCallExpression originalMethodCallExpr, BlockStatement newMethodBody) {
+
+        VariableExpression cacheManagerVariableExpression = varX(GRAILS_CACHE_MANAGER_PROPERTY_NAME)
+        handleCacheCondition(sourceUnit, annotationNode,  methodNode, originalMethodCallExpr, newMethodBody)
+
+        BlockStatement cachingBlock = block()
+
+        // Generated logic looks like:
+        //
+        // Cache $_cache_cacheVariable = this.grailsCacheManager.getCache("...");
+        VariableExpression cacheDeclaration = declareCache(annotationNode, cacheManagerVariableExpression, cachingBlock)
+
+        // def $_method_parameter_map = [name:value]
+        declareAndInitializeParameterValueMap(annotationNode, methodNode, cachingBlock)
+
+        // def $_cache_cacheKey = customCacheKeyGenerator.generate(className, methodName, hashCode, $_method_parameter_map)
+        VariableExpression cacheKeyDeclaration = declareCacheKey(sourceUnit, annotationNode, classNode, methodNode , cachingBlock)
+
+
+        // ValueWrapper $_cache_valueWrapper = $_cache_cacheVariable.get($_cache_cacheKey);
+        VariableExpression cacheValueWrapper = varX(CACHE_VALUE_WRAPPER_LOCAL_VARIABLE_NAME, make(Cache.ValueWrapper))
+        cachingBlock.addStatement(
+            declS(cacheValueWrapper, callD(cacheDeclaration, "get", cacheKeyDeclaration))
+        )
+
+        // if($_cache_valueWrapper != null) {
+        //    return $_cache_valueWrapper.get();
+        // } else {
+        //    Object $_cache_originalMethodReturnValue = this.$_cache_originalMethod();
+        //    $_cache_cacheVariable.put($_cache_cacheKey, $_cache_originalMethodReturnValue);
+        //    return $_cache_originalMethodReturnValue;
+        // }
+        VariableExpression originalValueExpr = varX(CACHE_ORIGINAL_METHOD_RETURN_VALUE_LOCAL_VARIABLE_NAME)
+        cachingBlock.addStatement(
+            ifElseS(notNullX(cacheValueWrapper),
+                returnS( callD(cacheValueWrapper, "get")),
+                block(
+                    declS(originalValueExpr, originalMethodCallExpr),
+                    stmt(callD(cacheDeclaration,"put", args(cacheKeyDeclaration, originalValueExpr))),
+                    returnS(originalValueExpr)
+                )
+            )
+        )
+
+        newMethodBody.addStatement(
+            // if(grailsCacheManager != null)
+            ifS(notNullX(varX(GRAILS_CACHE_MANAGER_PROPERTY_NAME)),
+                    cachingBlock
+            )
+        )
+        return originalMethodCallExpr
+    }
+
+    protected void handleCacheCondition(SourceUnit sourceUnit, AnnotationNode annotationNode, MethodNode methodNode, MethodCallExpression originalMethodCallExpr, BlockStatement newMethodBody) {
+        Expression conditionMember = annotationNode.getMember('condition')
+        if (conditionMember instanceof ClosureExpression) {
+            ClosureExpression closureExpression = (ClosureExpression) conditionMember
+            makeClosureParameterAware(sourceUnit, methodNode, closureExpression)
             // Adds check whether caching should happen
             // if(!condition.call()) {
             //    return originalMethodCall.call()
 
             Statement ifShouldCacheMethodCallStatement = ifS(
                     notX(callX(conditionMember, "call")),
-                    returnS(expressionToCallOriginalMethod)
+                    returnS(originalMethodCallExpr)
             )
-            cachingCode.addStatement(ifShouldCacheMethodCallStatement)
-            cacheAnnotationOnMethod.members.remove('condition')
+            newMethodBody.addStatement(ifShouldCacheMethodCallStatement)
+            annotationNode.members.remove('condition')
         }
-
-        addCodeToInitializeCacheKey(declaringClass, methodToCache, cacheAnnotationOnMethod, cachingCode)
-        addCodeToRetrieveWrapperFromCache(cachingCode)
-
-        Expression valueWrapperVariableExpression = new VariableExpression(CACHE_VALUE_WRAPPER_LOCAL_VARIABLE_NAME)
-        BlockStatement wrapperNotNullBlock = getCodeToExecuteIfWrapperExistsInCache()
-        BlockStatement wrapperIsNullBlock = getCodeToExecuteIfWrapperIsNull(expressionToCallOriginalMethod)
-
-        Expression valueWrapperNotNullExpression = new CompareToNullExpression(valueWrapperVariableExpression, false)
-        Statement ifValueWrapperStatement = new IfStatement(new BooleanExpression(valueWrapperNotNullExpression), wrapperNotNullBlock, wrapperIsNullBlock)
-        cachingCode.addStatement(ifValueWrapperStatement)
-
-        methodToCache.code = cachingCode
-    }
-
-
-    protected BlockStatement getCodeToExecuteIfWrapperExistsInCache() {
-        BlockStatement wrapperNotNullBlock = new BlockStatement()
-        Expression valueWrapperVariableExpression = new VariableExpression(CACHE_VALUE_WRAPPER_LOCAL_VARIABLE_NAME)
-        Expression getValueFromWrapperMethodCallExpression = new MethodCallExpression(valueWrapperVariableExpression, 'get', new ArgumentListExpression())
-        MethodNode valueWrapperGetMethod = ClassHelper.make(Cache.ValueWrapper).getMethod('get', new Parameter[0])
-        getValueFromWrapperMethodCallExpression.methodTarget = valueWrapperGetMethod
-        wrapperNotNullBlock.addStatement(new ReturnStatement(getValueFromWrapperMethodCallExpression))
-        wrapperNotNullBlock
-    }
-
-    protected void addCodeToRetrieveWrapperFromCache(BlockStatement codeBlock) {
-        VariableExpression cacheKeyVariableExpression = new VariableExpression(CACHE_KEY_LOCAL_VARIABLE_NAME)
-        Expression cacheVariableExpression = new VariableExpression(CACHE_VARIABLE_LOCAL_VARIABLE_NAME)
-        Expression getValueWrapperMethodCallExpression = new MethodCallExpression(cacheVariableExpression, 'get', cacheKeyVariableExpression)
-
-        MethodNode cacheGetMethod = ClassHelper.make(Cache).getMethod('get', [new Parameter(OBJECT_TYPE, 'key')] as Parameter[])
-        getValueWrapperMethodCallExpression.methodTarget = cacheGetMethod
-        Expression valueWrapperVariableExpression = new VariableExpression(CACHE_VALUE_WRAPPER_LOCAL_VARIABLE_NAME)
-        Expression declareValueWrapperExpression = new DeclarationExpression(valueWrapperVariableExpression, Token.newSymbol(Types.EQUALS, 0, 0), getValueWrapperMethodCallExpression)
-
-        codeBlock.addStatement(new ExpressionStatement(declareValueWrapperExpression))
-    }
-
-    protected BlockStatement getCodeToExecuteIfWrapperIsNull(Expression expressionToCallOriginalMethod) {
-        BlockStatement wrapperIsNullBlock = new BlockStatement()
-
-        Expression cacheKeyVariableExpression = new VariableExpression(CACHE_KEY_LOCAL_VARIABLE_NAME)
-        Expression cacheVariableExpression = new VariableExpression(CACHE_VARIABLE_LOCAL_VARIABLE_NAME)
-        Expression returnValueVariableExpression = new VariableExpression(CACHE_ORIGINAL_METHOD_RETURN_VALUE_LOCAL_VARIABLE_NAME)
-        Expression initializeReturnValueExpression = new DeclarationExpression(returnValueVariableExpression, Token.newSymbol(Types.EQUALS, 0, 0), expressionToCallOriginalMethod)
-        ArgumentListExpression putArgs = new ArgumentListExpression()
-        putArgs.addExpression(cacheKeyVariableExpression)
-        putArgs.addExpression(returnValueVariableExpression)
-        Expression updateCache = new MethodCallExpression(cacheVariableExpression, 'put', putArgs)
-        MethodNode cachePutMethod = ClassHelper.make(Cache).getMethod('put', [new Parameter(OBJECT_TYPE, 'key'), new Parameter(OBJECT_TYPE, 'value')] as Parameter[])
-        updateCache.methodTarget = cachePutMethod
-        wrapperIsNullBlock.addStatement(new ExpressionStatement(initializeReturnValueExpression))
-        wrapperIsNullBlock.addStatement(new ExpressionStatement(updateCache))
-        wrapperIsNullBlock.addStatement(new ReturnStatement(returnValueVariableExpression))
-        wrapperIsNullBlock
     }
 
 }

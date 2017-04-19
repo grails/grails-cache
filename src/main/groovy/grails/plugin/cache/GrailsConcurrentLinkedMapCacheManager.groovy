@@ -15,6 +15,7 @@
 package grails.plugin.cache
 
 import groovy.transform.CompileStatic
+import org.grails.plugin.cache.GrailsCacheManager
 import org.springframework.cache.Cache
 
 import java.util.concurrent.ConcurrentHashMap

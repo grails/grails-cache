@@ -2,6 +2,7 @@ package grails.plugin.cache
 
 import grails.test.mixin.TestFor
 import org.grails.core.exceptions.GrailsRuntimeException
+import org.grails.plugin.cache.GrailsCacheManager
 import org.grails.web.gsp.GroovyPagesTemplateRenderer
 import org.springframework.cache.Cache
 import spock.lang.Specification

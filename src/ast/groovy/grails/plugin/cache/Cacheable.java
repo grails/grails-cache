@@ -22,6 +22,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.codehaus.groovy.transform.GroovyASTTransformationClass;
+import org.grails.datastore.gorm.transform.GormASTTransformationClass;
 
 /**
  * Indicates that a method (or all the methods on a class) can be cached.
@@ -36,7 +37,8 @@ import org.codehaus.groovy.transform.GroovyASTTransformationClass;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-@GroovyASTTransformationClass("org.grails.plugin.cache.compiler.CacheableTransformation")
+@GroovyASTTransformationClass("org.grails.datastore.gorm.transform.OrderedGormTransformation")
+@GormASTTransformationClass("org.grails.plugin.cache.compiler.CacheableTransformation")
 public @interface Cacheable {
 
     /**

@@ -31,7 +31,7 @@ interface GrailsCacheKeyGenerator {
      * @param keyGenerator A closure that generates the key
      * @return The generated key
      */
-    Serializable generateFromClosure(String className, String methodName, int objHashCode, Closure keyGenerator)
+    Serializable generate(String className, String methodName, int objHashCode, Closure keyGenerator)
 
     /**
      *
@@ -41,5 +41,5 @@ interface GrailsCacheKeyGenerator {
      * @param methodParams The parameters to the method as a map of parameter name to value
      * @return The generated key
      */
-    Serializable generateFromParameters(String className, String methodName, int objHashCode, Map methodParams)
+    Serializable generate(String className, String methodName, int objHashCode, Map methodParams)
 }

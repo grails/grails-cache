@@ -18,6 +18,7 @@ package grails.plugin.cache
 import grails.plugins.Plugin
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
+import org.grails.plugin.cache.GrailsCacheManager
 import org.springframework.cache.Cache
 
 @Slf4j

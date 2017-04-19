@@ -1,52 +1,36 @@
-/*
- * Copyright 2016 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.grails.plugin.cache.compiler
 
-import grails.artefact.Controller
-import grails.compiler.ast.GrailsArtefactClassInjector
+import grails.gorm.multitenancy.Tenants
 import grails.plugin.cache.GrailsCacheKeyGenerator
 import groovy.transform.CompileStatic
-import groovy.transform.TypeChecked
 import org.codehaus.groovy.ast.*
 import org.codehaus.groovy.ast.expr.*
-import org.codehaus.groovy.ast.stmt.*
+import org.codehaus.groovy.ast.stmt.BlockStatement
+import org.codehaus.groovy.ast.stmt.ExpressionStatement
+import org.codehaus.groovy.ast.stmt.Statement
 import org.codehaus.groovy.control.SourceUnit
-import org.codehaus.groovy.syntax.Token
-import org.codehaus.groovy.syntax.Types
-import org.codehaus.groovy.transform.ASTTransformation
-import org.codehaus.groovy.transform.sc.transformers.CompareToNullExpression
-import org.grails.compiler.injection.GrailsASTUtils
-import org.springframework.beans.factory.annotation.Autowired
+import org.codehaus.groovy.transform.trait.TraitComposer
+import org.grails.datastore.gorm.multitenancy.transform.TenantTransform
+import org.grails.datastore.gorm.transactions.transform.TransactionalTransform
+import org.grails.datastore.gorm.transform.AbstractMethodDecoratingTransformation
+import org.grails.datastore.gorm.transform.AbstractTraitApplyingGormASTTransformation
+import org.grails.datastore.mapping.core.Ordered
+import org.grails.datastore.mapping.model.config.GormProperties
+import org.grails.plugin.cache.GrailsCacheManagerAware
+import org.springframework.cache.Cache
 import org.springframework.cache.CacheManager
+
 import static org.codehaus.groovy.ast.ClassHelper.*
 import static org.codehaus.groovy.ast.tools.GeneralUtils.*
-import java.lang.reflect.Modifier
-
-import static org.grails.compiler.injection.GrailsASTUtils.copyParameters
-import static org.grails.compiler.injection.GrailsASTUtils.processVariableScopes
-
+import static org.grails.datastore.gorm.transform.AstMethodDispatchUtils.*
 /**
- * @since 4.0.0
+ * Abstract implementation for implementers of cache annotations
+ *
+ * @author Graeme Rocher
+ * @author Jeff Brown
  */
 @CompileStatic
-abstract class AbstractCacheTransformation implements ASTTransformation {
-
-    public static final ClassNode COMPILE_STATIC_TYPE = ClassHelper.make(CompileStatic)
-    public static final ClassNode TYPE_CHECKED_TYPE = ClassHelper.make(TypeChecked)
-    public static final ClassNode OBJECT_TYPE = ClassHelper.make(Object)
+abstract class AbstractCacheTransformation extends AbstractMethodDecoratingTransformation implements Ordered {
 
     public static final String GRAILS_CACHE_MANAGER_PROPERTY_NAME = 'grailsCacheManager'
     public static final String CACHE_KEY_LOCAL_VARIABLE_NAME = '$_cache_cacheKey'
@@ -54,191 +38,136 @@ abstract class AbstractCacheTransformation implements ASTTransformation {
     public static final String CACHE_VARIABLE_LOCAL_VARIABLE_NAME = '$_cache_cacheVariable'
     public static final String GRAILS_CACHE_KEY_GENERATOR_PROPERTY_NAME = 'customCacheKeyGenerator'
 
+    private static final Object APPLIED_MARKER = new Object()
+    public static final String METHOD_PREFIX = '$_cache_'
+    private static final ClassNode GRAILS_CACHE_KEY_GENERATOR_CLASS_NODE = make(GrailsCacheKeyGenerator)
+
+    private static final MethodNode GENERATE_FROM_CLOSURE_METHOD = GRAILS_CACHE_KEY_GENERATOR_CLASS_NODE.getMethod('generate', params(
+                                                                                                    param(STRING_TYPE, 'className'),
+                                                                                                    param(STRING_TYPE, 'methodName'),
+                                                                                                    param(int_TYPE, 'objHashCode'),
+                                                                                                    param(CLOSURE_TYPE, 'keyGenerator')))
+    private static final MethodNode GENERATE_FROM_PARAMETERS_METHOD = GRAILS_CACHE_KEY_GENERATOR_CLASS_NODE.getMethod('generate', params(
+                                                                                                    param(STRING_TYPE, 'className'),
+                                                                                                    param(STRING_TYPE, 'methodName'),
+                                                                                                    param(int_TYPE, 'objHashCode'),
+                                                                                                    param(MAP_TYPE, 'methodParams')))
+    private static final ClassNode CACHE_MANAGER_CLASS_NODE = make(CacheManager)
+    private static final MethodNode GET_CACHE_METHOD_NODE = CACHE_MANAGER_CLASS_NODE.getMethod('getCache', [new Parameter(STRING_TYPE, 'name')] as Parameter[])
+    private static final MethodNode MAP_PUT_METHOD = MAP_TYPE.getMethod('put', [new Parameter(OBJECT_TYPE, 'key'), new Parameter(OBJECT_TYPE, 'value')] as Parameter[])
+    public static final String CACHE_ORIGINAL_METHOD_RETURN_VALUE_LOCAL_VARIABLE_NAME = '$_cache_originalMethodReturnValue'
+
+    /**
+     * The position of the transform. Before the transactional transform
+     */
+    public static final int POSITION = TenantTransform.POSITION + 50
     @Override
-    void visit(final ASTNode[] astNodes, final SourceUnit sourceUnit) {
-        final ASTNode firstNode = astNodes[0]
-        final ASTNode secondNode = astNodes[1]
-        if (!(firstNode instanceof AnnotationNode) || !(secondNode instanceof AnnotatedNode)) {
-            throw new RuntimeException("Internal error: wrong types: " + firstNode.getClass().getName() +
-                    " / " + secondNode.getClass().getName())
-        }
+    int getOrder() {
+        return POSITION
+    }
 
-        final AnnotationNode grailsCacheAnnotationNode = (AnnotationNode) firstNode
-        final AnnotatedNode annotatedNode = (AnnotatedNode) secondNode
+    @Override
+    protected String getRenamedMethodPrefix() {
+        return METHOD_PREFIX
+    }
 
-        if (annotatedNode instanceof MethodNode) {
-            MethodNode methodNode = (MethodNode) annotatedNode
-            ClassNode declaringClass = methodNode.getDeclaringClass()
-
-            prohibitControllerClasses declaringClass, sourceUnit, grailsCacheAnnotationNode
-
-            configureCachingForMethod(declaringClass, grailsCacheAnnotationNode, methodNode, sourceUnit)
-            addAutowiredPropertyToClass declaringClass, CacheManager, GRAILS_CACHE_MANAGER_PROPERTY_NAME
-        } else if(annotatedNode instanceof ClassNode) {
-            ClassNode annotatedClass = (ClassNode)annotatedNode
-
-            prohibitControllerClasses annotatedClass, sourceUnit, grailsCacheAnnotationNode
-
-            addAutowiredPropertyToClass annotatedClass, CacheManager, GRAILS_CACHE_MANAGER_PROPERTY_NAME
-
-            List<MethodNode> declaredMethods = annotatedClass.allDeclaredMethods
-
-            for(MethodNode method : declaredMethods) {
-                if(shouldMethodBeConfiguredForCaching(method)) {
-                    configureCachingForMethod annotatedClass, grailsCacheAnnotationNode, method, sourceUnit
-                }
-            }
+    @Override
+    protected void enhanceClassNode(SourceUnit sourceUnit, AnnotationNode annotationNode, ClassNode classNode) {
+        AbstractTraitApplyingGormASTTransformation.weaveTraitWithGenerics(classNode, GrailsCacheManagerAware)
+        if (compilationUnit != null) {
+            TraitComposer.doExtendTraits(classNode, sourceUnit, compilationUnit)
         }
     }
 
-    protected void prohibitControllerClasses(ClassNode declaringClass, SourceUnit sourceUnit, AnnotationNode cacheAnnotationNode) {
-        if (GrailsASTUtils.isSubclassOfOrImplementsInterface(declaringClass, ClassHelper.make(Controller))) {
-            GrailsASTUtils.error(sourceUnit, cacheAnnotationNode, "The ${cacheAnnotationNode.classNode.name} Annotation Is Not Supported In A Controller.")
-        }
-    }
-
-    protected boolean shouldMethodBeConfiguredForCaching(MethodNode method) {
-        method.isPublic()
-    }
-
-    abstract
-    protected void configureCachingForMethod(MethodNode methodToCache, ClassNode declaringClass, AnnotationNode cacheAnnotationOnMethod, BlockStatement cachingCode, Expression expressionToCallOriginalMethod, SourceUnit sourceUnit)
-
-    protected void configureCachingForMethod(ClassNode declaringClass, AnnotationNode cacheAnnotationOnMethod, MethodNode methodToCache, SourceUnit sourceUnit) {
-        Expression expressionToCallOriginalMethod = moveOriginalCodeToNewMethod(sourceUnit, declaringClass, methodToCache)
-
-        BlockStatement cachingCode = new BlockStatement()
-
-        addCodeToExecuteIfCacheManagerIsNull(expressionToCallOriginalMethod, cachingCode)
-
-        if(requiresParameterMap()) {
-            declareAndInitializeParameterValueMap(cachingCode, methodToCache)
+    protected VariableExpression declareAndInitializeParameterValueMap(AnnotationNode annotationNode, MethodNode methodToCache, BlockStatement codeBlock) {
+        if(annotationNode.getMember("key") instanceof ClosureExpression) {
+            // if a key generator is specified don't do anything
+            return null
         }
 
-        configureCachingForMethod(methodToCache, declaringClass, cacheAnnotationOnMethod, cachingCode, expressionToCallOriginalMethod, sourceUnit)
-    }
-
-    protected boolean requiresParameterMap() {
-        true
-    }
-
-    protected addAutowiredPropertyToClass(ClassNode classNode, Class propertyType, String propertyName) {
-        if (!classNode.hasProperty(propertyName)) {
-            FieldNode cacheManagerFieldNode = new FieldNode(propertyName, Modifier.PRIVATE, ClassHelper.make(propertyType), classNode, new EmptyExpression())
-            AnnotationNode autowiredAnnotationNode = new AnnotationNode(ClassHelper.make(Autowired))
-            autowiredAnnotationNode.setMember('required', new ConstantExpression(false))
-            cacheManagerFieldNode.addAnnotation(autowiredAnnotationNode)
-            PropertyNode cacheManagerPropertyNode = new PropertyNode(cacheManagerFieldNode, Modifier.PUBLIC, null, null)
-            classNode.addProperty(cacheManagerPropertyNode)
-        }
-    }
-
-    protected MethodCallExpression moveOriginalCodeToNewMethod(SourceUnit source, ClassNode classNode, MethodNode methodNode) {
-        String renamedMethodName = '$_cache_' + methodNode.getName()
-        def newParameters = methodNode.getParameters() ? (copyParameters(((methodNode.getParameters() as List)) as Parameter[])) : new Parameter[0]
-
-        MethodNode renamedMethodNode = new MethodNode(
-                renamedMethodName,
-                Modifier.PROTECTED, methodNode.getReturnType().getPlainNodeReference(),
-                newParameters,
-                GrailsArtefactClassInjector.EMPTY_CLASS_ARRAY,
-                methodNode.code
+        VariableExpression parameterMapVar = varX(METHOD_PARAMETER_MAP_LOCAL_VARIABLE_NAME, MAP_TYPE)
+        Statement parameterMapDec = declS(parameterMapVar, new MapExpression())
+        codeBlock.addStatement(
+            parameterMapDec
         )
+        Parameter[] methodParameters = methodToCache.getParameters()
+        if (methodParameters) {
+            MethodNode mapPutMethod = MAP_PUT_METHOD
+            for (Parameter p : methodParameters) {
+                String parameterName = p.name
+                ArgumentListExpression putArgs = args(
+                    constX(parameterName),
+                    varX(parameterName)
+                )
+                MethodCallExpression mce = callX(parameterMapVar, 'put', putArgs)
+                mce.methodTarget = mapPutMethod
+                codeBlock.addStatement(new ExpressionStatement(mce))
+            }
 
-        // GrailsCompileStatic and GrailsTypeChecked are not explicitly addressed
-        // here but they will be picked up because they are @AnnotationCollector annotations
-        // which use CompileStatic and TypeChecked...
-        renamedMethodNode.addAnnotations(methodNode.getAnnotations(COMPILE_STATIC_TYPE))
-        renamedMethodNode.addAnnotations(methodNode.getAnnotations(TYPE_CHECKED_TYPE))
-
-        methodNode.setCode(null)
-        classNode.addMethod(renamedMethodNode)
-
-        processVariableScopes(source, classNode, renamedMethodNode)
-
-        final originalMethodCall = new MethodCallExpression(new VariableExpression("this"), renamedMethodName, new ArgumentListExpression(renamedMethodNode.parameters))
-        originalMethodCall.setImplicitThis(false)
-        originalMethodCall.setMethodTarget(renamedMethodNode)
-
-        originalMethodCall
-    }
-
-    protected void addCodeToExecuteIfCacheManagerIsNull(Expression expressionToCallOriginalMethod, BlockStatement codeBlock) {
-        VariableExpression cacheManagerVariableExpression = new VariableExpression(GRAILS_CACHE_MANAGER_PROPERTY_NAME)
-        Expression cacheManagerNotNullExpression = new CompareToNullExpression(cacheManagerVariableExpression, false)
-        Statement ifCacheManager = new IfStatement(new BooleanExpression(cacheManagerNotNullExpression), new EmptyStatement(), new ReturnStatement(expressionToCallOriginalMethod))
-
-        codeBlock.addStatement(ifCacheManager)
-    }
-
-    protected void addCodeToRetrieveCache(AnnotationNode cacheAnnotationOnMethod, BlockStatement codeBlock) {
-        VariableExpression cacheManagerVariableExpression = new VariableExpression(GRAILS_CACHE_MANAGER_PROPERTY_NAME)
-        Expression cacheVariableExpression = new VariableExpression(CACHE_VARIABLE_LOCAL_VARIABLE_NAME)
-        Expression cacheNameExpression = (ConstantExpression) cacheAnnotationOnMethod.getMember('value')
-        Expression getCacheMethodCallExpression = new MethodCallExpression(cacheManagerVariableExpression, 'getCache', new ArgumentListExpression(cacheNameExpression))
-        MethodNode getCacheMethod = ClassHelper.make(CacheManager).getMethod('getCache', [new Parameter(STRING_TYPE, 'name')] as Parameter[])
-        getCacheMethodCallExpression.methodTarget = getCacheMethod
-        Expression declareCacheExpression = new DeclarationExpression(cacheVariableExpression, Token.newSymbol(Types.EQUALS, 0, 0), getCacheMethodCallExpression)
-
-        codeBlock.addStatement(new ExpressionStatement(declareCacheExpression))
-    }
-
-    protected void addCodeToInitializeCacheKey(ClassNode declaringClass, MethodNode methodToCache, AnnotationNode cacheAnnotationOnMethod, BlockStatement codeBlock) {
-        addAutowiredPropertyToClass declaringClass, GrailsCacheKeyGenerator, GRAILS_CACHE_KEY_GENERATOR_PROPERTY_NAME
-
-        ArgumentListExpression createKeyArgs = new ArgumentListExpression()
-        createKeyArgs.addExpression(constX(declaringClass.getName()))
-        createKeyArgs.addExpression(constX(methodToCache.getName()))
-        createKeyArgs.addExpression(callX(varX('this'), 'hashCode', new ArgumentListExpression()))
-
-
-
-        Expression keyGenMember = cacheAnnotationOnMethod.getMember('key')
-        MethodNode generateMethod
-
-        if(keyGenMember instanceof ClosureExpression) {
-            ClosureExpression closureExpression = (ClosureExpression)keyGenMember
-            cacheAnnotationOnMethod.members.remove('key')
-            makeClosureParameterAware(declaringClass.module.context, methodToCache, closureExpression)
-
-            generateMethod = make(GrailsCacheKeyGenerator).getMethod('generateFromClosure', params(
-                                                                                        param(STRING_TYPE, 'className'),
-                                                                                        param(STRING_TYPE, 'methodName'),
-                                                                                        param(int_TYPE, 'objHashCode'),
-                                                                                        param(CLOSURE_TYPE, 'keyGenerator')))
-            createKeyArgs.addExpression(keyGenMember)
-        }
-        else {
-            generateMethod = make(GrailsCacheKeyGenerator).getMethod('generateFromParameters', params(
-                    param(STRING_TYPE, 'className'),
-                    param(STRING_TYPE, 'methodName'),
-                    param(int_TYPE, 'objHashCode'),
-                    param(MAP_TYPE, 'methodParams')))
-            createKeyArgs.addExpression(varX(METHOD_PARAMETER_MAP_LOCAL_VARIABLE_NAME))
-        }
-        MethodCallExpression cacheKeyExpression = new MethodCallExpression(new VariableExpression(GRAILS_CACHE_KEY_GENERATOR_PROPERTY_NAME), generateMethod.name, createKeyArgs)
-
-        cacheKeyExpression.methodTarget = generateMethod
-        VariableExpression cacheKeyVariableExpression = new VariableExpression(CACHE_KEY_LOCAL_VARIABLE_NAME)
-        DeclarationExpression cacheKeyDeclaration = new DeclarationExpression(cacheKeyVariableExpression, Token.newSymbol(Types.EQUALS, 0, 0), cacheKeyExpression)
-        codeBlock.addStatement(new ExpressionStatement(cacheKeyDeclaration))
-    }
-
-    protected void declareAndInitializeParameterValueMap(BlockStatement codeBlock, MethodNode methodToCache) {
-        def declareMap = new DeclarationExpression(new VariableExpression(METHOD_PARAMETER_MAP_LOCAL_VARIABLE_NAME, MAP_TYPE), Token.newSymbol(Types.EQUALS, 0, 0), new ConstructorCallExpression(ClassHelper.make(LinkedHashMap), new ArgumentListExpression()))
-        codeBlock.addStatement(new ExpressionStatement(declareMap))
-        def parameters1 = methodToCache.getParameters()
-        if (parameters1) {
-            MethodNode mapPutMethod = MAP_TYPE.getMethod('put', [new Parameter(OBJECT_TYPE, 'key'), new Parameter(OBJECT_TYPE, 'value')] as Parameter[])
-            for (Parameter p : parameters1) {
-                ArgumentListExpression putArgs = new ArgumentListExpression()
-                putArgs.addExpression(new ConstantExpression(p.getName()))
-                putArgs.addExpression(new VariableExpression(p.getName()))
-                MethodCallExpression mce = new MethodCallExpression(new VariableExpression(METHOD_PARAMETER_MAP_LOCAL_VARIABLE_NAME), 'put', putArgs)
+            if(TenantTransform.hasTenantAnnotation(methodToCache)) {
+                ArgumentListExpression putArgs = args(
+                        constX(GormProperties.TENANT_IDENTITY),
+                        callD(classX(Tenants), "currentId")
+                )
+                MethodCallExpression mce = callX(parameterMapVar, 'put', putArgs)
                 mce.methodTarget = mapPutMethod
                 codeBlock.addStatement(new ExpressionStatement(mce))
             }
         }
+        return parameterMapVar
+    }
+
+    protected VariableExpression declareCache(AnnotationNode annotationNode, VariableExpression cacheManagerVariableExpression, BlockStatement cacheBlock) {
+        VariableExpression cacheVariableExpression = varX(CACHE_VARIABLE_LOCAL_VARIABLE_NAME, make(Cache))
+        Expression cacheNameExpression = (ConstantExpression) annotationNode.getMember('value')
+
+        MethodCallExpression getCacheMethodCallExpression = callX(cacheManagerVariableExpression, 'getCache', args(cacheNameExpression))
+        getCacheMethodCallExpression.methodTarget = GET_CACHE_METHOD_NODE
+
+        cacheBlock.addStatement(
+            declS(cacheVariableExpression, getCacheMethodCallExpression)
+        )
+        return cacheVariableExpression
+    }
+
+    protected VariableExpression declareCacheKey(SourceUnit sourceUnit, AnnotationNode annotationNode, ClassNode classNode, MethodNode methodNode, BlockStatement cacheBlock) {
+        ArgumentListExpression createKeyArgs = args(
+                constX(classNode.getName()),
+                constX(methodNode.getName()),
+                callX(varX('this'), 'hashCode', new ArgumentListExpression())
+        )
+
+        Expression keyGenMember = annotationNode.getMember('key')
+        MethodNode generateMethod
+
+        if (keyGenMember instanceof ClosureExpression) {
+            ClosureExpression closureExpression = (ClosureExpression) keyGenMember
+            annotationNode.members.remove('key')
+            makeClosureParameterAware(sourceUnit, methodNode, closureExpression)
+
+            generateMethod = GENERATE_FROM_CLOSURE_METHOD
+            createKeyArgs.addExpression(keyGenMember)
+        } else {
+            generateMethod = GENERATE_FROM_PARAMETERS_METHOD
+            createKeyArgs.addExpression(varX(METHOD_PARAMETER_MAP_LOCAL_VARIABLE_NAME))
+        }
+
+        // customCacheKeyGenerator.generate(className, methodName, hashCode, map)
+        MethodCallExpression cacheKeyExpression = callX(varX(GRAILS_CACHE_KEY_GENERATOR_PROPERTY_NAME), generateMethod.name, createKeyArgs)
+        cacheKeyExpression.methodTarget = generateMethod
+
+        // def $_cache_cacheKey = .. // generated key
+        VariableExpression cacheKeyVariableExpression = varX(CACHE_KEY_LOCAL_VARIABLE_NAME)
+        cacheBlock.addStatement(
+            declS(cacheKeyVariableExpression, cacheKeyExpression)
+        )
+        return cacheKeyVariableExpression
+    }
+
+
+    @Override
+    protected Object getAppliedMarker() {
+        return APPLIED_MARKER
     }
 
     protected void makeClosureParameterAware(SourceUnit sourceUnit, MethodNode method, ClosureExpression closureExpression) {

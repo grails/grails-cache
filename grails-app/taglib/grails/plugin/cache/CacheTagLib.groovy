@@ -19,6 +19,7 @@ import groovy.transform.Memoized
 import groovy.util.logging.Slf4j
 import org.grails.buffer.StreamCharBuffer
 import org.grails.gsp.GroovyPageTemplate
+import org.grails.plugin.cache.GrailsCacheManager
 import org.grails.web.gsp.GroovyPagesTemplateRenderer
 import org.grails.web.servlet.mvc.GrailsWebRequest
 import org.springframework.web.context.request.RequestContextHolder

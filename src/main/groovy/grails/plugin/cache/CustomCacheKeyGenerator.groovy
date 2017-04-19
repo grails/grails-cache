@@ -83,13 +83,13 @@ class CustomCacheKeyGenerator implements KeyGenerator, GrailsCacheKeyGenerator {
 	}
 
 	@Override
-	Serializable generateFromClosure(String className, String methodName, int objHashCode, Closure keyGenerator) {
+	Serializable generate(String className, String methodName, int objHashCode, Closure keyGenerator) {
 		final Object simpleKey = keyGenerator.call()
 		return new TemporaryGrailsCacheKey(className, methodName, objHashCode, simpleKey)
 	}
 
 	@Override
-	Serializable generateFromParameters(String className, String methodName, int objHashCode, Map methodParams) {
+	Serializable generate(String className, String methodName, int objHashCode, Map methodParams) {
 		final Object simpleKey = methodParams
 		return new TemporaryGrailsCacheKey(className, methodName, objHashCode, simpleKey)
 	}

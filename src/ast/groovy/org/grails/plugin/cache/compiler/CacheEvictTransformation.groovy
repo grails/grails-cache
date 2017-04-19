@@ -15,41 +15,66 @@
  */
 package org.grails.plugin.cache.compiler
 
+import grails.plugin.cache.CacheEvict
 import groovy.transform.CompileStatic
 import org.codehaus.groovy.ast.AnnotationNode
 import org.codehaus.groovy.ast.ClassNode
 import org.codehaus.groovy.ast.MethodNode
-import org.codehaus.groovy.ast.expr.ArgumentListExpression
 import org.codehaus.groovy.ast.expr.Expression
 import org.codehaus.groovy.ast.expr.MethodCallExpression
 import org.codehaus.groovy.ast.expr.VariableExpression
 import org.codehaus.groovy.ast.stmt.BlockStatement
-import org.codehaus.groovy.ast.stmt.ExpressionStatement
-import org.codehaus.groovy.ast.stmt.ReturnStatement
 import org.codehaus.groovy.control.CompilePhase
 import org.codehaus.groovy.control.SourceUnit
 import org.codehaus.groovy.transform.GroovyASTTransformation
 
+import static org.codehaus.groovy.ast.ClassHelper.make
+import static org.codehaus.groovy.ast.tools.GeneralUtils.block
+import static org.codehaus.groovy.ast.tools.GeneralUtils.callX
+import static org.codehaus.groovy.ast.tools.GeneralUtils.ifS
+import static org.codehaus.groovy.ast.tools.GeneralUtils.notNullX
+import static org.codehaus.groovy.ast.tools.GeneralUtils.stmt
+import static org.codehaus.groovy.ast.tools.GeneralUtils.varX
+
 /**
+ * Implementation of {@link CacheEvict}
+ *
+ * @author Graeme Rocher
+ * @author Jeff Brown
  * @since 4.0.0
  */
 @GroovyASTTransformation(phase = CompilePhase.CANONICALIZATION)
 @CompileStatic
 class CacheEvictTransformation extends AbstractCacheTransformation {
 
+    public static final ClassNode ANNOTATION_TYPE = make(CacheEvict)
+
     @Override
-    protected void configureCachingForMethod(MethodNode methodToCache, ClassNode declaringClass, AnnotationNode cacheAnnotationOnMethod, BlockStatement cachingCode, Expression expressionToCallOriginalMethod, SourceUnit sourceUnit) {
-        addCodeToRetrieveCache(cacheAnnotationOnMethod, cachingCode)
+    protected Expression buildDelegatingMethodCall(SourceUnit sourceUnit, AnnotationNode annotationNode, ClassNode classNode, MethodNode methodNode, MethodCallExpression originalMethodCallExpr, BlockStatement newMethodBody) {
+        VariableExpression cacheManagerVariableExpression = varX(GRAILS_CACHE_MANAGER_PROPERTY_NAME)
+        BlockStatement cachingBlock = block()
 
-        Expression clearCacheMethodCall = new MethodCallExpression(new VariableExpression(CACHE_VARIABLE_LOCAL_VARIABLE_NAME), 'clear', new ArgumentListExpression())
 
-        cachingCode.addStatement(new ExpressionStatement(clearCacheMethodCall))
-        cachingCode.addStatement(new ReturnStatement(expressionToCallOriginalMethod))
+        // Cache $_cache_cacheVariable = this.grailsCacheManager.getCache("...");
+        VariableExpression cacheDeclaration = declareCache(annotationNode, cacheManagerVariableExpression, cachingBlock)
 
-        methodToCache.code = cachingCode
+        // $_cache_cacheVariable.clear()
+        cachingBlock.addStatement(
+            stmt(callX(cacheDeclaration, 'clear'))
+        )
+
+
+        newMethodBody.addStatement(
+                // if(grailsCacheManager != null)
+                ifS(notNullX(varX(GRAILS_CACHE_MANAGER_PROPERTY_NAME)),
+                        cachingBlock
+                )
+        )
+        return originalMethodCallExpr
     }
 
-    protected boolean requiresParameterMap() {
-        false
+    @Override
+    protected ClassNode getAnnotationType() {
+        return ANNOTATION_TYPE
     }
 }
