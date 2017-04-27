@@ -1,4 +1,4 @@
-There are methods in link:{api}/grails/plugin/cache/GrailsCacheAdminService.html[GrailsCacheAdminService] for clearing the caches used by the <<ref-tags-block,block>> and <<ref-tags-render,render>> tags.
+There are methods in link:{api}/grails/plugin/cache/GrailsCacheAdminService.html[GrailsCacheAdminService] for clearing the caches used by the link:{tags}/block.html[block] and link:{tags}/render.html[render] tags.
 
 [source,java]
 ----
