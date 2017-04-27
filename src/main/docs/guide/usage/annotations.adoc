@@ -1,8 +1,4 @@
-[[annotations]]
-== Annotations
-
-
-The link:api/grails/plugin/cache/Cacheable.html[Cacheable] and link:api/grails/plugin/cache/CacheEvict.html[CacheEvict] annotations provided by the plugin have counterparts with the same names provided by Spring.
+The link:{api}/grails/plugin/cache/Cacheable.html[Cacheable] and link:{api}/grails/plugin/cache/CacheEvict.html[CacheEvict] annotations provided by the plugin have counterparts with the same names provided by Spring.
 
 However, unlike the Spring versions, these apply AST transformations, avoiding the need to create runtime proxies.
 
@@ -118,6 +114,3 @@ Note that for in-memory cache implementations it's not required that the objects
 
 To test this out, be sure to define a `"message"` cache in `grails-app/conf/application.yml` and save and retrieve `Message` instances using the service. There are `println` statements but you can also turn on SQL logging to watch the database access that's needed to retrieve instances that aren't cached yet, and you shouldn't see database access for cached values.
 
-== Unit Tests
-
-include::unittests.adoc[]

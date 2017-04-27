@@ -1,0 +1,1 @@
+The plugin provides a service named link:{api}/grails/plugin/cache/GrailsCacheAdminService.html[GrailsCacheAdminService] which support various methods for administering caches.

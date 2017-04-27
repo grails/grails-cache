@@ -1,4 +1,0 @@
-[[configuration]]
-== Configuration
-
-include::dsl.adoc[]

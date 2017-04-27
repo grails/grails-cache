@@ -1,11 +1,6 @@
-[[ref-tags-render]]
-
 == render
 
-
-
 === Description
-
 
 Renders a GSP template and caches the result so that the next time the same
 template is rendered it doesn't have to be evaluated again.  Optionally, a key

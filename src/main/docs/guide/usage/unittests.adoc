@@ -5,12 +5,12 @@ method is invoked.
 
 [source,groovy]
 ----
-include::../../../../grails-app/services/com/demo/BasicCachingService.groovy[tags=get_data,indent=0]
+include::{sourcedir}/grails-app/services/com/demo/BasicCachingService.groovy[tags=get_data,indent=0]
 ----
 
 [source,groovy]
 ----
-include::../../../test/groovy/com/demo/BasicCachingServiceNoCacheManagerSpec.groovy[]
+include::{sourcedir}/src/test/groovy/com/demo/BasicCachingServiceNoCacheManagerSpec.groovy[]
 ----
 
 In order for caching to be active when the unit test is running, cache manager
@@ -19,5 +19,5 @@ test.
 
 [source,groovy]
 ----
-include::../../../test/groovy/com/demo/BasicCachingServiceSpec.groovy[]
+include::{sourcedir}/src/test/groovy/com/demo/BasicCachingServiceSpec.groovy[]
 ----
