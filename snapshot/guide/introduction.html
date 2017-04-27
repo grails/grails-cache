@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>1 Introduction To The Cache Plugin 4.0.0.BUILD-SNAPSHOT</title>
+    <title>1 Introduction 4.0.0.BUILD-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -17,44 +17,44 @@ function addJsClass() {
 
 <body class="body" onload="addJsClass();">
 <div id="navigation">
-    <ul>
-        <li>
-            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
-                <a href="../guide/index.html" class="button">Table of contents</a>
-
-                <div id="nav-summary-childs" style="display:none;">
-                    
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction To The Cache Plugin</span></a>
-                    </div>
-                    
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/usage.html"><strong>2</strong><span>Usage</span></a>
-                    </div>
-                    
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/cacheTags.html"><strong>3</strong><span>GSP Cache Tags</span></a>
-                    </div>
-                    
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/grailsCacheAdminService.html"><strong>4</strong><span>Grails Cache Admin Service</span></a>
-                    </div>
-                    
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/implementation.html"><strong>5</strong><span>Implementation Details</span></a>
-                    </div>
-                    
-                </div>
-            </div>
-        </li>
-        <li class="separator selected">
-            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
-        </li>
-    </ul>
-</div>
-<div id="header">
-    <div class="images clearfix">
+    <div class="navTitle">
         
-        
+        Cache Plugin
     </div>
-    <p></p>
-</div>
+    <div class="navLinks">
+        <ul>
+            <li>
+                <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                    <a href="../guide/index.html" class="button">Table of contents</a>
 
+                    <div id="nav-summary-childs" style="display:none;">
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/usage.html"><strong>2</strong><span>Usage</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/cacheTags.html"><strong>3</strong><span>Caching Tags</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/grailsCacheAdminService.html"><strong>4</strong><span>The Cache Admin Service</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/implementation.html"><strong>5</strong><span>Implementation Details</span></a>
+                        </div>
+                        
+                    </div>
+                </div>
+            </li>
+            <li class="separator selected">
+                <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+            </li>
+        </ul>
+    </div>
+
+
+</div>
 
 <table id="colset" border="0" cellpadding="0" cellspacing="0">
     <tr>
@@ -71,47 +71,128 @@ function addJsClass() {
 
 
                 <div class="project">
-                    <h1>1 Introduction To The Cache Plugin - Reference Documentation</h1>
-
-                    <p><strong>Authors:</strong> </p>
+                    <h1>1 Introduction</h1>
 
                     <p><strong>Version:</strong> 4.0.0.BUILD-SNAPSHOT</p>
-
-                    
                 </div>
 
                 
                 <div id="table-of-content">
                     <h2>Table of Contents</h2>
                     
-                    <div class="toc-item" style="margin-left:0px"><a href="#changeLog"><strong>1.1</strong><span>Change log</span></a>
+                    <div class="toc-item" style="margin-left:0px"><a href="#changeLog"><strong>1.1</strong><span>Change Log</span></a>
                     </div>
                     
                 </div>
                 
 
                 
-<a name="1. Introduction To The Cache Plugin"><!-- Legacy link --></a>
-<h1 id="introduction">1 Introduction To The Cache Plugin</h1>
-The Grails Cache plugin provides powerful and easy to use caching functionality to Grails applications and plugins.<p class="paragraph"/>The plugin makes significant use of the caching abstraction provided by Spring 3.1.  This user guide will focus on taking advantage of that functionality specifically within the context of a Grails application.  For information on the underlying abstraction see <a href="http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/cache.html" target="blank">The Official Spring Documentation</a>.
+
+<h1 id="introduction">1 Introduction</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/grails-plugins/grails-cache/edit/master/src/main/docs/guide/introduction.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
 
 
-<a name="1.1 Change log"><!-- Legacy link --></a>
-<h2 id="changeLog">1.1 Change log</h2>
-<h3>Version 1.1.7 - June 24, 2014</h3>
-Requires Grails 2.3 or later
-<h3>Version 1.1.6 - May 9, 2014</h3>
-<h3>Version 1.1.5 - April 25, 2014</h3>
-<h3>Version 1.1.4 - April 25, 2014</h3>
-<h3>Version 1.1.3 - April 24, 2014</h3>
-<h3>Version 1.1.2 - April 23, 2014</h3>
-<h3>Version 1.1.1 - July 3, 2013</h3>
-<h3>Version 1.1 - July 3, 2013</h3>
-<h3>Version 1.0.1 - October 28, 2012</h3>
-<h3>Version 1.0.0 - July 4, 2012</h3>
-<h3>Version 1.0.0.RC1 - May 22, 2012</h3>
-<h3>Version 1.0.0.M2 - May 12, 2012</h3>
+<div class="paragraph">
+<p>The Grails Cache plugin provides powerful and easy to use caching functionality to Grails applications and plugins.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Cache version 4.0.0 and higher requires GORM 6.1.x or higher
+</td>
+</tr>
+</table>
+</div>
 
+
+<h2 id="changeLog">1.1 Change Log</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/grails-plugins/grails-cache/edit/master/src/main/docs/guide/introduction/changeLog.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="sect2">
+<h3 id="changeLog">Change log</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_version_4_0_0_still_being_developed">Version 4.0.0 (Still being developed)</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>AST based solution.</p>
+</li>
+<li>
+<p>Closures instead of SpEL</p>
+</li>
+<li>
+<p>Controller caching is no longer supported.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_version_1_1_7_june_24_2014">Version 1.1.7 - June 24, 2014</h3>
+<div class="paragraph">
+<p>Requires Grails 2.3 or later</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_version_1_1_6_may_9_2014">Version 1.1.6 - May 9, 2014</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_version_1_1_5_april_25_2014">Version 1.1.5 - April 25, 2014</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_version_1_1_4_april_25_2014">Version 1.1.4 - April 25, 2014</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_version_1_1_3_april_24_2014">Version 1.1.3 - April 24, 2014</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_version_1_1_2_april_23_2014">Version 1.1.2 - April 23, 2014</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_version_1_1_1_july_3_2013">Version 1.1.1 - July 3, 2013</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_version_1_1_july_3_2013">Version 1.1 - July 3, 2013</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_version_1_0_1_october_28_2012">Version 1.0.1 - October 28, 2012</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_version_1_0_0_july_4_2012">Version 1.0.0 - July 4, 2012</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_version_1_0_0_rc1_may_22_2012">Version 1.0.0.RC1 - May 22, 2012</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_version_1_0_0_m2_may_12_2012">Version 1.0.0.M2 - May 12, 2012</h3>
+
+</div>
 
 
                 <div style="clear:both;margin-top:15px;"></div>

@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>4 Grails Cache Admin Service 4.0.0.BUILD-SNAPSHOT</title>
+    <title>4 The Cache Admin Service 4.0.0.BUILD-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -17,44 +17,44 @@ function addJsClass() {
 
 <body class="body" onload="addJsClass();">
 <div id="navigation">
-    <ul>
-        <li>
-            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
-                <a href="../guide/index.html" class="button">Table of contents</a>
-
-                <div id="nav-summary-childs" style="display:none;">
-                    
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction To The Cache Plugin</span></a>
-                    </div>
-                    
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/usage.html"><strong>2</strong><span>Usage</span></a>
-                    </div>
-                    
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/cacheTags.html"><strong>3</strong><span>GSP Cache Tags</span></a>
-                    </div>
-                    
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/grailsCacheAdminService.html"><strong>4</strong><span>Grails Cache Admin Service</span></a>
-                    </div>
-                    
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/implementation.html"><strong>5</strong><span>Implementation Details</span></a>
-                    </div>
-                    
-                </div>
-            </div>
-        </li>
-        <li class="separator selected">
-            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
-        </li>
-    </ul>
-</div>
-<div id="header">
-    <div class="images clearfix">
+    <div class="navTitle">
         
-        
+        Cache Plugin
     </div>
-    <p></p>
-</div>
+    <div class="navLinks">
+        <ul>
+            <li>
+                <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                    <a href="../guide/index.html" class="button">Table of contents</a>
 
+                    <div id="nav-summary-childs" style="display:none;">
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/usage.html"><strong>2</strong><span>Usage</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/cacheTags.html"><strong>3</strong><span>Caching Tags</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/grailsCacheAdminService.html"><strong>4</strong><span>The Cache Admin Service</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/implementation.html"><strong>5</strong><span>Implementation Details</span></a>
+                        </div>
+                        
+                    </div>
+                </div>
+            </li>
+            <li class="separator selected">
+                <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+            </li>
+        </ul>
+    </div>
+
+
+</div>
 
 <table id="colset" border="0" cellpadding="0" cellspacing="0">
     <tr>
@@ -62,7 +62,7 @@ function addJsClass() {
             <div id="main" class="corner-all">
 
                 
-                    <div class="toc-item prev-left"><a href="../guide/cacheTags.html">&lt;&lt; <strong>3</strong><span>GSP Cache Tags</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/cacheTags.html">&lt;&lt; <strong>3</strong><span>Caching Tags</span></a></div>
                 
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
@@ -73,13 +73,9 @@ function addJsClass() {
 
 
                 <div class="project">
-                    <h1>4 Grails Cache Admin Service - Reference Documentation</h1>
-
-                    <p><strong>Authors:</strong> </p>
+                    <h1>4 The Cache Admin Service</h1>
 
                     <p><strong>Version:</strong> 4.0.0.BUILD-SNAPSHOT</p>
-
-                    
                 </div>
 
                 
@@ -94,22 +90,55 @@ function addJsClass() {
 
                 
 
-<h1 id="grailsCacheAdminService">4 Grails Cache Admin Service</h1>
-The plugin provides a service named <code>GrailsCacheAdminService</code> which supports various methods for administering caches.
+<h1 id="grailsCacheAdminService">4 The Cache Admin Service</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/grails-plugins/grails-cache/edit/master/src/main/docs/guide/grailsCacheAdminService.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>The plugin provides a service named <a href="../api/grails/plugin/cache/GrailsCacheAdminService.html">GrailsCacheAdminService</a> which support various methods for administering caches.</p>
+</div>
 
 
 <h2 id="clearingCaches">4.1 Clearing Caches</h2>
-There are methods in GrailsCacheAdminService for clearing the caches used by the <a href="../ref/Tags/block.html" class="tags">block</a> and <a href="../ref/Tags/render.html" class="tags">render</a> tags.<p class="paragraph"/><div class="code"><pre>class ReportingController &#123;<p class="paragraph"/>    def grailsCacheAdminService<p class="paragraph"/>    def report() &#123;
-        // clear the cache used by the blocks tag&#8230;
-        grailsCacheAdminService.clearBlocksCache()<p class="paragraph"/>        // clear the cache used by the render tag&#8230;
-        grailsCacheAdminService.clearTemplatesCache()<p class="paragraph"/>        &#8230;
-    &#125;
-&#125;</pre></div>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/grails-plugins/grails-cache/edit/master/src/main/docs/guide/grailsCacheAdminService/clearingCaches.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>There are methods in <a href="../api/grails/plugin/cache/GrailsCacheAdminService.html">GrailsCacheAdminService</a> for clearing the caches used by the <a href="#ref-tags-block">block</a> and <a href="#ref-tags-render">render</a> tags.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">ReportingController</span> {
+
+    def grailsCacheAdminService
+
+    def report() {
+        <span class="comment">// clear the cache used by the blocks tag...</span>
+        grailsCacheAdminService.clearBlocksCache()
+
+        <span class="comment">// clear the cache used by the render tag...</span>
+        grailsCacheAdminService.clearTemplatesCache()
+
+        ...
+    }
+}</code></pre>
+</div>
+</div>
 
 
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item prev-left"><a href="../guide/cacheTags.html">&lt;&lt; <strong>3</strong><span>GSP Cache Tags</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/cacheTags.html">&lt;&lt; <strong>3</strong><span>Caching Tags</span></a></div>
                 
                     <div class="toc-item next-right"><a href="../guide/implementation.html"><strong>5</strong><span>Implementation Details</span> >></a></div>
                 
