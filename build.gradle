@@ -70,6 +70,7 @@ grailsPublish {
     developers = [jeffbrown: "Jeff Scott Brown"]
 }
 
-// groovydoc.exclude("com/demo/**/**", "cache/Application.groovy")
+groovydoc.setSource("${project.projectDir}/src/main/groovy")
 groovydoc.source("${project.projectDir}/src/ast/groovy")
+groovydoc.source("${project.projectDir}/grails-app/taglib")
 //compileGroovy.groovyOptions.forkOptions.jvmArgs = ['-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005']
