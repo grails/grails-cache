@@ -106,22 +106,4 @@ class CacheableTransformation extends AbstractCacheTransformation {
         return originalMethodCallExpr
     }
 
-    protected void handleCacheCondition(SourceUnit sourceUnit, AnnotationNode annotationNode, MethodNode methodNode, MethodCallExpression originalMethodCallExpr, BlockStatement newMethodBody) {
-        Expression conditionMember = annotationNode.getMember('condition')
-        if (conditionMember instanceof ClosureExpression) {
-            ClosureExpression closureExpression = (ClosureExpression) conditionMember
-            makeClosureParameterAware(sourceUnit, methodNode, closureExpression)
-            // Adds check whether caching should happen
-            // if(!condition.call()) {
-            //    return originalMethodCall.call()
-
-            Statement ifShouldCacheMethodCallStatement = ifS(
-                    notX(callX(conditionMember, "call")),
-                    returnS(originalMethodCallExpr)
-            )
-            newMethodBody.addStatement(ifShouldCacheMethodCallStatement)
-            annotationNode.members.remove('condition')
-        }
-    }
-
 }

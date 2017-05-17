@@ -6,6 +6,7 @@
 * AST based solution.
 * Closures instead of SpEL
 * Controller caching is no longer supported.
+* CacheEvict beforeInvocation is no longer supported. The eviction will always occur before the method.
 
 === Version 1.1.7 - June 24, 2014
 

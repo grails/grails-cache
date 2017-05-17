@@ -40,4 +40,24 @@ public @interface CacheEvict {
 	 * value.
 	 */
 	String[] value();
+
+	/**
+	 * A closure for computing the key dynamically.
+	 * <p>Default is null, meaning all method parameters are considered as a key.
+	 */
+	Class[] key() default {};
+
+	/**
+	 * A closure used for conditioning the method caching.
+	 * <p>Default is null, meaning the method is always cached.
+	 */
+	Class[] condition() default {};
+
+	/**
+	 * Whether or not all the entries inside the cache(s) are removed or not. By
+	 * default, only the value under the associated key is removed.
+	 * <p>Note that specifying setting this parameter to true and specifying a
+	 * CacheKey is not allowed.
+	 */
+	boolean allEntries() default false;
 }
