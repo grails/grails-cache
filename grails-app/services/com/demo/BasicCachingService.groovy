@@ -28,7 +28,7 @@ class BasicCachingService {
     }
     // end::get_data[]
 
-    @CacheEvict(value = "basic")
+    @CacheEvict(value = "basic", allEntries = true)
     def resetData() {
         invocationCounter = 0
         invocationCounter2 = 100
