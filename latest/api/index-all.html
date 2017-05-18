@@ -127,6 +127,8 @@ if (location.href.indexOf('is-external=true') == -1) {
 
 <dt><span class="strong"><a href="org/grails/plugin/cache/compiler/AbstractCacheTransformation.html" title="Class in org.grails.plugin.cache.compiler">AbstractCacheTransformation</a></span> - Class in <a href="./org/grails/plugin/cache/compiler/package-summary.html">org.grails.plugin.cache.compiler</a>
 </dt><dd><div class="block">Abstract implementation for implementers of cache annotations</div></dd>
+<dt><span class="strong"><a href="grails/plugin/cache/CacheEvict.html#allEntries" title="Field in CacheEvict">allEntries</a></span> - Field in <a href="grails/plugin/cache/CacheEvict.html">CacheEvict</a>
+</dt><dd> <div class="block">Whether or not all the entries inside the cache(s) are removed or not. </div></dd>
 <dt><span class="strong"><a href="org/grails/plugin/cache/compiler/CacheableTransformation.html#ANNOTATION_TYPE" title="Field in CacheableTransformation">ANNOTATION_TYPE</a></span> - Field in <a href="org/grails/plugin/cache/compiler/CacheableTransformation.html">CacheableTransformation</a>
 </dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="org/grails/plugin/cache/compiler/CacheEvictTransformation.html#ANNOTATION_TYPE" title="Field in CacheEvictTransformation">ANNOTATION_TYPE</a></span> - Field in <a href="org/grails/plugin/cache/compiler/CacheEvictTransformation.html">CacheEvictTransformation</a>
@@ -246,6 +248,8 @@ if (location.href.indexOf('is-external=true') == -1) {
 <dt><span class="strong"><a href="grails/plugin/cache/CacheTagLib.html#cloneIfNecessary(def)" title="Method in CacheTagLib">cloneIfNecessary(def)</a></span> - Method in <a href="grails/plugin/cache/CacheTagLib.html">CacheTagLib</a>
 </dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/plugin/cache/Cacheable.html#condition" title="Field in Cacheable">condition</a></span> - Field in <a href="grails/plugin/cache/Cacheable.html">Cacheable</a>
+</dt><dd> <div class="block">A closure used for conditioning the method caching.</div></dd>
+<dt><span class="strong"><a href="grails/plugin/cache/CacheEvict.html#condition" title="Field in CacheEvict">condition</a></span> - Field in <a href="grails/plugin/cache/CacheEvict.html">CacheEvict</a>
 </dt><dd> <div class="block">A closure used for conditioning the method caching.</div></dd>
 <dt><span class="strong"><a href="grails/plugin/cache/GrailsConcurrentLinkedMapCacheManager.html#createConcurrentLinkedMapCache(java.lang.String, long)" title="Method in GrailsConcurrentLinkedMapCacheManager">createConcurrentLinkedMapCache(String, long)</a></span> - Method in <a href="grails/plugin/cache/GrailsConcurrentLinkedMapCacheManager.html">GrailsConcurrentLinkedMapCacheManager</a>
 </dt><dd> <div class="block"></div></dd>
@@ -390,7 +394,7 @@ if (location.href.indexOf('is-external=true') == -1) {
 <h2 class="title">H</h2>
 <dl>
 
-<dt><span class="strong"><a href="org/grails/plugin/cache/compiler/CacheableTransformation.html#handleCacheCondition(org.codehaus.groovy.control.SourceUnit, org.codehaus.groovy.ast.AnnotationNode, org.codehaus.groovy.ast.MethodNode, org.codehaus.groovy.ast.expr.MethodCallExpression, org.codehaus.groovy.ast.stmt.BlockStatement)" title="Method in CacheableTransformation">handleCacheCondition(SourceUnit, AnnotationNode, MethodNode, MethodCallExpression, BlockStatement)</a></span> - Method in <a href="org/grails/plugin/cache/compiler/CacheableTransformation.html">CacheableTransformation</a>
+<dt><span class="strong"><a href="org/grails/plugin/cache/compiler/AbstractCacheTransformation.html#handleCacheCondition(org.codehaus.groovy.control.SourceUnit, org.codehaus.groovy.ast.AnnotationNode, org.codehaus.groovy.ast.MethodNode, org.codehaus.groovy.ast.expr.MethodCallExpression, org.codehaus.groovy.ast.stmt.BlockStatement)" title="Method in AbstractCacheTransformation">handleCacheCondition(SourceUnit, AnnotationNode, MethodNode, MethodCallExpression, BlockStatement)</a></span> - Method in <a href="org/grails/plugin/cache/compiler/AbstractCacheTransformation.html">AbstractCacheTransformation</a>
 </dt><dd> <div class="block"></div></dd>
 <dt><span class="strong"><a href="grails/plugin/cache/CacheTagLib.html#honorTTL(java.lang.String, java.lang.Long)" title="Method in CacheTagLib">honorTTL(String, Long)</a></span> - Method in <a href="grails/plugin/cache/CacheTagLib.html">CacheTagLib</a>
 </dt><dd> <div class="block">updates the ttl and returns whether the content is expired</div></dd>
@@ -416,6 +420,8 @@ if (location.href.indexOf('is-external=true') == -1) {
 <dl>
 
 <dt><span class="strong"><a href="grails/plugin/cache/Cacheable.html#key" title="Field in Cacheable">key</a></span> - Field in <a href="grails/plugin/cache/Cacheable.html">Cacheable</a>
+</dt><dd> <div class="block">A closure for computing the key dynamically.</div></dd>
+<dt><span class="strong"><a href="grails/plugin/cache/CacheEvict.html#key" title="Field in CacheEvict">key</a></span> - Field in <a href="grails/plugin/cache/CacheEvict.html">CacheEvict</a>
 </dt><dd> <div class="block">A closure for computing the key dynamically.</div></dd>
 <dt><span class="strong"><a href="grails/plugin/cache/CachePut.html#key" title="Field in CachePut">key</a></span> - Field in <a href="grails/plugin/cache/CachePut.html">CachePut</a>
 </dt><dd> <div class="block">A closure for computing the key dynamically.</div></dd>
