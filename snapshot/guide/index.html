@@ -61,7 +61,7 @@
                     <h1>Cache Plugin</h1>
                     <p></p>
                     <p>Provides AST transformations for caching method calls</p>
-                    <p><strong>Version:</strong> 4.0.0.M1</p>
+                    <p><strong>Version:</strong> 4.0.0.BUILD-SNAPSHOT</p>
 
                 </div>
                 
@@ -146,6 +146,9 @@ Cache version 4.0.0 and higher requires GORM 6.1.x or higher
 </li>
 <li>
 <p>Controller caching is no longer supported.</p>
+</li>
+<li>
+<p>CacheEvict beforeInvocation is no longer supported. The eviction will always occur before the method.</p>
 </li>
 </ul>
 </div>
@@ -430,7 +433,7 @@ you can add the <code>maxCapacity</code> parameter to the cache config. Default 
 
    ...
 
-   <span class="annotation">@CachePut</span>(value=<span class="string"><span class="delimiter">'</span><span class="content">message</span><span class="delimiter">'</span></span>, key= { message.title })
+   <span class="annotation">@CachePut</span>(value=<span class="string"><span class="delimiter">'</span><span class="content">message</span><span class="delimiter">'</span></span>, key = { message.title })
    <span class="type">void</span> save(Message message) {
       println <span class="string"><span class="delimiter">&quot;</span><span class="content">Saving message </span><span class="inline"><span class="inline-delimiter">$</span>message</span><span class="delimiter">&quot;</span></span>
       message.save()
