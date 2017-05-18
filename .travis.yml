@@ -7,12 +7,10 @@ before_script:
 script: ./travis-build.sh
 env:
   global:
-  - GIT_NAME="Graeme Rocher"
-  - GIT_EMAIL="graeme.rocher@gmail.com"
-  - secure: KkSnfdAYK3XgQzLcRZE4inF3/WMb99L4sPmOGFos/8rbv8FoU1uFGVMwz2YQA6AZZ6d5Mv1g+lGMmCZzg2Glh37kK+y45rtxjYipQhClzJuPgL9Gm0n5eqEjCCNgyM6jYvyd1AtKyDJdc+zSAuXR4fQt5rk0Dg6lDz/HIxJ7TCI=
-  - secure: hkM879AGvvPl/c7IGgpzGdzOPSf9CKEpZHVf/c6MpJvK46mmq43DIgtr0v4w9qnlJhTFNVOj1MszjesZFhca9bVouDM2T2nIa4suGdlIjdr2jrwRUYDW51EJJTVeeeVg+O9eN+EN1hSoZPcdx7STKg6jHAQ6+a2l1izeY8hvOr0=
-  - secure: brkWTPeL4YHIKX5gSamwuDVbQYcIZE8LBRZVix+IQnR9M+IcXCfkXqN3yyuD3uJE6UUA59vca+a7fhec2RIDIB6OvUIJ0th9kyjvTOO3Bqg7gs/2emcry2AAJoIAHiuNKcOPGCrjaWML7Fe67s46DJvC1lAyP2L83W5yONn7vL8=
-  - secure: egf2k8S8o6uwTQ5J35/UGNaDHJ/lLhcB6UjVjWnfZ8zQhCfVOhoUBsCbyVAG5W9Ex9I+MANC70wi52exiCT9AJ5a/6bpNYzZLhf8ro0d4eL4w5+OVLsLkpdx/pmuwKYV/k8nB4sl9mYUT3zzcZnmeeHs6Mmja32iLnkcFsUvVXo=
-  - secure: FA3kVyvs+/QXXQN09NG4xCFoksbSxau7gqS2Ky9U1skY1dDtus41lXDxCP7b1Q2+Pu/lIbvIewl7DOxuqFIqnR2jwPhyFVh80QiQMMYU+p4OUFNd6gJFlwtGmszNUDy6+2KRMMkoPs/6GAgd8B2JfmL0DUOWbbuwVcB7aBmBJUM=
-  - secure: tWLlV14n9MHY4MzzdWZD/TaQoOD/9ZJqv6KtcNoNMY3Two/W9pERn1NqRmmQ7zWlwKrVeTSZyHjgzhH57CkmJJp+eZIC7PC7sOPUrLeW9zff/LvFgbK7rOscZ4uM8hhENOylVbmHxgfIGyAMX8PO+HNhosHw4JUqln3CWAR6bpw=
-  - secure: CLhSjn6XsjST+9kC0E9UDf77UEt2Z4v5wzR5lFsjXHm6EQvBY4Kcw1Ue6z1CjGHJU6xLekkLT6vFiNTRETk5cC5o4KWxicIYakVVPBKIlueHXKRB4+reZAUP+QJWzRk4plzTZGJLgCVFufXaB5e74HdN8r03u4rAEBCJHgeYD4g=
+  - GIT_NAME="James Kleeh"
+  - GIT_EMAIL="james.kleeh@gmail.com"
+  - secure: AnvOBpVNfRVX2TKXeNTJslb1Utf2PBo47CwdqRZKtwPNT3XP/M4mR/TqoUZ3UT0j8KYVsWfN2krPzcKfqTRIYrDchWtnEyL4H4XijHJeFBUORybOrNR2pmqefpxf6YV/yJp5cFbHVD+HDGFw7mHwuOw4pVZ43vhkMqkXLUoPq54=
+  - secure: rNzuTZqLywjNXZqknrfMfOKCfFaNkl1q9wExKKfHtCi9GWRqsQJ6gdxVCqzd15k/z/axwbzFKSjtRl3DIvzOjcZUNqYI5uBY3lvba21TjpxVaT2g9EwEhtGnvm2AA/SfaOMLFVjem4NVKGAckBFOQDM9ahfnC041QS+srBloQd8=
+  - secure: BdnsaqXq58dpE6u966tfj44WV9x+zeF7vhgWYFibYqLMFnTJn6GV/VDPP7Tak2IkQKgk6swJIDylS3GMu+upG6dgvV7T2rbVCNQey1lwNmRb9a+49CQF1ZY8/2SvVips8mYi6fofkBUH3nEXS9TdUs8BrIQQKTME0ifRlDyVb3Y=
+  - secure: BkICi+1VXP7ZmZg/1esJgfgNwpyOjz92e9uWK2c8rh2Kbh77IEhCR5KQNfbXzWzlwWJlwDT69UTFGIVskgUq1EdXSnZTCwA6StqCmvtiMc5Wkqz2n2yk7mo9FSYPjq3pg+Uf2/7ZOmvj+UD+fFs+jpPl7wD/n7/fEE++ATWDSVk=
+  - secure: OhSgf5zQ2agXr3unRTqwDneNsIjPwFzxt4H1m4q0GQukPg4dSJkUKsQhL9cEPuDo5TBsugd0G6DTFCunZBMUP928R3lVOtB7DcaiLjBfLosRmjJLIRnDjSHLAOOu9lKR/5f8AbcTjuPfMz1tPCuIhPqGXOXIT+w0pHRWXLhKzaM=
