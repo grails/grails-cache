@@ -38,9 +38,13 @@ class CacheGrailsPlugin extends Plugin {
             '**/*.gsp'
     ]
 
+    private boolean isCachingEnabled() {
+        config.getProperty('grails.cache.enabled', Boolean, true)
+    }
+
     Closure doWithSpring() {
         { ->
-            if (!config.getProperty('grails.cache.enabled', Boolean, true)) {
+            if (!cachingEnabled) {
                 log.warn 'Cache plugin is disabled'
                 return
             }
@@ -64,21 +68,23 @@ class CacheGrailsPlugin extends Plugin {
 
     @CompileStatic
     void doWithApplicationContext() {
-        CachePluginConfiguration pluginConfiguration = applicationContext.getBean('grailsCacheConfiguration', CachePluginConfiguration)
-        GrailsCacheManager grailsCacheManager = applicationContext.getBean('grailsCacheManager', GrailsCacheManager)
+        if (cachingEnabled) {
+            CachePluginConfiguration pluginConfiguration = applicationContext.getBean('grailsCacheConfiguration', CachePluginConfiguration)
+            GrailsCacheManager grailsCacheManager = applicationContext.getBean('grailsCacheManager', GrailsCacheManager)
 
-        if (pluginConfiguration.clearAtStartup) {
-            for (String cacheName in grailsCacheManager.cacheNames) {
-                log.info "Clearing cache $cacheName"
-                Cache cache = grailsCacheManager.getCache(cacheName)
-                cache.clear()
+            if (pluginConfiguration.clearAtStartup) {
+                for (String cacheName in grailsCacheManager.cacheNames) {
+                    log.info "Clearing cache $cacheName"
+                    Cache cache = grailsCacheManager.getCache(cacheName)
+                    cache.clear()
+                }
             }
-        }
 
-        List<String> defaultCaches = ['grailsBlocksCache', 'grailsTemplatesCache']
-        for(name in defaultCaches) {
-            if (!grailsCacheManager.cacheExists(name)) {
-                grailsCacheManager.getCache(name)
+            List<String> defaultCaches = ['grailsBlocksCache', 'grailsTemplatesCache']
+            for(name in defaultCaches) {
+                if (!grailsCacheManager.cacheExists(name)) {
+                    grailsCacheManager.getCache(name)
+                }
             }
         }
     }
