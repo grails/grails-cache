@@ -40,7 +40,7 @@ import grails.plugin.cache.*
 
 class MessageService {
 
-   @Cacheable('message', key = { title.toUpperCase() } )
+   @Cacheable(value = 'message', key = { title.toUpperCase() } )
    Message getMessage(String title) {
       println 'Fetching message'
       Message.findByTitle(title)
