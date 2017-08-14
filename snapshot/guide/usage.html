@@ -306,7 +306,7 @@ you can add the <code>maxCapacity</code> parameter to the cache config. Default 
 
 <span class="type">class</span> <span class="class">MessageService</span> {
 
-   <span class="annotation">@Cacheable</span>(<span class="string"><span class="delimiter">'</span><span class="content">message</span><span class="delimiter">'</span></span>, key = { title.toUpperCase() } )
+   <span class="annotation">@Cacheable</span>(value = <span class="string"><span class="delimiter">'</span><span class="content">message</span><span class="delimiter">'</span></span>, key = { title.toUpperCase() } )
    Message getMessage(<span class="predefined-type">String</span> title) {
       println <span class="string"><span class="delimiter">'</span><span class="content">Fetching message</span><span class="delimiter">'</span></span>
       Message.findByTitle(title)
