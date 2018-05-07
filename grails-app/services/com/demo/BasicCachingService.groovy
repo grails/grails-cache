@@ -66,6 +66,10 @@ class BasicCachingService {
         "** ${value} **"
     }
 
+    @CacheEvict(value = 'basic', key = { key } )
+    def getDataEvict(String key) {
+    }
+
     @Cacheable(value = 'basic', condition = { x < 10 })
     def multiply(int x, int y) {
         conditionalInvocationCounter++

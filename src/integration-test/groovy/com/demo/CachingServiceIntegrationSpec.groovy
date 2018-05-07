@@ -201,4 +201,33 @@ class CachingServiceIntegrationSpec extends GebSpec {
 		then:
 		browser.driver.pageSource.contains 'Result: ** Thin Lizzy'
 	}
+
+	void 'test basic cache evict service'() {
+		when:
+		go '/demo/cacheGet?key=band'
+
+		then:
+		browser.driver.pageSource.contains 'Result: null'
+
+		when:
+		go '/demo/cachePut?key=band&value=Thin+Lizzy'
+
+		then:
+		browser.driver.pageSource.contains 'Result: ** Thin Lizzy **'
+
+		when:
+		go '/demo/cacheGet?key=band'
+
+		then:
+		browser.driver.pageSource.contains 'Result: ** Thin Lizzy'
+
+		when:
+		go '/demo/cacheEvict?key=band'
+
+		then:
+		browser.driver.pageSource.contains 'Result: null'
+	}
+
+
+
 }

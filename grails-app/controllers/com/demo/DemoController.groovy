@@ -53,6 +53,12 @@ class DemoController {
 		render "Result: ${result}"
 	}
 
+	def cacheEvict(String key) {
+		basicCachingService.getDataEvict(key)
+		def result = basicCachingService.getData(key)
+		render "Result: ${result}"
+	}
+
 	def blockCache(int counter) {
 		[counter: counter]
 	}
