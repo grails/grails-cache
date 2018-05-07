@@ -53,8 +53,20 @@ class DemoController {
 		render "Result: ${result}"
 	}
 
-	def cacheEvict(String key) {
+	def cacheEvictAndGet(String key) {
 		basicCachingService.getDataEvict(key)
+		def result = basicCachingService.getData(key)
+		render "Result: ${result}"
+	}
+
+	def cacheEvictAllAndGet(String key) {
+		basicCachingService.getDataEvictAll()
+		def result = basicCachingService.getData(key)
+		render "Result: ${result}"
+	}
+
+	def cacheClearAndGet(String key) {
+		grailsCacheAdminService.clearCache('basic')
 		def result = basicCachingService.getData(key)
 		render "Result: ${result}"
 	}
