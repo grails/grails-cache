@@ -43,3 +43,29 @@ grails:
                 maxCapacity: 6000
 ----
 
+==== GrailsGuavaCache / GrailsGuavaCacheManager
+
+The alternate `GrailsGuavaCache` uses the Cache from Guava. The current implementation allows
+to define a TTL in addition to the maxCapacity.
+
+It is possible to define a global TTL for caches where no TTL is configured.
+
+All TTL values are in seconds.
+
+
+[source,yaml]
+----
+grails:
+    cache:
+        cacheManager: GrailsGuavaCacheManager
+        defaultTtl: 3600
+        caches:
+            message:
+                maxCapacity: 5000
+                ttl: 60
+            maps:
+                maxCapacity: 6000
+                ttl: 30
+            countries:
+                maxCapacity: 1000
+----
