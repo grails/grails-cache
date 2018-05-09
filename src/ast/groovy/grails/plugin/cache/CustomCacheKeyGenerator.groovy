@@ -81,6 +81,10 @@ class CustomCacheKeyGenerator implements KeyGenerator, GrailsCacheKeyGenerator {
 					return false
 			} else if (!simpleKey.equals(other.simpleKey))
 				return false
+			else if ( simpleKey.equals(other.simpleKey) && !(simpleKey instanceof Map && ((Map)simpleKey).size() == 0 ) ) {
+				return true // equal if simpleKey is identical but not an empty map
+			}
+
 			if (targetClassName == null) {
 				if (other.targetClassName != null)
 					return false
@@ -162,6 +166,10 @@ class CustomCacheKeyGenerator implements KeyGenerator, GrailsCacheKeyGenerator {
 					return false
 			} else if (!simpleKey.equals(other.simpleKey))
 				return false
+			else if ( simpleKey.equals(other.simpleKey) && !(simpleKey instanceof Map && ((Map)simpleKey).size() == 0 ) ) {
+				return true // equal if simpleKey is identical but not an empty map
+			}
+
 			if (targetClassName == null) {
 				if (other.targetClassName != null)
 					return false
