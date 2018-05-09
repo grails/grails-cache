@@ -48,7 +48,7 @@ dependencies {
 
     compile "com.googlecode.concurrentlinkedhashmap:concurrentlinkedhashmap-lru:1.4.2"
     compile "org.javassist:javassist:3.17.1-GA"
-
+    compile group: 'com.google.guava', name: 'guava', version: '23.5-jre'
 
 }
 

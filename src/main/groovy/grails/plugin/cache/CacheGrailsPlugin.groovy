@@ -56,6 +56,8 @@ class CacheGrailsPlugin extends Plugin {
             // Selects cache manager from config
             if (config.getProperty("grails.cache.cacheManager", String, null) == "GrailsConcurrentLinkedMapCacheManager") {
                 cacheClazz = GrailsConcurrentLinkedMapCacheManager
+            } else if (config.getProperty("grails.cache.cacheManager", String, null) == "GrailsGuavaCacheManager") {
+                cacheClazz = GrailsGuavaCacheManager
             }
 
             grailsCacheManager(cacheClazz) {
