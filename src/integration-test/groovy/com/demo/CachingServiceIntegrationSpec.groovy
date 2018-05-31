@@ -2,6 +2,8 @@ package com.demo
 
 import geb.spock.GebSpec
 import grails.test.mixin.integration.Integration
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.CacheManager
 
 @Integration
 class CachingServiceIntegrationSpec extends GebSpec {
@@ -201,4 +203,49 @@ class CachingServiceIntegrationSpec extends GebSpec {
 		then:
 		browser.driver.pageSource.contains 'Result: ** Thin Lizzy'
 	}
+
+	void 'test basic cache evict key service'() {
+		when:
+		go '/demo/cachePut?key=band&value=Thin+Lizzy'
+
+		then:
+		browser.driver.pageSource.contains 'Result: ** Thin Lizzy **'
+
+		when:
+		go '/demo/cacheEvictAndGet?key=band'
+
+		then:
+		browser.driver.pageSource.contains 'Result: null'
+	}
+
+    void 'test basic cache evict all service'() {
+        when:
+        go '/demo/cachePut?key=band&value=Thin+Lizzy'
+
+        then:
+        browser.driver.pageSource.contains 'Result: ** Thin Lizzy **'
+
+        when:
+        go '/demo/cacheEvictAllAndGet?key=band'
+
+        then:
+        browser.driver.pageSource.contains 'Result: null'
+    }
+
+    void 'test basic cache clear service'() {
+        when:
+        go '/demo/cachePut?key=band&value=Thin+Lizzy'
+
+        then:
+        browser.driver.pageSource.contains 'Result: ** Thin Lizzy **'
+
+        when:
+        go '/demo/cacheClearAndGet?key=band'
+
+        then:
+        browser.driver.pageSource.contains 'Result: null'
+    }
+
+
+
 }
