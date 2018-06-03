@@ -44,7 +44,9 @@ public class GrailsConcurrentLinkedMapCache implements GrailsCache {
       this.name = name;
       this.capacity = capacity;
       this.allowNullValues = allowNullValues;
-      this.store = new ConcurrentLinkedHashMap.Builder<>()
+      // Workaround: using explicit type arguments to prevent groovydoc error (#53)
+      // Replace with diamond operator once a fix for GROOVY-8628 is included in groovy dependency
+      this.store = new ConcurrentLinkedHashMap.Builder<Object, Object>()
          .maximumWeightedCapacity(capacity)
          .build();
    }
