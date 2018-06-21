@@ -61,7 +61,7 @@
                     <h1>Cache Plugin</h1>
                     <p></p>
                     <p>Provides AST transformations for caching method calls</p>
-                    <p><strong>Version:</strong> 4.0.0</p>
+                    <p><strong>Version:</strong> 4.0.1</p>
 
                 </div>
                 
@@ -248,7 +248,7 @@ cache manager are backed by a thread-safe <code>java.util.concurrent.ConcurrentM
 This is fine for testing and possibly for low-traffic sites, but you should
 consider using one of the extension plugins if you need clustering, disk
 storage, persistence between restarts, and more configurability of features like
-time-to-live, maximum cache size, etc. Currently the only extension plugin available for Grails 3 is <a href="http://grails.org/plugin/cache-ehcache">cache-ehcache</a>.</p>
+time-to-live, maximum cache size, etc. Currently the only extension plugin available for Grails 3 is <a href="https://plugins.grails.org/plugin/grails/cache-ehcache">cache-ehcache</a>.</p>
 </div>
 
 
@@ -412,7 +412,7 @@ you can add the <code>maxCapacity</code> parameter to the cache config. Default 
 
 <span class="type">class</span> <span class="class">MessageService</span> {
 
-   <span class="annotation">@Cacheable</span>(<span class="string"><span class="delimiter">'</span><span class="content">message</span><span class="delimiter">'</span></span>, key = { title.toUpperCase() } )
+   <span class="annotation">@Cacheable</span>(value = <span class="string"><span class="delimiter">'</span><span class="content">message</span><span class="delimiter">'</span></span>, key = { title.toUpperCase() } )
    Message getMessage(<span class="predefined-type">String</span> title) {
       println <span class="string"><span class="delimiter">'</span><span class="content">Fetching message</span><span class="delimiter">'</span></span>
       Message.findByTitle(title)
