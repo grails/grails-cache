@@ -7,13 +7,15 @@ jdk:
 - openjdk8
 before_script:
 - rm -rf target
-script: ./travis-build.sh
+script: "./travis-build.sh"
 env:
   global:
-  - GIT_NAME="James Kleeh"
-  - GIT_EMAIL="james.kleeh@gmail.com"
-  - secure: AnvOBpVNfRVX2TKXeNTJslb1Utf2PBo47CwdqRZKtwPNT3XP/M4mR/TqoUZ3UT0j8KYVsWfN2krPzcKfqTRIYrDchWtnEyL4H4XijHJeFBUORybOrNR2pmqefpxf6YV/yJp5cFbHVD+HDGFw7mHwuOw4pVZ43vhkMqkXLUoPq54=
-  - secure: rNzuTZqLywjNXZqknrfMfOKCfFaNkl1q9wExKKfHtCi9GWRqsQJ6gdxVCqzd15k/z/axwbzFKSjtRl3DIvzOjcZUNqYI5uBY3lvba21TjpxVaT2g9EwEhtGnvm2AA/SfaOMLFVjem4NVKGAckBFOQDM9ahfnC041QS+srBloQd8=
-  - secure: BdnsaqXq58dpE6u966tfj44WV9x+zeF7vhgWYFibYqLMFnTJn6GV/VDPP7Tak2IkQKgk6swJIDylS3GMu+upG6dgvV7T2rbVCNQey1lwNmRb9a+49CQF1ZY8/2SvVips8mYi6fofkBUH3nEXS9TdUs8BrIQQKTME0ifRlDyVb3Y=
-  - secure: BkICi+1VXP7ZmZg/1esJgfgNwpyOjz92e9uWK2c8rh2Kbh77IEhCR5KQNfbXzWzlwWJlwDT69UTFGIVskgUq1EdXSnZTCwA6StqCmvtiMc5Wkqz2n2yk7mo9FSYPjq3pg+Uf2/7ZOmvj+UD+fFs+jpPl7wD/n7/fEE++ATWDSVk=
-  - secure: OhSgf5zQ2agXr3unRTqwDneNsIjPwFzxt4H1m4q0GQukPg4dSJkUKsQhL9cEPuDo5TBsugd0G6DTFCunZBMUP928R3lVOtB7DcaiLjBfLosRmjJLIRnDjSHLAOOu9lKR/5f8AbcTjuPfMz1tPCuIhPqGXOXIT+w0pHRWXLhKzaM=
+  - GIT_NAME="Puneet Behl"
+  - GIT_EMAIL="behl4485@gmail.com"
+  - secure: pssOVKOAVVgSqXihFElh5jIHmeQjtY+U7Rk/6zmADIftRO9WQnhkEZkx556Mn9XXsACVX/BFPOyfw9y+ylKBkvichjYWcGB4MiDhzOb/9P7GjR+3jmEo1UiaVq9tsPl9bS/J+DPuHxV1NDrgonqnDXZpaffsAkgwBkF/X8NDdM0=
+  - secure: UR6bQPoa/I8SjAQPQbxn4TDcXwtloprJFj5YHyOUHIE7ecFyLcUxSTk3H1kyWLzPI6r7yuyKrlouHvsn0tfmmyg/D4Au+mLHjoxgEham1YcFVQYI14V9E7+g83Ox2/sEF50/Imf4S/YmxuDB5RiCTClJTaIhN8dMPvE4e+CMRF4=
+  - secure: XAPLjyozQOGXFCMPyderbc9/4rUaVui/uexXce8sSWvsrRKbSns+bDCvQ0W4/LAXnzzVyP2CPtvE0UC6S6r/h2to4NLJ+PTkXDDVPwF9Kt9SwcY20HzpVfPYC0prP6kWtMCur1LT0CosPMIxlPzj/24ZSZfmBJCL3zXTqJzCm6Y=
+  - secure: wHjsGyj6k41GpvsRHwoQ7m9D5TDBIRRZbr7XSas4joiJiHMciaBJprbhYkCQ97IYr83wfUvr0a3527fLq4PO0a3DtHUXzkLlmgl1zkf+HeJFmUT/D5D1loBARA7SuFZgBwH+bbupMftKufiO00LwL4bNsHHS095V+yF2+PdzR9A=
+  - secure: PWTybnVwbY0PUz0vxuaRcfUr8IrGXO7nkPm4ses0KxCQEc4TJPkYGaubdygRKD+a9FeE7ccGDrV1ycH8EG/81jGuykUlRpXJKzBl1j1afSy0pV+oCRt0Z6RynFgYLdKRTBBkO4SP8uV0zJjTtJpURAy1GWSdHFietTy6/SbGJ1w=
+  - secure: wyZcJolHPDY8tqF71EZyuX3Wufpw7exd+C7Hus2M8k1YrnN1HW7gn69KU3Exnf08bCII3ocNqMSur0YfhXBQjn+Egut9WTQcrOMDTt/1htGGFa3senPR6iok9BTchzBlB/0bWuvHuVM7zWK0DKkyTVG0C8V8RQJVvMKbCvbQa/w=
+  - secure: bj5VoXASjGIDMvm7yrtIxrNv1Eys7swFMZINMZohlvE1l/xRvj7MNI9RVLrNTuCr5Y5of4Geq+lTBhI5E/XVnEohGqhKKnfAtcyNaNvMLX//5RYwyfMw/KqjdQ1vHvOI2nFBaFzFjquPoTTZ7sYjVmYE7gkKyDC8Dnam041q8Vk=
