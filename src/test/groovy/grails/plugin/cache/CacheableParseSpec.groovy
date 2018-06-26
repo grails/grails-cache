@@ -128,4 +128,26 @@ return TestService
         System.setProperty(SystemPropertyTenantResolver.PROPERTY_NAME, "")
         datastore?.close()
     }
+
+    void "test CacheTransform for a service with @Transactional annotation"() {
+        when:
+        def gcl = new GroovyClassLoader()
+        def service = gcl.parseClass('''
+import grails.gorm.transactions.Transactional
+import grails.plugin.cache.Cacheable
+
+@Transactional
+class TestService {
+
+    @Cacheable(value = "demo", key = {-> name })
+    String test(String name) {
+        name
+    }
+}
+
+''')
+
+        then: "The criteria contains the correct criterion"
+        service.newInstance()
+    }
 }
