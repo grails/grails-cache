@@ -61,7 +61,7 @@ abstract class AbstractCacheTransformation extends AbstractMethodDecoratingTrans
     /**
      * The position of the transform. Before the transactional transform
      */
-    public static final int POSITION = TenantTransform.POSITION + 50
+    public static final int POSITION = TenantTransform.POSITION + 150
     @Override
     int getOrder() {
         return POSITION
