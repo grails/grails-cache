@@ -1,9 +1,7 @@
 package com.demo
 
 import geb.spock.GebSpec
-import grails.test.mixin.integration.Integration
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.cache.CacheManager
+import grails.testing.mixin.integration.Integration
 
 @Integration
 class CachingServiceIntegrationSpec extends GebSpec {

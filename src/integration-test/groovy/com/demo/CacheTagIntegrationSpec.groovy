@@ -1,8 +1,7 @@
 package com.demo
 
-import grails.test.mixin.integration.Integration
-
 import geb.spock.GebSpec
+import grails.testing.mixin.integration.Integration
 
 import java.util.concurrent.TimeUnit
 
