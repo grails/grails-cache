@@ -3,19 +3,18 @@ package com.demo
 import grails.plugin.cache.Cacheable
 import grails.plugin.cache.CustomCacheKeyGenerator
 import grails.plugin.cache.GrailsConcurrentMapCacheManager
-import grails.test.mixin.TestMixin
-import grails.test.mixin.support.GrailsUnitTestMixin
+import org.grails.testing.GrailsUnitTest
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory
 import spock.lang.Specification
 
-@TestMixin(GrailsUnitTestMixin)
-class ClassMarkedCacheableSpec extends Specification {
-    static doWithSpring = {
-        // TODO The plugin should provide a convenient
-        // mechanism for setting these up...
+class ClassMarkedCacheableSpec extends Specification implements GrailsUnitTest {
+
+    @Override
+    Closure doWithSpring() {{ ->
+        // TODO The plugin should provide a convenient mechanism for setting these up...
         grailsCacheManager(GrailsConcurrentMapCacheManager)
         customCacheKeyGenerator(CustomCacheKeyGenerator)
-    }
+    }}
 
     void 'test that expected methods have been configured as cacheable'() {
         given:

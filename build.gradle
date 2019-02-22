@@ -42,8 +42,9 @@ dependencies {
     provided "org.grails:grails-plugin-services"
     provided "org.grails:grails-plugin-domain-class"
 
-    testCompile "org.grails:grails-datastore-gorm-test"
-    testCompile "org.grails:grails-plugin-testing"
+    testCompile "org.grails:grails-gorm-testing-support:1.1.5"
+    testCompile "org.grails:grails-web-testing-support:1.1.5"
+
     testCompile "org.grails.plugins:geb"
     testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
     testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
@@ -78,3 +79,11 @@ groovydoc.setSource("${project.projectDir}/src/main/groovy")
 groovydoc.source("${project.projectDir}/src/ast/groovy")
 groovydoc.source("${project.projectDir}/grails-app/taglib")
 //compileGroovy.groovyOptions.forkOptions.jvmArgs = ['-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005']
+
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        if(details.requested.group == 'org.grails' && details.requested.name.startsWith('grails-datastore')) {
+            details.useVersion("7.0.0.RC1")
+        }
+    }
+}

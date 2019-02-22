@@ -1,10 +1,9 @@
 package com.demo
 
-import grails.test.mixin.TestFor
+import grails.testing.services.ServiceUnitTest
 import spock.lang.Specification
 
-@TestFor(BasicCachingService)
-class BasicCachingServiceNoCacheManagerSpec extends Specification {
+class BasicCachingServiceNoCacheManagerSpec extends Specification implements ServiceUnitTest<BasicCachingService> {
 
     void 'test invoking cacheable method when no cache manager is present'() {
         when: 'a cached method is invoked the first time'

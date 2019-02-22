@@ -2,16 +2,16 @@ package com.demo
 
 import grails.plugin.cache.CustomCacheKeyGenerator
 import grails.plugin.cache.GrailsConcurrentMapCacheManager
-import grails.test.mixin.TestFor
+import grails.testing.services.ServiceUnitTest
 import spock.lang.Specification
 
-@TestFor(BasicCachingService)
-class BasicCachingServiceSpec extends Specification {
+class BasicCachingServiceSpec extends Specification implements ServiceUnitTest<BasicCachingService> {
 
-    static doWithSpring = {
-        grailsCacheManager GrailsConcurrentMapCacheManager
-        customCacheKeyGenerator CustomCacheKeyGenerator
-    }
+    @Override
+    Closure doWithSpring() {{ ->
+        grailsCacheManager(GrailsConcurrentMapCacheManager)
+        customCacheKeyGenerator(CustomCacheKeyGenerator)
+    }}
 
     void 'test invoking cacheable method when cache manager is present'() {
         when: 'a cached method is invoked the first time'

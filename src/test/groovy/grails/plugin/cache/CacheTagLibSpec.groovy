@@ -1,6 +1,6 @@
 package grails.plugin.cache
 
-import grails.test.mixin.TestFor
+import grails.testing.web.taglib.TagLibUnitTest
 import org.grails.core.exceptions.GrailsRuntimeException
 import org.grails.plugin.cache.GrailsCacheManager
 import org.grails.web.gsp.GroovyPagesTemplateRenderer
@@ -10,8 +10,7 @@ import spock.lang.Specification
 import javax.servlet.ServletException
 
 
-@TestFor(CacheTagLib)
-class CacheTagLibSpec extends Specification {
+class CacheTagLibSpec extends Specification implements TagLibUnitTest<CacheTagLib> {
 
     GrailsCacheManager grailsCacheManager
     GroovyPagesTemplateRenderer groovyPagesTemplateRenderer
