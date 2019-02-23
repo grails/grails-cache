@@ -2,7 +2,16 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>2.2 Cache Annotations 4.0.1</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script src="/cdn-cgi/apps/head/3cOPSgo5Omz84ycX7CvigfX4cpw.js"></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-82213539-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-82213539-2');
+    </script>
+    <title>2.2 Cache Annotations 4.0.2</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -75,7 +84,7 @@ function addJsClass() {
                 <div class="project">
                     <h1>2.2 Cache Annotations</h1>
 
-                    <p><strong>Version:</strong> 4.0.1</p>
+                    <p><strong>Version:</strong> 4.0.2</p>
                 </div>
 
                 
@@ -279,11 +288,10 @@ method is invoked.</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">package</span> com.demo
 
-<span class="keyword">import</span> <span class="include">grails.test.mixin.TestFor</span>
+<span class="keyword">import</span> <span class="include">grails.testing.services.ServiceUnitTest</span>
 <span class="keyword">import</span> <span class="include">spock.lang.Specification</span>
 
-<span class="annotation">@TestFor</span>(BasicCachingService)
-<span class="type">class</span> <span class="class">BasicCachingServiceNoCacheManagerSpec</span> <span class="directive">extends</span> Specification {
+<span class="type">class</span> <span class="class">BasicCachingServiceNoCacheManagerSpec</span> <span class="directive">extends</span> Specification <span class="directive">implements</span> ServiceUnitTest&lt;BasicCachingService&gt; {
 
     <span class="type">void</span> <span class="string"><span class="delimiter">'</span><span class="content">test invoking cacheable method when no cache manager is present</span><span class="delimiter">'</span></span>() {
         <span class="key">when</span>: <span class="string"><span class="delimiter">'</span><span class="content">a cached method is invoked the first time</span><span class="delimiter">'</span></span>
@@ -314,16 +322,16 @@ test.</p>
 
 <span class="keyword">import</span> <span class="include">grails.plugin.cache.CustomCacheKeyGenerator</span>
 <span class="keyword">import</span> <span class="include">grails.plugin.cache.GrailsConcurrentMapCacheManager</span>
-<span class="keyword">import</span> <span class="include">grails.test.mixin.TestFor</span>
+<span class="keyword">import</span> <span class="include">grails.testing.services.ServiceUnitTest</span>
 <span class="keyword">import</span> <span class="include">spock.lang.Specification</span>
 
-<span class="annotation">@TestFor</span>(BasicCachingService)
-<span class="type">class</span> <span class="class">BasicCachingServiceSpec</span> <span class="directive">extends</span> Specification {
+<span class="type">class</span> <span class="class">BasicCachingServiceSpec</span> <span class="directive">extends</span> Specification <span class="directive">implements</span> ServiceUnitTest&lt;BasicCachingService&gt; {
 
-    <span class="directive">static</span> doWithSpring = {
-        grailsCacheManager GrailsConcurrentMapCacheManager
-        customCacheKeyGenerator CustomCacheKeyGenerator
-    }
+    <span class="annotation">@Override</span>
+    Closure doWithSpring() {{ -&gt;
+        grailsCacheManager(GrailsConcurrentMapCacheManager)
+        customCacheKeyGenerator(CustomCacheKeyGenerator)
+    }}
 
     <span class="type">void</span> <span class="string"><span class="delimiter">'</span><span class="content">test invoking cacheable method when cache manager is present</span><span class="delimiter">'</span></span>() {
         <span class="key">when</span>: <span class="string"><span class="delimiter">'</span><span class="content">a cached method is invoked the first time</span><span class="delimiter">'</span></span>
