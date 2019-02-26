@@ -27,7 +27,7 @@ class CacheGrailsPlugin extends Plugin {
     def grailsVersion = "4.0.0 > *"
     def observe = ['controllers', 'services']
     def loadAfter = ['controllers', 'services']
-    def authorEmail = 'brownj@ociweb.com'
+    def authorEmail = 'brownj@objectcomputing.com'
     def description = 'Grails Cache Plugin'
 
     // resources that should be loaded by the plugin once installed in the application

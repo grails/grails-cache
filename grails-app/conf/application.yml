@@ -3,16 +3,33 @@ grails:
     profile: web-plugin
     codegen:
         defaultPackage: cache
+    gorm:
+        reactor:
+            # Whether to translate GORM events into Reactor events
+            # Disabled by default for performance reasons
+            events: false
 info:
     app:
         name: '@info.app.name@'
         version: '@info.app.version@'
         grailsVersion: '@info.app.grailsVersion@'
 spring:
-
+    jmx:
+        unique-names: true
+    main:
+        banner-mode: "off"
     groovy:
         template:
             check-template-location: false
+    devtools:
+        restart:
+            exclude:
+                - grails-app/views/**
+                - grails-app/i18n/**
+                - grails-app/conf/**
+management:
+    endpoints:
+        enabled-by-default: false
 
 ---
 grails:
@@ -66,6 +83,3 @@ grails:
                 scriptlets: html
                 taglib: none
                 staticparts: none
-endpoints:
-    jmx:
-        unique-names: true
