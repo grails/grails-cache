@@ -1,3 +1,6 @@
+addons:
+  chrome: stable
+  firefox: latest
 language: groovy
 sudo: false
 cache:
