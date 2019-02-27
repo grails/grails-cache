@@ -2,10 +2,12 @@ package com.demo
 
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
+import spock.lang.Requires
 
 @Integration
 class CachingServiceIntegrationSpec extends GebSpec {
 
+	@Requires({sys['geb.env']})
 	void 'test caching service with method params'() {
 		when:
 		go '/demo/basicCachingServiceInvocationCount'
@@ -108,6 +110,7 @@ class CachingServiceIntegrationSpec extends GebSpec {
 		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 100.'
 	}
 
+	@Requires({sys['geb.env']})
 	void 'test basic caching service'() {
 		when:
 		go '/demo/basicCachingServiceInvocationCount'
@@ -146,6 +149,7 @@ class CachingServiceIntegrationSpec extends GebSpec {
 		browser.driver.pageSource.contains 'Basic Caching Service Invocation Count Is 1.'
 	}
 
+	@Requires({sys['geb.env']})
 	void 'test basic cache put service'() {
 		when:
 		go '/demo/cacheGet?key=band'
@@ -202,6 +206,7 @@ class CachingServiceIntegrationSpec extends GebSpec {
 		browser.driver.pageSource.contains 'Result: ** Thin Lizzy'
 	}
 
+	@Requires({sys['geb.env']})
 	void 'test basic cache evict key service'() {
 		when:
 		go '/demo/cachePut?key=band&value=Thin+Lizzy'
@@ -216,7 +221,8 @@ class CachingServiceIntegrationSpec extends GebSpec {
 		browser.driver.pageSource.contains 'Result: null'
 	}
 
-    void 'test basic cache evict all service'() {
+	@Requires({sys['geb.env']})
+	void 'test basic cache evict all service'() {
         when:
         go '/demo/cachePut?key=band&value=Thin+Lizzy'
 
@@ -243,7 +249,4 @@ class CachingServiceIntegrationSpec extends GebSpec {
         then:
         browser.driver.pageSource.contains 'Result: null'
     }
-
-
-
 }

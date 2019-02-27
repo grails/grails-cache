@@ -2,13 +2,13 @@ package com.demo
 
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
-
+import spock.lang.Requires
 import java.util.concurrent.TimeUnit
-
 
 @Integration
 class CacheTagIntegrationSpec extends GebSpec {
 
+    @Requires({sys['geb.env']})
     void 'test clear cache'() {
         when:
         go '/demo/clearBlocksCache'
@@ -23,6 +23,7 @@ class CacheTagIntegrationSpec extends GebSpec {
         browser.driver.pageSource.contains 'cleared templates cache'
     }
 
+    @Requires({sys['geb.env']})
     void 'test block tag'() {
         when:
         go '/demo/blockCache?counter=5'
