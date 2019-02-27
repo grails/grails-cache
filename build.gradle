@@ -124,3 +124,9 @@ grailsPublish {
 assets {
     packagePlugin = true
 }
+
+integrationTest {
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
