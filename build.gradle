@@ -7,8 +7,7 @@ buildscript {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
         classpath "com.bertramlabs.plugins:asset-pipeline-gradle:3.0.7"
         classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
-        classpath "gradle.plugin.com.energizedwork.webdriver-binaries:webdriver-binaries-gradle-plugin:$webdriverBinariesVersion"
-
+        classpath "gradle.plugin.com.github.erdi.webdriver-binaries:webdriver-binaries-gradle-plugin:$webdriverBinariesVersion"
     }
 }
 
@@ -22,7 +21,7 @@ apply plugin:"org.grails.grails-plugin-publish"
 apply plugin:"asset-pipeline"
 apply plugin:"org.grails.grails-gsp"
 apply from:"https://raw.githubusercontent.com/grails/grails-common-build/master/common-docs.gradle"
-apply plugin:"com.energizedwork.webdriver-binaries"
+apply plugin: "com.github.erdi.webdriver-binaries"
 
 repositories {
     mavenLocal()
