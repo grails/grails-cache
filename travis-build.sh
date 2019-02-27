@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 rm -rf *.zip
-./gradlew clean check assemble
+./gradlew clean check assemble -Dgeb.env=chromeHeadless
 
 filename=$(find build/libs -name "*.jar" | head -1)
 filename=$(basename "$filename")
