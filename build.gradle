@@ -11,7 +11,7 @@ buildscript {
     }
 }
 
-version "5.0.0.BUILD-SNAPSHOT"
+version "5.0.0.RC1"
 group "org.grails.plugins"
 
 apply plugin:"eclipse"
