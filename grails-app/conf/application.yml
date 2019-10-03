@@ -69,3 +69,14 @@ grails:
 endpoints:
     jmx:
         unique-names: true
+---
+environments:
+    test:
+        grails:
+            cache:
+                cacheManager: GrailsConcurrentLinkedMapCacheManager
+                caches:
+                    foo:
+                        maxCapacity: 100
+                    bar:
+                        maxCapacity: 200

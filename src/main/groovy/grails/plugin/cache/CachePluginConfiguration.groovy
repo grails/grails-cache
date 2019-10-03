@@ -16,7 +16,7 @@ class CachePluginConfiguration {
     Boolean clearAtStartup = false
     Map<String, CacheConfig> caches = [:]
 
-    class CacheConfig {
+    static class CacheConfig {
         Integer maxCapacity
     }
 }
