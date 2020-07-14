@@ -38,7 +38,7 @@ dependencies {
     compile "org.grails:grails-dependencies"
     compile "org.grails:grails-web-boot"
     compile "org.grails.plugins:scaffolding"
-    compile "org.codehaus.gpars:gpars:1.2.0"
+    compile "org.codehaus.gpars:gpars:1.2.1"
 
     runtime "org.grails.plugins:async"
     console "org.grails:grails-console"
