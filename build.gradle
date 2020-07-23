@@ -17,7 +17,7 @@ apply plugin:"eclipse"
 apply plugin:"idea"
 apply plugin:"org.grails.grails-plugin"
 apply plugin:"org.grails.grails-plugin-publish"
-apply from:"https://raw.githubusercontent.com/grails/grails-common-build/master/common-docs.gradle"
+apply from:"https://raw.githubusercontent.com/grails/grails-common-build/v1.0.0/common-docs.gradle"
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
