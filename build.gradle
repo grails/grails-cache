@@ -46,7 +46,7 @@ dependencies {
     provided "org.grails:grails-plugin-services"
     provided "org.grails:grails-plugin-domain-class"
 
-    testCompile "org.grails:grails-gorm-testing-support:1.1.5"
+    testCompile "org.grails:grails-gorm-testing-support:2.1.3"
     testCompile "org.grails:grails-web-testing-support:1.1.5"
     testCompile "org.grails:grails-plugin-testing"
     testCompile "org.grails.plugins:geb"
