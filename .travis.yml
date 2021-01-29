@@ -1,3 +1,6 @@
+branches:
+  only:
+    - 3.0.x
 language: groovy
 sudo: false
 cache:
