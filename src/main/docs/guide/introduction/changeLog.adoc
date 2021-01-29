@@ -1,6 +1,8 @@
 [[changeLog]]
 === Change log
 
+For recent versions please check the release notes https://github.com/grails-plugins/grails-cache/releases[here]
+
 === Version 4.0.0
 
 * AST based solution.
