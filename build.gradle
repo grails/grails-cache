@@ -20,7 +20,7 @@ apply plugin:"org.grails.grails-plugin"
 apply plugin:"org.grails.grails-plugin-publish"
 apply plugin:"asset-pipeline"
 apply plugin:"org.grails.grails-gsp"
-apply from:"https://raw.githubusercontent.com/grails/grails-common-build/master/common-docs.gradle"
+apply from:"https://raw.githubusercontent.com/grails/grails-common-build/v1.0.0/common-docs.gradle"
 apply plugin: "com.github.erdi.webdriver-binaries"
 
 repositories {
