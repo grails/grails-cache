@@ -1,6 +1,5 @@
 buildscript {
     repositories {
-        mavenLocal()
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
@@ -24,15 +23,7 @@ apply from:"https://raw.githubusercontent.com/grails/grails-common-build/v1.0.0/
 apply plugin: "com.github.erdi.webdriver-binaries"
 
 repositories {
-    mavenLocal()
-    mavenCentral()
     maven { url "https://repo.grails.org/grails/core" }
-}
-
-configurations {
-    runtimeClasspath {
-        extendsFrom developmentOnly
-    }
 }
 
 dependencies {
