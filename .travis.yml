@@ -1,6 +1,9 @@
 addons:
   chrome: stable
   firefox: latest
+branches:
+  only:
+    - 3.0.x
 language: groovy
 sudo: false
 cache:

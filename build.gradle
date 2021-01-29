@@ -5,13 +5,13 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:3.0.7"
-        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
+        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:3.2.5"
+        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.6.1'
         classpath "gradle.plugin.com.github.erdi.webdriver-binaries:webdriver-binaries-gradle-plugin:$webdriverBinariesVersion"
     }
 }
 
-version "5.0.0.RC1"
+version "5.0.0-SNAPSHOT"
 group "org.grails.plugins"
 
 apply plugin:"eclipse"
@@ -30,14 +30,12 @@ repositories {
 }
 
 configurations {
-    developmentOnly
     runtimeClasspath {
         extendsFrom developmentOnly
     }
 }
 
 dependencies {
-	developmentOnly("org.springframework.boot:spring-boot-devtools")
     compile "org.springframework.boot:spring-boot-starter-logging"
     compile "org.springframework.boot:spring-boot-autoconfigure"
     compile "org.grails:grails-core"
@@ -54,8 +52,8 @@ dependencies {
     compile "org.grails.plugins:cache"
     compile "org.grails.plugins:async"
     compile "org.grails.plugins:scaffolding"
+    compile "org.codehaus.gpars:gpars:1.2.1"
     compile "org.grails.plugins:gsp"
-    compile "org.codehaus.gpars:gpars:1.2.0"
 
     runtime "org.grails.plugins:async"
     console "org.grails:grails-console"
@@ -69,6 +67,7 @@ dependencies {
     testCompile "org.mockito:mockito-core"
     testCompile "org.grails.plugins:geb"
 
+    testCompile "org.grails:grails-web-testing-support"
     testRuntime "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
     testRuntime "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
     testRuntime "org.seleniumhq.selenium:selenium-safari-driver:$seleniumSafariDriverVersion"
@@ -77,9 +76,13 @@ dependencies {
     testCompile "org.seleniumhq.selenium:selenium-api:$seleniumVersion"
     testCompile "org.seleniumhq.selenium:selenium-support:$seleniumVersion"
 
+    testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.52.0"
+    testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
 
     compile "com.googlecode.concurrentlinkedhashmap:concurrentlinkedhashmap-lru:1.4.2"
-    compile "org.javassist:javassist:3.17.1-GA"
+    compile "org.javassist:javassist:3.27.0-GA"
+
+
 }
 apply from: rootProject.file('gradle/testVerbose.gradle')
 
@@ -97,8 +100,8 @@ tasks.withType(Test) {
 
 bootRun {
     jvmArgs(
-        '-Dspring.output.ansi.enabled=always', 
-        '-noverify', 
+        '-Dspring.output.ansi.enabled=always',
+        '-noverify',
         '-XX:TieredStopAtLevel=1',
         '-Xmx1024m')
     sourceResources sourceSets.main
