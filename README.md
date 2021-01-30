@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/grails-plugins/grails-cache.svg)](https://travis-ci.org/grails-plugins/grails-cache)
+[![Java CI](https://github.com/grails-plugins/grails-cache/workflows/Java%20CI/badge.svg)](https://github.com/grails-plugins/grails-cache/actions?query=workflow%3A%22Java+CI%22)
 
 Grails Cache Plugin
 ============
