@@ -1,0 +1,17 @@
+version: 2
+updates:
+- package-ecosystem: gradle
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  target-branch: 4.0.x
+  ignore:
+  - dependency-name: net.sourceforge.htmlunit:htmlunit
+    versions:
+    - 2.46.0
+    - 2.47.1
+    - 2.48.0
+  - dependency-name: com.bertramlabs.plugins:asset-pipeline-gradle
+    versions:
+    - 3.3.1
