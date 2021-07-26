@@ -52,7 +52,7 @@ dependencies {
     testCompile "org.grails.plugins:geb"
     testCompile "org.grails:grails-web-testing-support"
     testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.52.0"
-    testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
+    testRuntime "net.sourceforge.htmlunit:htmlunit:2.52.0"
 
     compile "com.googlecode.concurrentlinkedhashmap:concurrentlinkedhashmap-lru:1.4.2"
     compile "org.javassist:javassist:3.28.0-GA"
