@@ -15,7 +15,6 @@
 package grails.plugin.cache
 
 import groovy.transform.CompileStatic
-import groovy.transform.EqualsAndHashCode
 import org.springframework.aop.framework.AopProxyUtils
 import org.springframework.cache.interceptor.KeyGenerator
 import org.springframework.cache.interceptor.SimpleKeyGenerator
@@ -187,4 +186,3 @@ class CustomCacheKeyGenerator implements KeyGenerator, GrailsCacheKeyGenerator {
 	}
 
 }
-
