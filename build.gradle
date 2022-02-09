@@ -78,7 +78,9 @@ dependencies {
 apply from: rootProject.file('gradle/testVerbose.gradle')
 
 webdriverBinaries {
-    chromedriver "$chromeDriverVersion"
+    chromedriver {
+        versionRegexp = '.*'
+    }
     geckodriver "$geckodriverVersion"
 }
 
