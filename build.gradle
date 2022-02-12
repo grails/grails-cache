@@ -61,7 +61,7 @@ dependencies {
 
     testRuntime "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
     testRuntime "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
-    testRuntime "org.seleniumhq.selenium:selenium-safari-driver:$seleniumSafariDriverVersion"
+    testRuntime "org.seleniumhq.selenium:selenium-safari-driver:$seleniumVersion"
 
     testCompile "org.seleniumhq.selenium:selenium-remote-driver:$seleniumVersion"
     testCompile "org.seleniumhq.selenium:selenium-api:$seleniumVersion"
