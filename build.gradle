@@ -67,8 +67,6 @@ dependencies {
     testCompile "org.seleniumhq.selenium:selenium-api:$seleniumVersion"
     testCompile "org.seleniumhq.selenium:selenium-support:$seleniumVersion"
 
-    testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.52.0"
-    testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
 
     compile "com.googlecode.concurrentlinkedhashmap:concurrentlinkedhashmap-lru:1.4.2"
     compile "org.javassist:javassist:3.27.0-GA"
