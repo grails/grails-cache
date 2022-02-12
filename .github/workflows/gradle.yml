@@ -17,9 +17,6 @@ jobs:
       GRADLE_OPTS: -Xmx1500m -Dfile.encoding=UTF-8
     steps:
       - uses: actions/checkout@v2
-      - uses: nanasess/setup-chromedriver@v1.0.5
-        with:
-          chromedriver-version: '96.0.4664.45'
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
