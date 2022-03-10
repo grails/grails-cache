@@ -15,7 +15,7 @@ group "org.grails.plugins"
 apply plugin:"eclipse"
 apply plugin:"idea"
 apply plugin:"org.grails.grails-plugin"
-apply plugin:"org.grails.grails-plugin-publish"
+apply plugin:"org.grails.internal.grails-plugin-publish"
 apply from:"https://raw.githubusercontent.com/grails/grails-common-build/v1.0.0/common-docs.gradle"
 apply plugin: "com.github.erdi.webdriver-binaries"
 
