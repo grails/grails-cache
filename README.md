@@ -1,4 +1,4 @@
-[![Java CI](https://github.com/grails/grails-cache/workflows/Java%20CI/badge.svg)](https://github.com/grails-plugins/grails-cache/actions?query=workflow%3A%22Java+CI%22)
+[![Java CI](https://github.com/grails/grails-cache/actions/workflows/gradle.yml/badge.svg)](https://github.com/grails/grails-cache/actions/workflows/gradle.yml)
 
 Grails Cache Plugin
 ============
