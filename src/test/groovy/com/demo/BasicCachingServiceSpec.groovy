@@ -17,7 +17,7 @@ class BasicCachingServiceSpec extends Specification implements ServiceUnitTest<B
         when: 'a cached method is invoked the first time'
         def result = service.getData()
 
-        then: 'the code in the method is exeucted'
+        then: 'the code in the method is executed'
         result == 'Hello World!'
         service.invocationCounter == 1
 
@@ -30,7 +30,7 @@ class BasicCachingServiceSpec extends Specification implements ServiceUnitTest<B
     }
 
     void 'test invoking a cacheable method that expresses a condition'() {
-        when: 'mutliply is called with x < 10'
+        when: 'multiply is called with x < 10'
         def result = service.multiply(4, 7)
 
         then: 'the method should have been invoked'
@@ -44,7 +44,7 @@ class BasicCachingServiceSpec extends Specification implements ServiceUnitTest<B
         result == 280
         service.conditionalInvocationCounter == 2
 
-        when: 'mutliply is called with x < 10 with a cached value'
+        when: 'multiply is called with x < 10 with a cached value'
         result = service.multiply(4, 7)
 
         then: 'the method should not have executed'

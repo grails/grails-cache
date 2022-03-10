@@ -9,14 +9,14 @@ class BasicCachingServiceNoCacheManagerSpec extends Specification implements Ser
         when: 'a cached method is invoked the first time'
         def result = service.getData()
 
-        then: 'the code in the method is exeucted'
+        then: 'the code in the method is executed'
         result == 'Hello World!'
         service.invocationCounter == 1
 
         when: 'a cached method is invoked the second time'
         result = service.getData()
 
-        then: 'the code in the method is still exeucted because no cache manager is present'
+        then: 'the code in the method is still executed because no cache manager is present'
         result == 'Hello World!'
         service.invocationCounter == 2
     }

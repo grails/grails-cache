@@ -6,7 +6,6 @@ import org.grails.datastore.mapping.multitenancy.resolvers.SystemPropertyTenantR
 import org.grails.datastore.mapping.simple.SimpleMapDatastore
 import org.grails.plugin.cache.GrailsCacheManager
 import org.springframework.cache.Cache
-import org.springframework.cache.CacheManager
 import spock.lang.Specification
 
 /**
