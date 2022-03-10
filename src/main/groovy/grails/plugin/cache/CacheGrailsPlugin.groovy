@@ -30,14 +30,6 @@ class CacheGrailsPlugin extends Plugin {
     def authorEmail = 'brownj@objectcomputing.com'
     def description = 'Grails Cache Plugin'
 
-    // resources that should be loaded by the plugin once installed in the application
-    //Does this even work anymore?  Doesn't appear to.
-    def pluginExcludes = [
-            '**/com/demo/**',
-            'grails-app/views/**',
-            '**/*.gsp'
-    ]
-
     private boolean isCachingEnabled() {
         config.getProperty('grails.cache.enabled', Boolean, true)
     }

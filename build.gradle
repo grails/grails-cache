@@ -4,7 +4,6 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:3.2.5"
         classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.6.1'
         classpath "gradle.plugin.com.github.erdi.webdriver-binaries:webdriver-binaries-gradle-plugin:$webdriverBinariesVersion"
     }
@@ -17,8 +16,6 @@ apply plugin:"eclipse"
 apply plugin:"idea"
 apply plugin:"org.grails.grails-plugin"
 apply plugin:"org.grails.grails-plugin-publish"
-apply plugin:"asset-pipeline"
-apply plugin:"org.grails.grails-gsp"
 apply from:"https://raw.githubusercontent.com/grails/grails-common-build/v1.0.0/common-docs.gradle"
 apply plugin: "com.github.erdi.webdriver-binaries"
 
@@ -117,13 +114,14 @@ grailsPublish {
     developers = [jeffbrown: "Jeff Scott Brown"]
 }
 
-
-assets {
-    packagePlugin = true
-}
-
 integrationTest {
     testLogging {
         exceptionFormat = 'full'
     }
+}
+
+// exclude demo code from jar artifact
+jar {
+    includeEmptyDirs = false
+    exclude 'com/demo/**'
 }
