@@ -82,7 +82,7 @@ webdriverBinaries {
 }
 
 tasks.withType(Test) {
-    systemProperty "geb.env", "chromeHeadless"
+    systemProperty "geb.env", System.getProperty('geb.env', 'chromeHeadless')
     systemProperty "geb.build.reportsDir", reporting.file("geb/integrationTest")
 
     if (!System.getenv().containsKey('GITHUB_ACTIONS')) {
