@@ -51,7 +51,7 @@ jobs:
         if: steps.publish.outcome == 'success'
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: docs:docs
+          arguments: docs
       - name: Export Gradle Properties
         uses: micronaut-projects/github-actions/export-gradle-properties@master
       - name: Publish to Github Pages

@@ -59,7 +59,7 @@ jobs:
         if: steps.build.outcome == 'success' && github.event_name == 'push'
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: docs:docs
+          arguments: docs
       - name: Publish to Github Pages
         if: steps.docs.outcome == 'success' && github.event_name == 'push'
         uses: micronaut-projects/github-pages-deploy-action@master
