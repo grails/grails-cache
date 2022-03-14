@@ -3,7 +3,7 @@ buildscript {
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
-        classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+        classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
         classpath "com.bertramlabs.plugins:asset-pipeline-gradle:3.2.5"
         classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.6.1'
         classpath "gradle.plugin.com.github.erdi.webdriver-binaries:webdriver-binaries-gradle-plugin:$webdriverBinariesVersion"
@@ -16,7 +16,7 @@ group "org.grails.plugins"
 apply plugin:"eclipse"
 apply plugin:"idea"
 apply plugin:"org.grails.grails-plugin"
-apply plugin:"org.grails.grails-plugin-publish"
+apply plugin:"org.grails.internal.grails-plugin-publish"
 apply plugin:"asset-pipeline"
 apply plugin:"org.grails.grails-gsp"
 apply from:"https://raw.githubusercontent.com/grails/grails-common-build/v1.0.0/common-docs.gradle"
@@ -78,15 +78,23 @@ dependencies {
 apply from: rootProject.file('gradle/testVerbose.gradle')
 
 webdriverBinaries {
-    chromedriver "$chromeDriverVersion"
-    geckodriver "$geckodriverVersion"
+    if (!System.getenv().containsKey('GITHUB_ACTIONS')) {
+        chromedriver "$chromeDriverVersion"
+        geckodriver "$geckodriverVersion"
+    }
 }
 
 tasks.withType(Test) {
-    systemProperty "geb.env", "chromeHeadless"
+    systemProperty "geb.env", System.getProperty('geb.env', 'chromeHeadless')
     systemProperty "geb.build.reportsDir", reporting.file("geb/integrationTest")
-    systemProperty "webdriver.chrome.driver", System.getProperty('webdriver.chrome.driver')
-    systemProperty "webdriver.gecko.driver", System.getProperty('webdriver.gecko.driver')
+
+    if (!System.getenv().containsKey('GITHUB_ACTIONS')) {
+        systemProperty 'webdriver.chrome.driver', System.getProperty('webdriver.chrome.driver')
+        systemProperty 'webdriver.gecko.driver', System.getProperty('webdriver.gecko.driver')
+    } else {
+        systemProperty 'webdriver.chrome.driver', "${System.getenv('CHROMEWEBDRIVER')}/chromedriver"
+        systemProperty 'webdriver.gecko.driver', "${System.getenv('GECKOWEBDRIVER')}/geckodriver"
+    }
 }
 
 bootRun {
@@ -121,4 +129,10 @@ integrationTest {
     testLogging {
         exceptionFormat = 'full'
     }
+}
+
+// exclude demo code from jar artifact
+jar {
+    includeEmptyDirs = false
+    exclude 'com/demo/**'
 }
