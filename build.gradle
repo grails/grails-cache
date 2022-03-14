@@ -125,3 +125,12 @@ jar {
     includeEmptyDirs = false
     exclude 'com/demo/**'
 }
+if (version.endsWith('-SNAPSHOT')) {
+    nexusPublishing {
+        repositories {
+            sonatype {
+                nexusUrl = uri("https://s01.oss.sonatype.org/service/local/")
+            }
+        }
+    }
+}
