@@ -11,7 +11,7 @@
 
         gtag('config', 'UA-82213539-2');
     </script>
-    <title>2.3 The CacheManager 6.0.0-SNAPSHOT</title>
+    <title>2.3 The CacheManager 5.0.2-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -84,7 +84,7 @@ function addJsClass() {
                 <div class="project">
                     <h1>2.3 The CacheManager</h1>
 
-                    <p><strong>Version:</strong> 6.0.0-SNAPSHOT</p>
+                    <p><strong>Version:</strong> 5.0.2-SNAPSHOT</p>
                 </div>
 
                 
@@ -101,7 +101,7 @@ function addJsClass() {
 
 
 <div class="paragraph">
-<p>The plugin registers an instance of the <a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/cache/CacheManager.html">CacheManager</a> interface as the <code>grailsCacheManager</code> Spring bean, so it&#8217;s easy to access using dependency injection.</p>
+<p>The plugin registers an instance of the <a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/cache/CacheManager.html">CacheManager</a> iterface as the <code>grailsCacheManager</code> Spring bean, so it&#8217;s easy to access using dependency injection.</p>
 </div>
 <div class="paragraph">
 <p>The most common method you would call on the <code>grailsCacheManager</code> is <code>getCache(String name)</code> to access a <a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/cache/Cache.html">Cache</a> instance programmatically. This shouldn&#8217;t be needed often however. From the <code>Cache</code> instance you can also access the underlying cache implementation using <code>cache.getNativeCache()</code>.</p>
