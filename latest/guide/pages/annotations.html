@@ -11,7 +11,7 @@
 
         gtag('config', 'UA-82213539-2');
     </script>
-    <title>2.2 Cache Annotations 5.0.0</title>
+    <title>2.2 Cache Annotations 5.0.1</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -84,7 +84,7 @@ function addJsClass() {
                 <div class="project">
                     <h1>2.2 Cache Annotations</h1>
 
-                    <p><strong>Version:</strong> 5.0.0</p>
+                    <p><strong>Version:</strong> 5.0.1</p>
                 </div>
 
                 
@@ -297,14 +297,14 @@ method is invoked.</p>
         <span class="key">when</span>: <span class="string"><span class="delimiter">'</span><span class="content">a cached method is invoked the first time</span><span class="delimiter">'</span></span>
         <span class="keyword">def</span> result = service.getData()
 
-        <span class="key">then</span>: <span class="string"><span class="delimiter">'</span><span class="content">the code in the method is executed</span><span class="delimiter">'</span></span>
+        <span class="key">then</span>: <span class="string"><span class="delimiter">'</span><span class="content">the code in the method is exeucted</span><span class="delimiter">'</span></span>
         result == <span class="string"><span class="delimiter">'</span><span class="content">Hello World!</span><span class="delimiter">'</span></span>
         service.invocationCounter == <span class="integer">1</span>
 
         <span class="key">when</span>: <span class="string"><span class="delimiter">'</span><span class="content">a cached method is invoked the second time</span><span class="delimiter">'</span></span>
         result = service.getData()
 
-        <span class="key">then</span>: <span class="string"><span class="delimiter">'</span><span class="content">the code in the method is still executed because no cache manager is present</span><span class="delimiter">'</span></span>
+        <span class="key">then</span>: <span class="string"><span class="delimiter">'</span><span class="content">the code in the method is still exeucted because no cache manager is present</span><span class="delimiter">'</span></span>
         result == <span class="string"><span class="delimiter">'</span><span class="content">Hello World!</span><span class="delimiter">'</span></span>
         service.invocationCounter == <span class="integer">2</span>
     }
@@ -337,7 +337,7 @@ test.</p>
         <span class="key">when</span>: <span class="string"><span class="delimiter">'</span><span class="content">a cached method is invoked the first time</span><span class="delimiter">'</span></span>
         <span class="keyword">def</span> result = service.getData()
 
-        <span class="key">then</span>: <span class="string"><span class="delimiter">'</span><span class="content">the code in the method is executed</span><span class="delimiter">'</span></span>
+        <span class="key">then</span>: <span class="string"><span class="delimiter">'</span><span class="content">the code in the method is exeucted</span><span class="delimiter">'</span></span>
         result == <span class="string"><span class="delimiter">'</span><span class="content">Hello World!</span><span class="delimiter">'</span></span>
         service.invocationCounter == <span class="integer">1</span>
 
@@ -350,7 +350,7 @@ test.</p>
     }
 
     <span class="type">void</span> <span class="string"><span class="delimiter">'</span><span class="content">test invoking a cacheable method that expresses a condition</span><span class="delimiter">'</span></span>() {
-        <span class="key">when</span>: <span class="string"><span class="delimiter">'</span><span class="content">multiply is called with x &lt; 10</span><span class="delimiter">'</span></span>
+        <span class="key">when</span>: <span class="string"><span class="delimiter">'</span><span class="content">mutliply is called with x &lt; 10</span><span class="delimiter">'</span></span>
         <span class="keyword">def</span> result = service.multiply(<span class="integer">4</span>, <span class="integer">7</span>)
 
         <span class="key">then</span>: <span class="string"><span class="delimiter">'</span><span class="content">the method should have been invoked</span><span class="delimiter">'</span></span>
@@ -364,7 +364,7 @@ test.</p>
         result == <span class="integer">280</span>
         service.conditionalInvocationCounter == <span class="integer">2</span>
 
-        <span class="key">when</span>: <span class="string"><span class="delimiter">'</span><span class="content">multiply is called with x &lt; 10 with a cached value</span><span class="delimiter">'</span></span>
+        <span class="key">when</span>: <span class="string"><span class="delimiter">'</span><span class="content">mutliply is called with x &lt; 10 with a cached value</span><span class="delimiter">'</span></span>
         result = service.multiply(<span class="integer">4</span>, <span class="integer">7</span>)
 
         <span class="key">then</span>: <span class="string"><span class="delimiter">'</span><span class="content">the method should not have executed</span><span class="delimiter">'</span></span>
