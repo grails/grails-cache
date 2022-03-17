@@ -98,12 +98,23 @@ if (location.href.indexOf('is-external=true') == -1) {
         <li class="blockList">
 
 
+            <!-- todo: direct known subclasses -->
+            <hr>
+            <br>
+
+<pre>@java.lang.annotation.Target({ElementType.METHOD, ElementType.TYPE})
+@java.lang.annotation.Retention(RetentionPolicy.RUNTIME)
+@java.lang.annotation.Inherited
+@java.lang.annotation.Documented
+@org.codehaus.groovy.transform.GroovyASTTransformationClass("org.grails.datastore.gorm.transform.OrderedGormTransformation")
+@org.grails.datastore.gorm.transform.GormASTTransformationClass("org.grails.plugin.cache.compiler.CacheableTransformation")
+public&nbsp;@interface Cacheable</pre>
 
     <p> Indicates that a method (or all the methods on a class) can be cached.
 
  <p>The method arguments and signature are used for computing the key while the
  returned instance is used as the cache value.
- <DL><DT><B>Authors:</B></DT><DD>Jeff Brown</DD><DD>Graeme Rocher</DD></DL></p>
+  <DL><DT><B>Authors:</B></DT><DD>Jeff Brown</DD><DD>Graeme Rocher</DD></DL></p>
 
           </li>
     </ul>
@@ -222,8 +233,7 @@ if (location.href.indexOf('is-external=true') == -1) {
                             <li class="blockList">
                                 <h4>public&nbsp;java.lang.Class[] <strong>condition</strong></h4>
                                 <p> A closure used for conditioning the method caching.
- <p>Default is null, meaning the method is always cached.
- @default {}</p>
+ <p>Default is null, meaning the method is always cached. <DL><DT><B>Default:</B></DT><DD>{}</DD></DL></p>
                             </li>
                         </ul>
                     
@@ -232,8 +242,7 @@ if (location.href.indexOf('is-external=true') == -1) {
                             <li class="blockList">
                                 <h4>public&nbsp;java.lang.Class[] <strong>key</strong></h4>
                                 <p> A closure for computing the key dynamically.
- <p>Default is null, meaning all method parameters are considered as a key.
- @default {}</p>
+ <p>Default is null, meaning all method parameters are considered as a key. <DL><DT><B>Default:</B></DT><DD>{}</DD></DL></p>
                             </li>
                         </ul>
                     
@@ -294,7 +303,7 @@ if (location.href.indexOf('is-external=true') == -1) {
             <li><a href="#element_detail">Element</a></li>&nbsp;&nbsp;&nbsp;
         </ul>
     </div>
-    
+    <p>Groovy Documentation</p>
     <a name="skip-navbar_bottom">
         <!--   -->
     </a>

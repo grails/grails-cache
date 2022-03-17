@@ -98,12 +98,23 @@ if (location.href.indexOf('is-external=true') == -1) {
         <li class="blockList">
 
 
+            <!-- todo: direct known subclasses -->
+            <hr>
+            <br>
+
+<pre>@Target({ ElementType.METHOD, ElementType.TYPE })
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+@Documented
+@org.codehaus.groovy.transform.GroovyASTTransformationClass("org.grails.datastore.gorm.transform.OrderedGormTransformation")
+@org.grails.datastore.gorm.transform.GormASTTransformationClass("org.grails.plugin.cache.compiler.CachePutTransformation")
+public&nbsp;@interface CachePut</pre>
 
     <p> Indicates that a method (or all methods on a class) trigger(s)
  aCache#put(Object, Object) operation. As opposed to <a href='../../../grails/plugin/cache/Cacheable.html' title='Cacheable'>Cacheable</a> annotation,
  this annotation does not cause the target method to be skipped - rather it
  always causes the method to be invoked and its result to be placed into the cache.
- <DL><DT><B>Authors:</B></DT><DD>Jeff Brown</DD><DD>Graeme Rocher</DD></DL></p>
+  <DL><DT><B>Authors:</B></DT><DD>Jeff Brown</DD><DD>Graeme Rocher</DD></DL></p>
 
           </li>
     </ul>
@@ -217,8 +228,7 @@ if (location.href.indexOf('is-external=true') == -1) {
                             <li class="blockList">
                                 <h4>public&nbsp;java.lang.Class[] <strong>key</strong></h4>
                                 <p> A closure for computing the key dynamically.
- <p>Default is null, meaning all method parameters are considered as a key.
- @default 	Class[] key() default {}</p>
+ <p>Default is null, meaning all method parameters are considered as a key. <DL><DT><B>Default:</B></DT><DD>{}</DD></DL></p>
                             </li>
                         </ul>
                     
@@ -279,7 +289,7 @@ if (location.href.indexOf('is-external=true') == -1) {
             <li><a href="#element_detail">Element</a></li>&nbsp;&nbsp;&nbsp;
         </ul>
     </div>
-    
+    <p>Groovy Documentation</p>
     <a name="skip-navbar_bottom">
         <!--   -->
     </a>
