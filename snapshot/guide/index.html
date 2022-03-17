@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8" />
     <script src="../js/docs.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.13/clipboard.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.10/clipboard.min.js"></script>
     <script type="text/javascript">
         function addJsClass(el) {
             var classes = document.body.className.split(" ");
@@ -61,7 +61,7 @@
                     <h1>Cache Plugin</h1>
                     <p></p>
                     <p>Provides AST transformations for caching method calls</p>
-                    <p><strong>Version:</strong> 5.0.2-SNAPSHOT</p>
+                    <p><strong>Version:</strong> 6.0.0-SNAPSHOT</p>
 
                 </div>
                 
@@ -545,14 +545,14 @@ method is invoked.</p>
         <span class="key">when</span>: <span class="string"><span class="delimiter">'</span><span class="content">a cached method is invoked the first time</span><span class="delimiter">'</span></span>
         <span class="keyword">def</span> result = service.getData()
 
-        <span class="key">then</span>: <span class="string"><span class="delimiter">'</span><span class="content">the code in the method is exeucted</span><span class="delimiter">'</span></span>
+        <span class="key">then</span>: <span class="string"><span class="delimiter">'</span><span class="content">the code in the method is executed</span><span class="delimiter">'</span></span>
         result == <span class="string"><span class="delimiter">'</span><span class="content">Hello World!</span><span class="delimiter">'</span></span>
         service.invocationCounter == <span class="integer">1</span>
 
         <span class="key">when</span>: <span class="string"><span class="delimiter">'</span><span class="content">a cached method is invoked the second time</span><span class="delimiter">'</span></span>
         result = service.getData()
 
-        <span class="key">then</span>: <span class="string"><span class="delimiter">'</span><span class="content">the code in the method is still exeucted because no cache manager is present</span><span class="delimiter">'</span></span>
+        <span class="key">then</span>: <span class="string"><span class="delimiter">'</span><span class="content">the code in the method is still executed because no cache manager is present</span><span class="delimiter">'</span></span>
         result == <span class="string"><span class="delimiter">'</span><span class="content">Hello World!</span><span class="delimiter">'</span></span>
         service.invocationCounter == <span class="integer">2</span>
     }
@@ -585,7 +585,7 @@ test.</p>
         <span class="key">when</span>: <span class="string"><span class="delimiter">'</span><span class="content">a cached method is invoked the first time</span><span class="delimiter">'</span></span>
         <span class="keyword">def</span> result = service.getData()
 
-        <span class="key">then</span>: <span class="string"><span class="delimiter">'</span><span class="content">the code in the method is exeucted</span><span class="delimiter">'</span></span>
+        <span class="key">then</span>: <span class="string"><span class="delimiter">'</span><span class="content">the code in the method is executed</span><span class="delimiter">'</span></span>
         result == <span class="string"><span class="delimiter">'</span><span class="content">Hello World!</span><span class="delimiter">'</span></span>
         service.invocationCounter == <span class="integer">1</span>
 
@@ -598,7 +598,7 @@ test.</p>
     }
 
     <span class="type">void</span> <span class="string"><span class="delimiter">'</span><span class="content">test invoking a cacheable method that expresses a condition</span><span class="delimiter">'</span></span>() {
-        <span class="key">when</span>: <span class="string"><span class="delimiter">'</span><span class="content">mutliply is called with x &lt; 10</span><span class="delimiter">'</span></span>
+        <span class="key">when</span>: <span class="string"><span class="delimiter">'</span><span class="content">multiply is called with x &lt; 10</span><span class="delimiter">'</span></span>
         <span class="keyword">def</span> result = service.multiply(<span class="integer">4</span>, <span class="integer">7</span>)
 
         <span class="key">then</span>: <span class="string"><span class="delimiter">'</span><span class="content">the method should have been invoked</span><span class="delimiter">'</span></span>
@@ -612,7 +612,7 @@ test.</p>
         result == <span class="integer">280</span>
         service.conditionalInvocationCounter == <span class="integer">2</span>
 
-        <span class="key">when</span>: <span class="string"><span class="delimiter">'</span><span class="content">mutliply is called with x &lt; 10 with a cached value</span><span class="delimiter">'</span></span>
+        <span class="key">when</span>: <span class="string"><span class="delimiter">'</span><span class="content">multiply is called with x &lt; 10 with a cached value</span><span class="delimiter">'</span></span>
         result = service.multiply(<span class="integer">4</span>, <span class="integer">7</span>)
 
         <span class="key">then</span>: <span class="string"><span class="delimiter">'</span><span class="content">the method should not have executed</span><span class="delimiter">'</span></span>
@@ -641,7 +641,7 @@ test.</p>
 
 
 <div class="paragraph">
-<p>The plugin registers an instance of the <a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/cache/CacheManager.html">CacheManager</a> iterface as the <code>grailsCacheManager</code> Spring bean, so it&#8217;s easy to access using dependency injection.</p>
+<p>The plugin registers an instance of the <a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/cache/CacheManager.html">CacheManager</a> interface as the <code>grailsCacheManager</code> Spring bean, so it&#8217;s easy to access using dependency injection.</p>
 </div>
 <div class="paragraph">
 <p>The most common method you would call on the <code>grailsCacheManager</code> is <code>getCache(String name)</code> to access a <a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/cache/Cache.html">Cache</a> instance programmatically. This shouldn&#8217;t be needed often however. From the <code>Cache</code> instance you can also access the underlying cache implementation using <code>cache.getNativeCache()</code>.</p>
