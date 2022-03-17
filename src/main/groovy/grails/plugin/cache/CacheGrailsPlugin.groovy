@@ -30,6 +30,12 @@ class CacheGrailsPlugin extends Plugin {
     def authorEmail = 'brownj@objectcomputing.com'
     def description = 'Grails Cache Plugin'
 
+    def pluginExcludes = [
+            '**/com/demo/**',
+            'grails-app/views/**',
+            '**/*.gsp'
+    ]
+
     private boolean isCachingEnabled() {
         config.getProperty('grails.cache.enabled', Boolean, true)
     }
