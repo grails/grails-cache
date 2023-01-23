@@ -25,3 +25,4 @@ grails-app/conf/BootStrap.groovy
 grails-app/conf/spring/
 grails-app/views/error.gsp
 grails-app/views/index.gsp
+bin/

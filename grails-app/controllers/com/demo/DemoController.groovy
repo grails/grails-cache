@@ -1,10 +1,17 @@
 package com.demo
 
+import grails.plugin.cache.Cacheable
+
 class DemoController {
 
 	def basicCachingService
 	def grailsCacheAdminService
 
+	@Cacheable('show')
+	def show (params) {
+		[param: params.id]
+	}
+	
 	def clearBlocksCache() {
 		grailsCacheAdminService.clearBlocksCache()
 		render "cleared blocks cache"
