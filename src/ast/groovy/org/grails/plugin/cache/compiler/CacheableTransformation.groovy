@@ -55,6 +55,13 @@ class CacheableTransformation extends AbstractCacheTransformation {
     @Override
     protected Expression buildDelegatingMethodCall(SourceUnit sourceUnit, AnnotationNode annotationNode, ClassNode classNode, MethodNode methodNode, MethodCallExpression originalMethodCallExpr, BlockStatement newMethodBody) {
 
+        boolean isControllerClass = classNode.name.endsWith('Controller')
+        boolean isServiceClass = classNode.name.endsWith('Service')
+
+        if (isControllerClass && !isServiceClass) {
+            return originalMethodCallExpr
+        }
+
         VariableExpression cacheManagerVariableExpression = varX(GRAILS_CACHE_MANAGER_PROPERTY_NAME)
         handleCacheCondition(sourceUnit, annotationNode,  methodNode, originalMethodCallExpr, newMethodBody)
 
