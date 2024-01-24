@@ -5,7 +5,6 @@ buildscript {
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
         classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.6.1'
-        classpath "gradle.plugin.com.github.erdi.webdriver-binaries:webdriver-binaries-gradle-plugin:$webdriverBinariesVersion"
     }
 }
 
@@ -14,7 +13,6 @@ group "org.grails.plugins"
 
 apply plugin:"eclipse"
 apply plugin:"idea"
-apply plugin: "com.github.erdi.webdriver-binaries"
 apply from:"https://raw.githubusercontent.com/grails/grails-common-build/master/common-docs.gradle"
 apply plugin:"org.grails.grails-plugin"
 apply plugin:"org.grails.internal.grails-plugin-publish"
@@ -50,29 +48,28 @@ dependencies {
     testImplementation "org.grails:grails-gorm-testing-support"
     testImplementation "org.grails:grails-web-testing-support"
     testImplementation "org.mockito:mockito-core"
-    testImplementation "org.grails.plugins:geb"
+    testImplementation "org.grails.plugins:geb:$gebVersion"
 
-    testRuntimeOnly "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
-    testRuntimeOnly "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
-    testRuntimeOnly "org.seleniumhq.selenium:selenium-safari-driver:$seleniumVersion"
-
+    testImplementation "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
+    testImplementation "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
+    testImplementation "org.seleniumhq.selenium:selenium-safari-driver:$seleniumVersion"
     testImplementation "org.seleniumhq.selenium:selenium-remote-driver:$seleniumVersion"
     testImplementation "org.seleniumhq.selenium:selenium-api:$seleniumVersion"
     testImplementation "org.seleniumhq.selenium:selenium-support:$seleniumVersion"
+    testImplementation "org.seleniumhq.selenium:selenium-java:$seleniumVersion"
+    testImplementation "org.seleniumhq.selenium:selenium-chromium-driver:$seleniumVersion"
+    testImplementation "org.seleniumhq.selenium:selenium-json:$seleniumVersion"
+    testImplementation "org.seleniumhq.selenium:selenium-http:$seleniumVersion"
+    testImplementation "org.seleniumhq.selenium:selenium-devtools-v85:$seleniumVersion"
 
+    testImplementation "io.github.bonigarcia:webdrivermanager:$webDriverManagerVersion"
+    testImplementation "org.apache.httpcomponents.client5:httpclient5:$httpclient5"
 
     api "com.googlecode.concurrentlinkedhashmap:concurrentlinkedhashmap-lru:1.4.2"
 
 
 }
 apply from: rootProject.file('gradle/testVerbose.gradle')
-
-webdriverBinaries {
-    if (!System.getenv().containsKey('GITHUB_ACTIONS')) {
-        chromedriver "$chromeDriverVersion"
-        geckodriver "$geckodriverVersion"
-    }
-}
 
 tasks.withType(Test) {
     systemProperty "geb.env", System.getProperty('geb.env', 'chromeHeadless')
