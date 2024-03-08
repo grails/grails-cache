@@ -50,7 +50,11 @@ dependencies {
     testImplementation "org.grails:grails-gorm-testing-support"
     testImplementation "org.grails:grails-web-testing-support"
     testImplementation "org.mockito:mockito-core"
-    testImplementation "org.grails.plugins:geb"
+    testImplementation("org.grails.plugins:geb") {
+        exclude group: 'org.gebish', module: 'geb-spock'
+    }
+
+    testImplementation "org.gebish:geb-spock:$gebVersion"
 
     testRuntimeOnly "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
     testRuntimeOnly "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
