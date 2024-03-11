@@ -58,7 +58,7 @@ dependencies {
 
     testRuntimeOnly "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
     testRuntimeOnly "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
-    testRuntimeOnly "org.seleniumhq.selenium:selenium-safari-driver:$seleniumVersion"
+    testRuntimeOnly "org.seleniumhq.selenium:selenium-safari-driver:$seleniumSafariDriverVersion"
 
     testImplementation "org.seleniumhq.selenium:selenium-remote-driver:$seleniumVersion"
     testImplementation "org.seleniumhq.selenium:selenium-api:$seleniumVersion"
