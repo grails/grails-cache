@@ -5,22 +5,32 @@ buildscript {
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
         classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.6.1'
-        classpath "gradle.plugin.com.github.erdi.webdriver-binaries:webdriver-binaries-gradle-plugin:$webdriverBinariesVersion"
+        classpath "com.github.erdi:webdriver-binaries-gradle-plugin:$webdriverBinariesVersion"
     }
 }
 
-version project.projectVersion
 group "org.grails.plugins"
+version project.projectVersion
 
 apply plugin:"eclipse"
 apply plugin:"idea"
 apply plugin: "com.github.erdi.webdriver-binaries"
-apply from:"https://raw.githubusercontent.com/grails/grails-common-build/master/common-docs.gradle"
+apply from:"https://raw.githubusercontent.com/grails/grails-common-build/v2.0.3/common-docs.gradle"
 apply plugin:"org.grails.grails-plugin"
 apply plugin:"org.grails.internal.grails-plugin-publish"
 
 repositories {
     maven { url "https://repo.grails.org/grails/core" }
+}
+
+configurations {
+    all {
+        resolutionStrategy.eachDependency { DependencyResolveDetails details->
+            if (details.requested.group == 'org.seleniumhq.selenium') {
+                details.useVersion(seleniumVersion)
+            }
+        }
+    }
 }
 
 dependencies {
@@ -64,25 +74,22 @@ dependencies {
     testImplementation "org.seleniumhq.selenium:selenium-api:$seleniumVersion"
     testImplementation "org.seleniumhq.selenium:selenium-support:$seleniumVersion"
 
-
     api "com.googlecode.concurrentlinkedhashmap:concurrentlinkedhashmap-lru:1.4.2"
-
-
 }
+
 apply from: rootProject.file('gradle/testVerbose.gradle')
 
 webdriverBinaries {
-    if (!System.getenv().containsKey('GITHUB_ACTIONS')) {
+    if (!System.getenv().containsKey('CI')) {
         chromedriver "$chromeDriverVersion"
         geckodriver "$geckodriverVersion"
     }
 }
 
 tasks.withType(Test) {
-    systemProperty "geb.env", System.getProperty('geb.env', 'chromeHeadless')
+    systemProperty "geb.env", System.getProperty('geb.env')
     systemProperty "geb.build.reportsDir", reporting.file("geb/integrationTest")
-
-    if (!System.getenv().containsKey('GITHUB_ACTIONS')) {
+    if (!System.getenv().containsKey('CI')) {
         systemProperty 'webdriver.chrome.driver', System.getProperty('webdriver.chrome.driver')
         systemProperty 'webdriver.gecko.driver', System.getProperty('webdriver.gecko.driver')
     } else {
@@ -101,8 +108,7 @@ bootRun {
     String springProfilesActive = 'spring.profiles.active'
     systemProperty springProfilesActive, System.getProperty(springProfilesActive)
 }
-// enable if you wish to package this plugin as a standalone application
-bootJar.enabled = false
+
 grailsPublish {
     userOrg = 'grails'
     githubSlug = 'grails/grails-cache'
