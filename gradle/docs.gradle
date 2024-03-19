@@ -1,0 +1,65 @@
+buildscript {
+    repositories {
+        maven { url "https://repo.grails.org/grails/core" }
+    }
+    dependencies {
+        classpath "org.grails:grails-docs:${project.ext.properties.grailsDocsVersion ?: grailsVersion}"
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url "https://repo.grails.org/grails/core" }
+}
+
+configurations {
+    documentation.extendsFrom(compileClasspath)
+}
+
+task publishGuide(type: grails.doc.gradle.PublishGuide) {
+    group = 'documentation'
+    description = 'Generate Guide'
+
+    targetDir = project.file("${buildDir}/docs")
+    sourceRepo = "https://github.com/${githubSlug}/edit/${githubBranch}/src/main/docs"
+    sourceDir = new File(projectDir, "src/main/docs")
+    resourcesDir = new File(projectDir, "src/main/docs/resources")
+    propertiesFiles = [ new File(rootProject.projectDir, "gradle.properties") ]
+    asciidoc = true
+    properties = [
+            'safe':'UNSAFE',
+            'version': project.version,
+            'subtitle': project.projectDesc,
+            'api': '../api',
+            'sourceDir':rootProject.projectDir.absolutePath,
+            'sourcedir':rootProject.projectDir.absolutePath,
+            'javaee': 'https://docs.oracle.com/javaee/7/api/',
+            'javase': 'https://docs.oracle.com/javase/7/docs/api/',
+            'groovyapi': 'https://docs.groovy-lang.org/latest/html/gapi/',
+            'grailsapi': 'https://docs.grails.org/latest/api/',
+            'gormapi': 'https://gorm.grails.org/latest/api/',
+            'springapi': 'https://docs.spring.io/spring/docs/current/javadoc-api/'
+    ]
+    doLast {
+        ant.move(file:"${project.buildDir}/docs/guide/single.html",
+                tofile:"${project.buildDir}/docs/guide/index.html", overwrite:true)
+        new File(project.buildDir, "docs/index.html").text = '''
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="refresh" content="0; url=guide/index.html" />
+</head>
+
+</body>
+</html>
+'''
+    }
+}
+
+task docs(dependsOn:[groovydoc, publishGuide]) {
+    group = 'documentation'
+}
+
+tasks.named("build") {
+    finalizedBy("docs")
+}
