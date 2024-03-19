@@ -12,12 +12,12 @@ buildscript {
 version project.projectVersion
 group "org.grails.plugins"
 
-apply plugin:"eclipse"
-apply plugin:"idea"
+apply plugin: "eclipse"
+apply plugin: "idea"
 apply plugin: 'java-library'
 apply plugin: 'groovy'
-apply plugin:"org.grails.grails-plugin"
-apply plugin:"org.grails.internal.grails-plugin-publish"
+apply plugin: "org.grails.grails-plugin"
+apply plugin: "org.grails.internal.grails-plugin-publish"
 
 repositories {
     mavenCentral()
@@ -25,12 +25,12 @@ repositories {
 }
 
 configurations {
-    documentation.extendsFrom(compileClasspath)
+    documentation.extendsFrom compileClasspath
 }
 
 configurations {
     all {
-        resolutionStrategy.eachDependency { DependencyResolveDetails details->
+        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
             if (details.requested.group == 'org.seleniumhq.selenium') {
                 details.useVersion(seleniumVersion)
             }
@@ -56,6 +56,7 @@ dependencies {
     api "org.grails.plugins:scaffolding"
     api "org.codehaus.gpars:gpars:1.2.1"
     api "org.grails.plugins:gsp"
+    api "com.googlecode.concurrentlinkedhashmap:concurrentlinkedhashmap-lru:1.4.2"
 
     runtimeOnly "org.grails.plugins:async"
     console "org.grails:grails-console"
@@ -65,7 +66,7 @@ dependencies {
     testImplementation "org.grails:grails-gorm-testing-support"
     testImplementation "org.grails:grails-web-testing-support"
     testImplementation "org.mockito:mockito-core"
-    testImplementation("org.grails.plugins:geb:$gebVersion") {
+    testImplementation("org.grails.plugins:geb") {
         exclude group: 'org.gebish', module: 'geb-spock'
     }
 
@@ -86,7 +87,7 @@ dependencies {
     testImplementation "io.github.bonigarcia:webdrivermanager:$webDriverManagerVersion"
     testImplementation "org.apache.httpcomponents.client5:httpclient5:$httpclient5"
 
-    api "com.googlecode.concurrentlinkedhashmap:concurrentlinkedhashmap-lru:1.4.2"
+    documentation "com.github.javaparser:javaparser-core:3.15.14"
 
 
 }
@@ -112,25 +113,26 @@ task publishGuide(type: grails.doc.gradle.PublishGuide) {
     targetDir = project.file("${buildDir}/docs")
     sourceRepo = "https://github.com/${githubSlug}/edit/${githubBranch}/src/main/docs"
     sourceDir = new File(projectDir, "src/main/docs")
-    propertiesFiles = [ new File(rootProject.projectDir, "gradle.properties") ]
+    resourcesDir = new File(projectDir, "src/main/docs")
+    propertiesFiles = [new File(rootProject.projectDir, "gradle.properties")]
     asciidoc = true
     properties = [
-            'safe':'UNSAFE',
-            'version': project.version,
-            'subtitle': project.projectDesc,
-            'api': '../api',
-            'sourceDir':rootProject.projectDir.absolutePath,
-            'sourcedir':rootProject.projectDir.absolutePath,
-            'javaee': 'https://docs.oracle.com/javaee/7/api/',
-            'javase': 'https://docs.oracle.com/javase/7/docs/api/',
+            'safe'     : 'UNSAFE',
+            'version'  : project.version,
+            'subtitle' : project.projectDesc,
+            'api'      : '../api',
+            'sourceDir': rootProject.projectDir.absolutePath,
+            'sourcedir': rootProject.projectDir.absolutePath,
+            'javaee'   : 'https://docs.oracle.com/javaee/7/api/',
+            'javase'   : 'https://docs.oracle.com/javase/7/docs/api/',
             'groovyapi': 'https://docs.groovy-lang.org/latest/html/gapi/',
             'grailsapi': 'https://docs.grails.org/latest/api/',
-            'gormapi': 'https://gorm.grails.org/latest/api/',
+            'gormapi'  : 'https://gorm.grails.org/latest/api/',
             'springapi': 'https://docs.spring.io/spring/docs/current/javadoc-api/'
     ]
     doLast {
-        ant.move(file:"${project.buildDir}/docs/guide/single.html",
-                tofile:"${project.buildDir}/docs/guide/index.html", overwrite:true)
+        ant.move(file: "${project.buildDir}/docs/guide/single.html",
+                tofile: "${project.buildDir}/docs/guide/index.html", overwrite: true)
         new File(project.buildDir, "docs/index.html").text = '''
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
@@ -144,16 +146,18 @@ task publishGuide(type: grails.doc.gradle.PublishGuide) {
     }
 }
 
-task docs(dependsOn:[groovydoc, publishGuide]) {
+task docs(dependsOn: [groovydoc, publishGuide]) {
     group = 'documentation'
 }
 
+groovydoc.classpath += configurations.documentation
+
 bootRun {
     jvmArgs(
-        '-Dspring.output.ansi.enabled=always',
-        '-noverify',
-        '-XX:TieredStopAtLevel=1',
-        '-Xmx1024m')
+            '-Dspring.output.ansi.enabled=always',
+            '-noverify',
+            '-XX:TieredStopAtLevel=1',
+            '-Xmx1024m')
     sourceResources sourceSets.main
     String springProfilesActive = 'spring.profiles.active'
     systemProperty springProfilesActive, System.getProperty(springProfilesActive)
