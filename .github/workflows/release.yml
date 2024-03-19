@@ -3,14 +3,15 @@ on:
   release:
     types: [published]
 jobs:
-  release:
+  publish:
+    outputs:
+      release_version: ${{ steps.release_version.outputs.value }}
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        java: ['8']
+    permissions:
+      contents: read
     env:
       GIT_USER_NAME: puneetbehl
-      GIT_USER_EMAIL: behlp@objectcomputing.com
+      GIT_USER_EMAIL: behlp@unityfoundation.io
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -21,14 +22,28 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'adopt'
-          java-version: ${{ matrix.java }}
+          java-version: '8'
       - name: Set the current release version
         id: release_version
-        run: echo ::set-output name=release_version::${GITHUB_REF:11}
+        run: echo "release_version=${GITHUB_REF:11}" >> $GITHUB_OUTPUT
       - name: Run pre-release
         uses: micronaut-projects/github-actions/pre-release@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run Assemble
+        if: success()
+        id: assemble
+        uses: gradle/gradle-build-action@v3
+        with:
+          arguments: assemble
+        env:
+          GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
+      - name: Upload Distribution
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: grails-gsp-${{ steps.release_version.outputs.value }}
+          path: ./**/build/libs/*
       - name: Generate secring file
         env:
           SECRING_FILE: ${{ secrets.SECRING_FILE }}
@@ -44,33 +59,80 @@ jobs:
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           SIGNING_PASSPHRASE: ${{ secrets.SIGNING_PASSPHRASE }}
           SECRING_FILE: ${{ secrets.SECRING_FILE }}
+          GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
+          GRADLE_ENTERPRISE_BUILD_CACHE_NODE_USER: ${{ secrets.GRADLE_ENTERPRISE_BUILD_CACHE_NODE_USER }}
+          GRADLE_ENTERPRISE_BUILD_CACHE_NODE_KEY: ${{ secrets.GRADLE_ENTERPRISE_BUILD_CACHE_NODE_KEY }}
         with:
-          arguments: -Psigning.secretKeyRingFile=${{ github.workspace }}/secring.gpg publishToSonatype closeAndReleaseSonatypeStagingRepository
-      - name: Publish Documentation
-        id: docs
-        if: steps.publish.outcome == 'success'
-        uses: gradle/gradle-build-action@v2
+          arguments: | 
+            -Psigning.secretKeyRingFile=${{ github.workspace }}/secring.gpg 
+            publishToSonatype 
+            closeAndReleaseSonatypeStagingRepository
+  release:
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          arguments: docs
-      - name: Export Gradle Properties
-        uses: micronaut-projects/github-actions/export-gradle-properties@master
-      - name: Publish to Github Pages
-        if: steps.docs.outcome == 'success'
-        uses: micronaut-projects/github-pages-deploy-action@master
+          token: ${{ secrets.GH_TOKEN }}
+          ref: v${{ needs.publish.outputs.release_version }}
+      - name: Nexus Staging Close And Release
+        uses: gradle/gradle-build-action@v3
         env:
-          BETA: ${{ contains(steps.release_version.outputs.release_version, 'M') || contains(steps.release_version.outputs.release_version, 'RC') }}
-          TARGET_REPOSITORY: ${{ github.repository }}
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: build/docs
-          DOC_FOLDER: gh-pages
-          COMMIT_EMAIL: behlp@objectcomputing.com
-          COMMIT_NAME: Puneet Behl
-          VERSION: ${{ steps.release_version.outputs.release_version }}
+          GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          SONATYPE_STAGING_PROFILE_ID: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
+        with:
+          arguments: |
+            findSonatypeStagingRepository
+            releaseSonatypeStagingRepository
       - name: Run post-release
-        if: steps.publish.outcome == 'success' && steps.docs.outcome == 'success' && success()
+        if: success()
         uses: micronaut-projects/github-actions/post-release@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
         env:
           SNAPSHOT_SUFFIX: -SNAPSHOT
+  docs:
+    if: false # Disabled for now, due to Gradle problem in PublishGuide task having conflicting annotations. Uncomment after Grails 5.3.7 release.
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          ref: v${{ needs.publish.outputs.release_version }}
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+      - name: Publish Documentation
+        id: docs
+        if: success() || false
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: docs
+        env:
+          GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
+          GRADLE_ENTERPRISE_BUILD_CACHE_NODE_USER: ${{ secrets.GRADLE_ENTERPRISE_BUILD_CACHE_NODE_USER }}
+          GRADLE_ENTERPRISE_BUILD_CACHE_NODE_KEY: ${{ secrets.GRADLE_ENTERPRISE_BUILD_CACHE_NODE_KEY }}
+      - name: Publish to Github Pages
+        if: steps.docs.outcome == 'success'
+        uses: grails/github-pages-deploy-action@v2
+        env:
+          SKIP_LATEST: ${{ contains(steps.release_version.outputs.release_version, 'M') }}
+          TARGET_REPOSITORY: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: build/docs
+          DOC_FOLDER: gh-pages
+          COMMIT_EMAIL: behlp@unityfoundation.io
+          COMMIT_NAME: Puneet Behl
+          VERSION: ${{ steps.release_version.outputs.release_version }}
