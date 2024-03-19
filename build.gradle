@@ -20,6 +20,7 @@ apply plugin:"org.grails.grails-plugin"
 apply plugin:"org.grails.internal.grails-plugin-publish"
 
 repositories {
+    mavenCentral()
     maven { url "https://repo.grails.org/grails/core" }
 }
 
@@ -131,3 +132,8 @@ jar {
     includeEmptyDirs = false
     exclude 'com/demo/**'
 }
+
+tasks.named("build") {
+    finalizedBy("docs")
+}
+
