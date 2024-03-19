@@ -5,6 +5,7 @@ pull-request:
     fix: '🐛 $TITLE (#$NUMBER)'
     feat: '🚀 $TITLE (#$NUMBER)'
     default: '$TITLE (#$NUMBER)'
+filter-by-commitsh: true
 autolabeler:
   - label: 'bug'
     branch:
