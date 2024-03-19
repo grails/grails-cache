@@ -60,6 +60,6 @@ task docs(dependsOn:[groovydoc, publishGuide]) {
     group = 'documentation'
 }
 
-tasks.named("build") {
-    finalizedBy("docs")
-}
+//tasks.named("build") {
+//    finalizedBy("docs")
+//}
