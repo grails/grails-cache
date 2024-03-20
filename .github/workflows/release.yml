@@ -66,7 +66,7 @@ jobs:
           arguments: | 
             -Psigning.secretKeyRingFile=${{ github.workspace }}/secring.gpg 
             publishToSonatype 
-            closeAndReleaseSonatypeStagingRepository
+            closeSonatypeStagingRepository
   release:
     needs: publish
     runs-on: ubuntu-latest
