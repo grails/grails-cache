@@ -18,6 +18,7 @@ apply plugin: "com.github.erdi.webdriver-binaries"
 apply from:"https://raw.githubusercontent.com/grails/grails-common-build/v2.0.3/common-docs.gradle"
 apply plugin:"org.grails.grails-plugin"
 apply plugin:"org.grails.internal.grails-plugin-publish"
+apply from: 'gradle/docs.gradle'
 
 repositories {
     mavenCentral()
@@ -132,8 +133,3 @@ jar {
     includeEmptyDirs = false
     exclude 'com/demo/**'
 }
-
-tasks.named("build") {
-    finalizedBy("docs")
-}
-
