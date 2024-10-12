@@ -132,3 +132,9 @@ jar {
     includeEmptyDirs = false
     exclude 'com/demo/**'
 }
+
+tasks.named("publishGuide") {
+    it.dependsOn = ["compileAstGroovy", "copyAstClasses", "compileGroovy",
+                    "compileAstJava", "compileJava", "compileAstJava",
+                    "groovydoc", "processResources", "copyCommands"]
+}
