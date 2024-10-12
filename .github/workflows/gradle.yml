@@ -97,4 +97,4 @@ jobs:
           FOLDER: build/docs
           DOC_FOLDER: gh-pages
           COMMIT_EMAIL: 'grails-build@users.noreply.github.com'
-          COMMIT_NAME: grails-build'
+          COMMIT_NAME: 'grails-build'
