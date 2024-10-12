@@ -7,7 +7,7 @@ import org.grails.web.gsp.GroovyPagesTemplateRenderer
 import org.springframework.cache.Cache
 import spock.lang.Specification
 
-import javax.servlet.ServletException
+import jakarta.servlet.ServletException
 
 
 class CacheTagLibSpec extends Specification implements TagLibUnitTest<CacheTagLib> {
