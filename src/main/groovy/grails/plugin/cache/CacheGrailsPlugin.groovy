@@ -24,7 +24,7 @@ import org.springframework.cache.Cache
 @Slf4j
 class CacheGrailsPlugin extends Plugin {
 
-    def grailsVersion = "4.0.0 > *"
+    def grailsVersion = "7.0.0 > *"
     def observe = ['controllers', 'services']
     def loadAfter = ['controllers', 'services']
     def authorEmail = 'brownj@objectcomputing.com'

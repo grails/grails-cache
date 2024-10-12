@@ -20,8 +20,8 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'adopt'
-          java-version: '11'
+          distribution: 'liberica'
+          java-version: '17'
       - name: Run Build
         if: success()
         id: build
@@ -49,8 +49,8 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'adopt'
-          java-version: '11'
+          distribution: 'liberica'
+          java-version: '17'
       - name: Publish to repo.grails.org
         id: publish
         uses: gradle/gradle-build-action@v3
@@ -74,8 +74,8 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'adopt'
-          java-version: '11'
+          distribution: 'liberica'
+          java-version: '17'
       - name: Build Docs
         id: docs
         if: success()
@@ -96,5 +96,5 @@ jobs:
           BRANCH: gh-pages
           FOLDER: build/docs
           DOC_FOLDER: gh-pages
-          COMMIT_EMAIL: behlp@unityfoundation.io
-          COMMIT_NAME: Puneet Behl
+          COMMIT_EMAIL: 'grails-build@users.noreply.github.com'
+          COMMIT_NAME: grails-build'
